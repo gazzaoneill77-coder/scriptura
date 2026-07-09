@@ -115,7 +115,11 @@ function hasAI() { return !!activeProvider(); }
 const MODELS = {
   anthropic: ['claude-sonnet-5', 'claude-sonnet-4-5', 'claude-3-7-sonnet-latest'],
   openai: ['gpt-4o-mini', 'gpt-4o'],
-  gemini: ['gemini-2.5-flash', 'gemini-2.0-flash']
+  // "-latest" aliases track whatever Google currently serves; the rest are
+  // fallbacks for when a model is retired, overloaded (503) or out of free
+  // quota (429) — the lite models usually have the most free capacity
+  gemini: ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest', 'gemini-2.0-flash'],
+  geminiImage: ['gemini-3.1-flash-image', 'gemini-2.5-flash-image', 'nano-banana-pro-preview']
 };
 
 async function aiChat(messages, system) {
@@ -177,9 +181,9 @@ async function geminiChat(messages, system) {
   let lastErr;
   const contents = messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
   for (const model of MODELS.gemini) {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(state.keys.gemini)}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': state.keys.gemini },
       body: JSON.stringify({
         contents,
         systemInstruction: system ? { parts: [{ text: system }] } : undefined
@@ -191,7 +195,9 @@ async function geminiChat(messages, system) {
     }
     const err = await res.text();
     lastErr = new Error('Gemini error ' + res.status + ': ' + err.slice(0, 300));
-    if (res.status !== 404) break;
+    // retired model (404), free-quota exhausted (429) or overloaded (503):
+    // the next model in the list may still work
+    if (![404, 429, 503].includes(res.status)) break;
   }
   throw lastErr;
 }
@@ -199,18 +205,26 @@ async function geminiChat(messages, system) {
 // image generation: Gemini image model ("Nano Banana") or OpenAI images
 async function aiImage(prompt) {
   if (state.keys.gemini) {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${encodeURIComponent(state.keys.gemini)}`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
-    if (!res.ok) throw new Error('Gemini image error ' + res.status + ': ' + (await res.text()).slice(0, 300));
-    const j = await res.json();
-    const parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
-    for (const p of parts) {
-      if (p.inlineData && p.inlineData.data) return 'data:' + (p.inlineData.mimeType || 'image/png') + ';base64,' + p.inlineData.data;
+    let lastErr;
+    for (const model of MODELS.geminiImage) {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-goog-api-key': state.keys.gemini },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      });
+      if (res.ok) {
+        const j = await res.json();
+        const parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+        for (const p of parts) {
+          if (p.inlineData && p.inlineData.data) return 'data:' + (p.inlineData.mimeType || 'image/png') + ';base64,' + p.inlineData.data;
+        }
+        throw new Error('Gemini returned no image — try rewording the description.');
+      }
+      const err = await res.text();
+      lastErr = new Error('Gemini image error ' + res.status + ': ' + err.slice(0, 300));
+      if (![404, 429, 503].includes(res.status)) break;
     }
-    throw new Error('Gemini returned no image — try rewording the description.');
+    if (state.keys.openai) { /* fall through to OpenAI below */ } else throw lastErr;
   }
   if (state.keys.openai) {
     const res = await fetch('https://api.openai.com/v1/images/generations', {
