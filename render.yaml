@@ -1,0 +1,15 @@
+# Render Blueprint — deploy via dashboard: New + > Blueprint > select this repo.
+# Deploys the static storefront and points the domain root at the pre-launch
+# Gate List landing page. When the store opens, delete the rewrite below and
+# the homepage takes over at /.
+services:
+  - type: web
+    runtime: static
+    name: narrow
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+    routes:
+      - type: rewrite
+        source: /
+        destination: /gate/index.html
