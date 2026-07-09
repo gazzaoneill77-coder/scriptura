@@ -56,8 +56,13 @@ so nothing is lost during testing.
 
 ## Going live checklist
 
-1. Deploy `dist/` as a static site (Render static site works; any host does).
-2. Point the domain at `/gate` first. Collect demand.
+1. Deploy on Render: dashboard → **New +** → **Blueprint** → pick this repo.
+   `render.yaml` builds the site and serves it; PR previews are enabled.
+2. The Blueprint rewrites `/` to the Gate List landing page (`/gate`), so the
+   domain collects demand from day one. Add your custom domain under the
+   service's **Settings → Custom Domains** and follow the DNS records Render
+   shows (CNAME for `www`, A/ALIAS for the apex). When the store opens,
+   delete the rewrite in `render.yaml` and the homepage takes over at `/`.
 3. Wire the Gate List `formAction` to a real list provider. Send
    `emails/welcome.md` as the signup autoresponder.
 4. Deploy the checkout function (`functions/checkout.example.mjs`) with
