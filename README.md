@@ -5,6 +5,11 @@
 Storefront for **DROP 001: TESTAMENT** — heavyweight streetwear for the hard road.
 Static Astro front, own domain, own stack. No platform lock-in, near-zero monthly cost.
 
+**Live:** https://gazzaoneill77-coder.github.io/scriptura/ — auto-deployed to
+GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`. No
+API keys anywhere: signups and orders reach the inbox through a form relay
+(see below), and payments are arranged by email reply until Stripe is wired.
+
 ## Run it
 
 ```sh
@@ -42,38 +47,60 @@ sketch (home press for limited runs, Printful/Gelato REST for overflow).
 real reads as honest; a permanent fake counter reads as dropshipping. A fully
 sold-out product shows **GONE.** with the Gate List pointer.
 
-**Cart & checkout.** The cart is client-side (localStorage). Checkout POSTs
-line items (SKU + size + qty only — prices are resolved server-side) to the
-endpoint in `site.json → checkout.endpoint`, which should create a Stripe
-Checkout session and return `{ url }`. Until that endpoint is configured, the
-checkout button explains the store hasn't opened and points to the Gate List.
+**Cart & checkout.** The cart is client-side (localStorage). Two checkout
+modes, decided by `src/data/site.json`:
+
+1. **Card checkout** — `checkout.endpoint` set: POSTs line items (SKU + size
+   + qty only — prices are resolved server-side) to your endpoint, which
+   creates a Stripe Checkout session and returns `{ url }`.
+2. **Key-free reserve flow** (live now) — `checkout.endpoint` empty,
+   `checkout.reserveEndpoint` set: the customer leaves an email, the full
+   order (lines, sizes, total) lands in your inbox via the form relay, and
+   you reply with a payment link (PayPal.me, bank transfer, Stripe payment
+   link — anything). Stock is honoured on dispatch, not on click. A local
+   copy of every claim is also kept under `localStorage → narrow.orders`.
 
 **Gate List.** The footer form (and `/gate`) posts to
-`site.json → gateList.formAction` — set it to your list provider's form
-endpoint (Buttondown, Mailchimp, ConvertKit all accept a plain form POST).
-Until configured, signups are held in `localStorage` under `narrow.gatelist`
-so nothing is lost during testing.
+`site.json → gateList.formAction`. It's wired to a FormSubmit AJAX relay —
+free, no account, no API key. **One-time activation:** the first submission
+makes FormSubmit email you an activation link; click it and every signup and
+order after that is delivered. That first email also contains a random alias
+string — swap it into `formAction`/`reserveEndpoint` in place of the raw
+address to keep the address out of the page source. If the relay call ever
+fails, signups fall back to `localStorage → narrow.gatelist` so nothing is
+lost. Any provider that accepts a form POST (Buttondown, Mailchimp,
+ConvertKit) can replace it later.
+
+**Motion.** All 3D is dependency-free: the hero mark cube is CSS keyframes,
+card tilt tracks the pointer via CSS variables (`src/scripts/fx.js`), and
+sections reveal with a perspective fold on scroll (IntersectionObserver).
+Everything switches off under `prefers-reduced-motion`.
 
 ## Going live checklist
 
-1. Deploy on Render: dashboard → **New +** → **Blueprint** → pick this repo.
-   `render.yaml` builds the site and serves it; PR previews are enabled.
-2. The Blueprint rewrites `/` to the Gate List landing page (`/gate`), so the
-   domain collects demand from day one. Add your custom domain under the
-   service's **Settings → Custom Domains** and follow the DNS records Render
-   shows (CNAME for `www`, A/ALIAS for the apex). When the store opens,
-   delete the rewrite in `render.yaml` and the homepage takes over at `/`.
-3. Wire the Gate List `formAction` to a real list provider. Send
-   `emails/welcome.md` as the signup autoresponder.
-4. Deploy the checkout function (`functions/checkout.example.mjs`) with
-   `STRIPE_SECRET_KEY` and `SITE_URL`, set `checkout.endpoint` in `site.json`.
-5. Hook the Stripe webhook to decrement stock and send
-   `emails/order-confirmation.md`, then `emails/dispatch.md` on shipping.
-6. Replace the placeholder SVG marks in `public/marks/` with real product
+Already done: the site deploys itself to GitHub Pages on every push to
+`main`, and orders/signups flow to the inbox key-free.
+
+1. **Click the FormSubmit activation link** — it arrives in your inbox after
+   the first form submission on the live site. One click, done forever.
+2. **Custom domain (optional, free):** repo **Settings → Pages → Custom
+   domain**, then at your DNS: CNAME `www` → `gazzaoneill77-coder.github.io`
+   (plus the four A records GitHub lists for the apex). Pages issues the
+   certificate automatically. The site works at both the `github.io` URL and
+   the domain root — links adapt to the base path at build time.
+3. Replace the placeholder SVG marks in `public/marks/` with real product
    photography (keep the same filenames or update `products.json`).
-7. Update real stock counts in `products.json` and rebuild — counts are baked
+4. Update real stock counts in `products.json` and push — counts are baked
    at build time, which is fine at drop scale; move them behind a tiny API
    when it isn't.
+5. **When card checkout is wanted:** deploy the checkout function
+   (`functions/checkout.example.mjs`) with `STRIPE_SECRET_KEY` and
+   `SITE_URL`, set `checkout.endpoint` in `site.json`, and hook the Stripe
+   webhook to decrement stock and send `emails/order-confirmation.md`, then
+   `emails/dispatch.md` on shipping. Until then the reserve flow takes
+   orders by email.
+6. Alternative host: `render.yaml` still works (Render → **New +** →
+   **Blueprint**) and rewrites `/` to `/gate` for a pre-launch posture.
 
 ## Emails
 

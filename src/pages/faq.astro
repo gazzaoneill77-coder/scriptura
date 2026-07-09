@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { href } from '../lib/url.js';
 
 const faqs = [
   {
@@ -41,7 +42,7 @@ const faqs = [
         <h3>{f.q}</h3>
         <p>
           {f.link
-            ? <>One person. One press. Read <a href={f.link.href} style="text-decoration:underline">{f.link.label}</a>.</>
+            ? <>One person. One press. Read <a href={href(f.link.href)} style="text-decoration:underline">{f.link.label}</a>.</>
             : f.a}
         </p>
       </div>
