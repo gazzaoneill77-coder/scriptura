@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maker Studio AI</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%237c5cff'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ======================= SIDEBAR ======================= -->
+  <aside id="sidebar">
+    <div class="side-head">
+      <div class="logo">M</div>
+      <div class="brand">
+        <strong>Maker Studio</strong>
+        <span>AI</span>
+      </div>
+      <button class="side-close" onclick="toggleSidebar(false)" title="Close menu">✕</button>
+    </div>
+
+    <nav class="side-nav">
+      <div class="nav-label">Tools</div>
+      <a class="nav-item" data-route="chat" href="#/chat"><span class="nv-ic">💬</span>Chat</a>
+      <a class="nav-item" data-route="product-maker" href="#/product-maker"><span class="nv-ic">📦</span>Product Maker</a>
+      <a class="nav-item" data-route="prompt-maker" href="#/prompt-maker"><span class="nv-ic">✨</span>Prompt Maker</a>
+      <a class="nav-item" data-route="product-research" href="#/product-research"><span class="nv-ic">🔍</span>Product Research</a>
+      <a class="nav-item" data-route="competitor-analyzer" href="#/competitor-analyzer"><span class="nv-ic">🎯</span>Competitor Analyzer</a>
+      <a class="nav-item" data-route="store-finder" href="#/store-finder"><span class="nv-ic">🏪</span>Store Finder</a>
+      <a class="nav-item" data-route="faceless-finder" href="#/faceless-finder"><span class="nv-ic">🎭</span>Faceless Finder</a>
+      <a class="nav-item" data-route="image-maker" href="#/image-maker"><span class="nv-ic">🖼️</span>Image Maker</a>
+      <a class="nav-item" data-route="video-maker" href="#/video-maker"><span class="nv-ic">🎬</span>Video Maker</a>
+      <a class="nav-item" data-route="ad-library" href="#/ad-library"><span class="nv-ic">📚</span>Ad Library</a>
+      <a class="nav-item" data-route="website-maker" href="#/website-maker"><span class="nv-ic">🌐</span>Website Maker</a>
+
+      <div class="nav-label" style="margin-top:14px">Library</div>
+      <a class="nav-item" data-route="history" href="#/history"><span class="nv-ic">🕘</span>History</a>
+      <a class="nav-item" data-route="tutorial" href="#/tutorial"><span class="nv-ic">🎓</span>Tutorial</a>
+    </nav>
+
+    <!-- Usage panel -->
+    <div class="usage-box" id="usageBox">
+      <div class="usage-head">
+        <span id="planLabel">Free Plan Usage</span>
+        <button class="upgrade-btn" onclick="openSettings('plan')">UPGRADE</button>
+      </div>
+      <div id="usageMeters"></div>
+      <div class="usage-note">Usage resets every Monday</div>
+    </div>
+
+    <!-- Recent chats -->
+    <div class="recent-box">
+      <div class="nav-label">Recent Chats</div>
+      <div id="recentChats"></div>
+    </div>
+
+    <!-- User footer -->
+    <div class="side-foot">
+      <div class="avatar" id="avatarInitial">J</div>
+      <div class="foot-info">
+        <strong id="footName">jasmin</strong>
+        <span id="footPlan">Free Plan</span>
+      </div>
+      <div class="foot-actions">
+        <button onclick="openSettings()" title="Settings">⚙️</button>
+        <button onclick="signOut()" title="Sign Out">↩</button>
+      </div>
+    </div>
+  </aside>
+
+  <div id="sideOverlay" onclick="toggleSidebar(false)"></div>
+
+  <!-- ======================= MAIN ======================= -->
+  <main id="main">
+    <header id="topbar">
+      <button class="hamburger" onclick="toggleSidebar(true)">☰</button>
+      <h1 id="pageTitle">Chat</h1>
+      <div class="top-right">
+        <span class="key-status" id="keyStatus" onclick="openSettings('keys')">No API key — prompt mode</span>
+      </div>
+    </header>
+    <div id="view"></div>
+  </main>
+</div>
+
+<!-- ======================= SETTINGS MODAL ======================= -->
+<div class="modal-wrap" id="settingsModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Settings</h2>
+      <button class="modal-x" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h3>Profile</h3>
+      <label>Your name
+        <input type="text" id="setName" placeholder="Your name">
+      </label>
+
+      <h3 id="planSection">Plan</h3>
+      <label>Plan mode
+        <select id="setPlan">
+          <option value="free">Free Plan (weekly limits, like the original)</option>
+          <option value="unlimited">Unlimited (it's your app — no limits)</option>
+        </select>
+      </label>
+      <p class="hint">Free Plan gives you 5 AI chats, 3 prompts, 1 replication and 1 competitor analysis per week, resetting every Monday — exactly like the app you're replicating. Switch to Unlimited any time.</p>
+
+      <h3 id="keysSection">AI API Keys (optional but recommended)</h3>
+      <p class="hint">Add at least one key and every tool generates results directly inside the app. Keys are stored only in your browser on your computer — they are never sent anywhere except to the AI provider itself.</p>
+      <label>Anthropic (Claude) API key — <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">get one here</a>
+        <input type="password" id="setKeyAnthropic" placeholder="sk-ant-...">
+      </label>
+      <label>OpenAI (ChatGPT) API key — <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">get one here</a>
+        <input type="password" id="setKeyOpenai" placeholder="sk-...">
+      </label>
+      <label>Google (Gemini) API key — <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">get one here (free tier available)</a>
+        <input type="password" id="setKeyGemini" placeholder="AIza...">
+      </label>
+      <h3>YouTube Connection (for Faceless Finder)</h3>
+      <p class="hint">Add a free <b>YouTube Data API key</b> and the Faceless Finder searches real YouTube channels with live subscriber &amp; view counts, and can analyze any channel you paste. Get one at <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Google Cloud Console</a> (enable "YouTube Data API v3", then create an API key — full steps are on the Tutorial page).</p>
+      <label>YouTube Data API key
+        <input type="password" id="setKeyYoutube" placeholder="AIza...">
+      </label>
+
+      <label>Preferred AI for generation
+        <select id="setProvider">
+          <option value="auto">Auto (use whichever key I've added)</option>
+          <option value="anthropic">Claude</option>
+          <option value="openai">ChatGPT</option>
+          <option value="gemini">Gemini</option>
+        </select>
+      </label>
+
+      <h3>Danger zone</h3>
+      <button class="btn danger" onclick="clearAllData()">Clear all data (history, chats, usage, keys)</button>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeSettings()">Cancel</button>
+      <button class="btn primary" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= HISTORY VIEWER MODAL ======================= -->
+<div class="modal-wrap" id="viewerModal">
+  <div class="modal wide">
+    <div class="modal-head">
+      <h2 id="viewerTitle">Result</h2>
+      <button class="modal-x" onclick="closeViewer()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="result-box" id="viewerBody"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeViewer()">Close</button>
+      <button class="btn primary" onclick="copyViewer()">Copy</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
