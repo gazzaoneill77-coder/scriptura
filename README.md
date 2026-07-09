@@ -78,28 +78,33 @@ Everything switches off under `prefers-reduced-motion`.
 
 ## Going live checklist
 
-Already done: the site deploys itself to GitHub Pages on every push to
-`main`, and orders/signups flow to the inbox key-free.
+Already done: every push to `main` builds the site and publishes it to the
+`gh-pages` branch, and orders/signups flow to the inbox key-free.
 
-1. **Click the FormSubmit activation link** — it arrives in your inbox after
+1. **Switch Pages on (one time):** repo **Settings → Pages → Source: Deploy
+   from a branch → Branch: `gh-pages` / `(root)` → Save**. GitHub requires a
+   repo admin to enable Pages the first time — a workflow can't. The site is
+   live at the URL above within a minute, and every deploy after this is
+   automatic.
+2. **Click the FormSubmit activation link** — it arrives in your inbox after
    the first form submission on the live site. One click, done forever.
-2. **Custom domain (optional, free):** repo **Settings → Pages → Custom
+3. **Custom domain (optional, free):** repo **Settings → Pages → Custom
    domain**, then at your DNS: CNAME `www` → `gazzaoneill77-coder.github.io`
    (plus the four A records GitHub lists for the apex). Pages issues the
    certificate automatically. The site works at both the `github.io` URL and
    the domain root — links adapt to the base path at build time.
-3. Replace the placeholder SVG marks in `public/marks/` with real product
+4. Replace the placeholder SVG marks in `public/marks/` with real product
    photography (keep the same filenames or update `products.json`).
-4. Update real stock counts in `products.json` and push — counts are baked
+5. Update real stock counts in `products.json` and push — counts are baked
    at build time, which is fine at drop scale; move them behind a tiny API
    when it isn't.
-5. **When card checkout is wanted:** deploy the checkout function
+6. **When card checkout is wanted:** deploy the checkout function
    (`functions/checkout.example.mjs`) with `STRIPE_SECRET_KEY` and
    `SITE_URL`, set `checkout.endpoint` in `site.json`, and hook the Stripe
    webhook to decrement stock and send `emails/order-confirmation.md`, then
    `emails/dispatch.md` on shipping. Until then the reserve flow takes
    orders by email.
-6. Alternative host: `render.yaml` still works (Render → **New +** →
+7. Alternative host: `render.yaml` still works (Render → **New +** →
    **Blueprint**) and rewrites `/` to `/gate` for a pre-launch posture.
 
 ## Emails
