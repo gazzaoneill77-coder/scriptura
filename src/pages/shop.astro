@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import data from '../data/products.json';
+
+// REFINED is the hero piece — featured first, then story order.
+const products = [...data.products].sort((a, b) =>
+  (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || a.order - b.order
+);
+const gbp = (pence) => `£${(pence / 100).toFixed(2).replace(/\.00$/, '')}`;
+const soldOut = (p) => Object.values(p.stock).every((n) => n <= 0);
+---
+<Base title={`DROP ${data.drop.number} — ${data.drop.name}`}>
+  <section class="band center" style="border-top:none">
+    <div class="wrap">
+      <p class="kicker">DROP {data.drop.number}</p>
+      <h2>{data.drop.name}</h2>
+      <p class="lead">{data.drop.tagline}<br />When they're gone, they're gone. No restocks. No exceptions.</p>
+
+      <div class="grid">
+        {products.map((p) => (
+          <a class="card" href={`/products/${p.slug}`}>
+            <div class="frame">
+              <img src={p.mark} alt={p.name} loading="lazy" />
+              {p.featured && !soldOut(p) && <span class="tag">SMALLEST RUN</span>}
+              {soldOut(p) && <span class="gone-strip">GONE.</span>}
+            </div>
+            <div class="meta">
+              <h3>{p.name}</h3>
+              <span class="price">{gbp(p.price)}</span>
+            </div>
+            <p class="verse">{p.scripture}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

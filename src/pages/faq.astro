@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+
+const faqs = [
+  {
+    q: 'How limited is limited?',
+    a: "Each design in TESTAMENT is a single small run. When a size sells out, it's gone. We don't restock drops — the next drop is a new story."
+  },
+  {
+    q: 'Sizing?',
+    a: 'Oversized fit, true to modern streetwear sizing. If you want the boxy drape, take your usual size. If you want it closer, size down. Full measurements are on every product page.'
+  },
+  {
+    q: 'Shipping?',
+    a: "UK: Royal Mail Tracked 48, £3.50. Free over £60. Everything is pressed and packed by hand, so allow 2–4 working days before dispatch — you're not buying from a warehouse."
+  },
+  {
+    q: 'International?',
+    a: "Not yet. Join the Gate List and you'll know the moment that changes."
+  },
+  {
+    q: 'Returns?',
+    a: "Unworn, unwashed, within 14 days — full refund, no interrogation. Because the runs are limited we can't guarantee an exchange in your size, so refund-and-reorder is usually fastest. Email us and we'll sort it."
+  },
+  {
+    q: 'How do I care for it?',
+    a: "Wash inside out, cold. Dry low or hang. Don't iron the print. Treat it right and the print outlasts the trend cycle — that's the point."
+  },
+  {
+    q: "Who's behind this?",
+    a: 'One person. One press. Read THE ROAD.',
+    link: { href: '/the-road', label: 'THE ROAD' }
+  }
+];
+---
+<Base title="QUESTIONS.">
+  <article class="prose">
+    <h1>QUESTIONS.</h1>
+    {faqs.map((f) => (
+      <div class="faq-item">
+        <h3>{f.q}</h3>
+        <p>
+          {f.link
+            ? <>One person. One press. Read <a href={f.link.href} style="text-decoration:underline">{f.link.label}</a>.</>
+            : f.a}
+        </p>
+      </div>
+    ))}
+  </article>
+</Base>

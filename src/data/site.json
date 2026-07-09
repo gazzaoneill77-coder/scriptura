@@ -1,0 +1,21 @@
+{
+  "brand": "NARROW.",
+  "tagline": "Few find it.",
+  "announcement": "DROP 001: TESTAMENT — LIMITED NUMBERS — FREE UK SHIPPING OVER £60",
+  "instagram": "narrow.",
+  "shipping": {
+    "ukService": "Royal Mail Tracked 48",
+    "ukPrice": 350,
+    "freeOver": 6000,
+    "dispatchDays": "2–4 working days"
+  },
+  "returnsDays": 14,
+  "gateList": {
+    "formAction": "",
+    "emailFieldName": "email"
+  },
+  "checkout": {
+    "endpoint": ""
+  },
+  "lowStockThreshold": 5
+}
