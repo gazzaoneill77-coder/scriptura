@@ -11,11 +11,12 @@
   },
   "returnsDays": 14,
   "gateList": {
-    "formAction": "",
+    "formAction": "https://formsubmit.co/ajax/gazza.oneill77@gmail.com",
     "emailFieldName": "email"
   },
   "checkout": {
-    "endpoint": ""
+    "endpoint": "",
+    "reserveEndpoint": "https://formsubmit.co/ajax/gazza.oneill77@gmail.com"
   },
   "lowStockThreshold": 5
 }

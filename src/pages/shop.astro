@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import data from '../data/products.json';
+import { href } from '../lib/url.js';
 
 // REFINED is the hero piece — featured first, then story order.
 const products = [...data.products].sort((a, b) =>
@@ -18,9 +19,9 @@ const soldOut = (p) => Object.values(p.stock).every((n) => n <= 0);
 
       <div class="grid">
         {products.map((p) => (
-          <a class="card" href={`/products/${p.slug}`}>
+          <a class="card reveal tilt" href={href(`/products/${p.slug}`)}>
             <div class="frame">
-              <img src={p.mark} alt={p.name} loading="lazy" />
+              <img src={href(p.mark)} alt={p.name} loading="lazy" />
               {p.featured && !soldOut(p) && <span class="tag">SMALLEST RUN</span>}
               {soldOut(p) && <span class="gone-strip">GONE.</span>}
             </div>

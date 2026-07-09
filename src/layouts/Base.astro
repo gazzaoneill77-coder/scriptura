@@ -1,11 +1,12 @@
 ---
 import site from '../data/site.json';
 import GateList from '../components/GateList.astro';
+import { href } from '../lib/url.js';
 import '../styles/global.css';
 
 const { title, description = 'NARROW. Heavyweight streetwear for the hard road. Few find it.', bare = false } = Astro.props;
 const path = Astro.url.pathname;
-const current = (href) => (path === href || path === `${href}/` ? 'page' : undefined);
+const current = (h) => (path === h || path === `${h}/` ? 'page' : undefined);
 ---
 <html lang="en-GB">
   <head>
@@ -24,12 +25,12 @@ const current = (href) => (path === href || path === `${href}/` ? 'page' : undef
         <div class="announce">{site.announcement}</div>
         <header class="site">
           <div class="bar">
-            <a class="logo" href="/">NARROW.</a>
+            <a class="logo" href={href('/')}>NARROW.</a>
             <nav class="main">
-              <a href="/shop" aria-current={current('/shop')}>THE DROP</a>
-              <a href="/the-road" aria-current={current('/the-road')}>THE ROAD</a>
-              <a href="/faq" aria-current={current('/faq')}>QUESTIONS.</a>
-              <a href="/cart" class="cart-link" aria-current={current('/cart')}>
+              <a href={href('/shop')} aria-current={current(href('/shop'))}>THE DROP</a>
+              <a href={href('/the-road')} aria-current={current(href('/the-road'))}>THE ROAD</a>
+              <a href={href('/faq')} aria-current={current(href('/faq'))}>QUESTIONS.</a>
+              <a href={href('/cart')} class="cart-link" aria-current={current(href('/cart'))}>
                 CART
                 <span class="cart-count" data-cart-count></span>
               </a>
@@ -49,14 +50,15 @@ const current = (href) => (path === href || path === `${href}/` ? 'page' : undef
         <div class="foot-meta">
           <span>NARROW. — Few find it.</span>
           <nav>
-            <a href="/shop">THE DROP</a>
-            <a href="/the-road">THE ROAD</a>
-            <a href="/faq">QUESTIONS.</a>
+            <a href={href('/shop')}>THE DROP</a>
+            <a href={href('/the-road')}>THE ROAD</a>
+            <a href={href('/faq')}>QUESTIONS.</a>
           </nav>
         </div>
       </footer>
     )}
 
     <script src="../scripts/cart.js"></script>
+    <script src="../scripts/fx.js"></script>
   </body>
 </html>

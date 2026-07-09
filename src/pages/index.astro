@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import data from '../data/products.json';
+import { href } from '../lib/url.js';
 
 const story = [...data.products].sort((a, b) => a.order - b.order);
 const storyLabels = {
@@ -10,22 +11,34 @@ const storyLabels = {
   judah: ['VICTORY.', 'Judah.'],
   'alpha-omega': ['ETERNITY.', 'Alpha/Omega.']
 };
+
+// Cube faces: front is the wordmark, the other five carry the piece marks.
+const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
 ---
 <Base>
   <section class="hero">
+    <div class="cube-stage" aria-hidden="true">
+      <div class="cube">
+        {faces.map((face, i) => (
+          <div class={`face ${face}`}>
+            {i === 0 ? <span class="face-word">N.</span> : <img src={href(story[i - 1].mark)} alt="" loading="eager" />}
+          </div>
+        ))}
+      </div>
+    </div>
     <h1>NARROW.</h1>
     <p class="scripture">“Narrow is the gate, and few find it.”</p>
     <p class="sub">Heavyweight streetwear for the hard road.</p>
-    <a class="btn" href="/shop">ENTER</a>
+    <a class="btn" href={href('/shop')}>ENTER</a>
   </section>
 
   <section class="band center">
-    <div class="wrap">
+    <div class="wrap reveal">
       <p class="kicker">DROP {data.drop.number}</p>
       <h2>{data.drop.name}</h2>
       <p class="lead">{data.drop.tagline}<br />When they're gone, they're gone. No restocks. No exceptions.</p>
       <div class="cta-row">
-        <a class="btn solid" href="/shop">SHOP THE DROP</a>
+        <a class="btn solid" href={href('/shop')}>SHOP THE DROP</a>
         <a class="btn ghost" href="#gate">GET NOTIFIED</a>
       </div>
     </div>
@@ -33,11 +46,11 @@ const storyLabels = {
 
   <section class="band center">
     <div class="wrap">
-      <p class="kicker">ONE STORY. FIVE PIECES.</p>
+      <p class="kicker reveal">ONE STORY. FIVE PIECES.</p>
       <div class="story-strip">
         {story.map((p) => (
-          <a class="story-cell" href={`/products/${p.slug}`}>
-            <img src={p.mark} alt={p.name} loading="lazy" />
+          <a class="story-cell reveal tilt" href={href(`/products/${p.slug}`)}>
+            <img src={href(p.mark)} alt={p.name} loading="lazy" />
             <div class="label">
               <strong>{storyLabels[p.slug][0]}</strong>
               <span>{storyLabels[p.slug][1]}</span>
@@ -45,12 +58,12 @@ const storyLabels = {
           </a>
         ))}
       </div>
-      <p class="story-foot">Wear the whole walk. Or start where you are.</p>
+      <p class="story-foot reveal">Wear the whole walk. Or start where you are.</p>
     </div>
   </section>
 
   <section class="band center craft" id="gate">
-    <div class="wrap">
+    <div class="wrap reveal">
       <p class="kicker">THE PRESS</p>
       <p>Printed by hand. Pressed one at a time. Heavyweight cotton that holds its shape after the fiftieth wash. We don't do fast fashion. We do few.</p>
     </div>

@@ -6,7 +6,7 @@ import site from '../data/site.json';
   method="post"
   action={site.gateList.formAction || undefined}
   data-gate-form
-  data-configured={site.gateList.formAction ? 'true' : 'false'}
+  data-endpoint={site.gateList.formAction}
 >
   <input
     type="email"
@@ -21,20 +21,46 @@ import site from '../data/site.json';
 <p class="gate-msg" data-gate-msg></p>
 
 <script>
-  // Until a list provider is wired up (site.json → gateList.formAction),
-  // submissions are held in localStorage so early signups aren't lost.
+  // Signups post to the form relay in site.json → gateList.formAction
+  // (FormSubmit AJAX — key-free; the first submission emails the owner an
+  // activation link). If the network call fails, the address is held in
+  // localStorage so no early signup is ever lost.
   document.querySelectorAll('[data-gate-form]').forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      const msg = form.parentElement.querySelector('[data-gate-msg]');
-      if (form.dataset.configured === 'true') return; // real provider handles it
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = form.querySelector('input[type="email"]').value.trim();
+      const msg = form.parentElement.querySelector('[data-gate-msg]');
+      const input = form.querySelector('input[type="email"]');
+      const email = input.value.trim();
       if (!email) return;
-      const held = JSON.parse(localStorage.getItem('narrow.gatelist') || '[]');
-      if (!held.includes(email)) held.push(email);
-      localStorage.setItem('narrow.gatelist', JSON.stringify(held));
-      form.querySelector('input').value = '';
-      if (msg) msg.textContent = 'You found it. You’re on the list.';
+
+      const done = () => {
+        input.value = '';
+        if (msg) msg.textContent = 'You found it. You’re on the list.';
+      };
+      const hold = () => {
+        const held = JSON.parse(localStorage.getItem('narrow.gatelist') || '[]');
+        if (!held.includes(email)) held.push(email);
+        localStorage.setItem('narrow.gatelist', JSON.stringify(held));
+        done();
+      };
+
+      const endpoint = form.dataset.endpoint;
+      if (!endpoint) return hold();
+
+      form.querySelector('button').disabled = true;
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ _subject: 'NARROW. — Gate List signup', email })
+        });
+        if (!res.ok) throw new Error('relay error');
+        done();
+      } catch {
+        hold();
+      } finally {
+        form.querySelector('button').disabled = false;
+      }
     });
   });
 </script>

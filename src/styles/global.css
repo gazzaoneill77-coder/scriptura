@@ -402,3 +402,109 @@ footer.site .lead { color: var(--dim); margin-top: 16px; }
   .pdp { grid-template-columns: 1fr; gap: 40px; padding: 48px 0; }
   nav.main { gap: 16px; }
 }
+
+/* ---------- reserve flow (key-free checkout) ---------- */
+.reserve-form { margin-top: 24px; }
+.reserve-form p { font-size: 13px; color: var(--dim); margin-bottom: 16px; }
+.reserve-form input {
+  background: var(--coal);
+  border: 1px solid var(--line);
+  color: var(--bone);
+  padding: 14px 18px;
+  font: inherit;
+  font-size: 14px;
+  width: 100%;
+  max-width: 340px;
+  margin-bottom: 12px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.reserve-form input:focus { outline: none; border-color: var(--bone); }
+.reserve-form input::placeholder { color: var(--dim); }
+
+/* ---------- 3D: hero mark cube ---------- */
+.cube-stage {
+  perspective: 900px;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 64px;
+}
+.cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cube-turn 26s linear infinite;
+}
+.cube .face {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 14, 14, 0.88);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  backface-visibility: visible;
+}
+.cube .face img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+.cube .face-word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 56px;
+  letter-spacing: 0.1em;
+  color: var(--bone);
+}
+.cube .front  { transform: translateZ(75px); }
+.cube .back   { transform: rotateY(180deg) translateZ(75px); }
+.cube .right  { transform: rotateY(90deg) translateZ(75px); }
+.cube .left   { transform: rotateY(-90deg) translateZ(75px); }
+.cube .top    { transform: rotateX(90deg) translateZ(75px); }
+.cube .bottom { transform: rotateX(-90deg) translateZ(75px); }
+
+@keyframes cube-turn {
+  from { transform: rotateX(-14deg) rotateY(0deg); }
+  to   { transform: rotateX(-14deg) rotateY(360deg); }
+}
+
+/* ---------- 3D: pointer tilt ---------- */
+.tilt {
+  transform: perspective(700px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
+}
+.tilt:hover { z-index: 2; }
+
+/* ---------- 3D: scroll reveals ---------- */
+.reveal {
+  opacity: 0;
+  transform: perspective(800px) rotateX(10deg) translateY(28px);
+  transform-origin: 50% 100%;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in { opacity: 1; transform: perspective(800px) rotateX(0deg) translateY(0); }
+
+/* Reveal + tilt share `transform`; once revealed, tilt vars take over. */
+.reveal.tilt.in {
+  transform: perspective(700px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.18s ease-out, opacity 0.7s ease;
+}
+
+/* ---------- 3D: product page mark ---------- */
+.pdp-float { perspective: 900px; }
+.pdp-float img { animation: pdp-sway 9s ease-in-out infinite; transform-style: preserve-3d; }
+
+@keyframes pdp-sway {
+  0%, 100% { transform: rotateY(-7deg) rotateX(2deg); }
+  50%      { transform: rotateY(7deg) rotateX(-2deg); }
+}
+
+/* ---------- motion off ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cube { animation: none; transform: rotateX(-14deg) rotateY(-30deg); }
+  .pdp-float img { animation: none; }
+  .tilt, .reveal, .reveal.tilt.in { transform: none; transition: none; opacity: 1; }
+}
