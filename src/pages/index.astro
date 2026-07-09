@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import data from '../data/products.json';
+
+const story = [...data.products].sort((a, b) => a.order - b.order);
+const storyLabels = {
+  valley: ['TRIAL.', 'Valley.'],
+  armour: ['PROTECTION.', 'Armour.'],
+  refined: ['REFINEMENT.', 'Refined.'],
+  judah: ['VICTORY.', 'Judah.'],
+  'alpha-omega': ['ETERNITY.', 'Alpha/Omega.']
+};
+---
+<Base>
+  <section class="hero">
+    <h1>NARROW.</h1>
+    <p class="scripture">“Narrow is the gate, and few find it.”</p>
+    <p class="sub">Heavyweight streetwear for the hard road.</p>
+    <a class="btn" href="/shop">ENTER</a>
+  </section>
+
+  <section class="band center">
+    <div class="wrap">
+      <p class="kicker">DROP {data.drop.number}</p>
+      <h2>{data.drop.name}</h2>
+      <p class="lead">{data.drop.tagline}<br />When they're gone, they're gone. No restocks. No exceptions.</p>
+      <div class="cta-row">
+        <a class="btn solid" href="/shop">SHOP THE DROP</a>
+        <a class="btn ghost" href="#gate">GET NOTIFIED</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band center">
+    <div class="wrap">
+      <p class="kicker">ONE STORY. FIVE PIECES.</p>
+      <div class="story-strip">
+        {story.map((p) => (
+          <a class="story-cell" href={`/products/${p.slug}`}>
+            <img src={p.mark} alt={p.name} loading="lazy" />
+            <div class="label">
+              <strong>{storyLabels[p.slug][0]}</strong>
+              <span>{storyLabels[p.slug][1]}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <p class="story-foot">Wear the whole walk. Or start where you are.</p>
+    </div>
+  </section>
+
+  <section class="band center craft" id="gate">
+    <div class="wrap">
+      <p class="kicker">THE PRESS</p>
+      <p>Printed by hand. Pressed one at a time. Heavyweight cotton that holds its shape after the fiftieth wash. We don't do fast fashion. We do few.</p>
+    </div>
+  </section>
+</Base>

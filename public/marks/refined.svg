@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="REFINED — molten gold pouring from the crucible">
+  <rect width="800" height="1000" fill="#0b0b0b"/>
+  <g>
+    <path d="M300 300 L500 300 L540 420 L260 420 Z" fill="none" stroke="#e8e4da" stroke-width="3"/>
+    <path d="M380 420 L395 640 Q400 680 405 640 L420 420 Z" fill="#c9962e"/>
+    <ellipse cx="400" cy="700" rx="120" ry="26" fill="#c9962e"/>
+    <path d="M320 300 Q300 220 360 180 Q330 250 380 300 Z" fill="#c96a2e"/>
+    <path d="M430 300 Q450 190 520 160 Q470 240 480 300 Z" fill="#c9962e"/>
+    <path d="M380 300 Q400 200 420 300 Z" fill="#e8e4da"/>
+  </g>
+  <text x="400" y="120" text-anchor="middle" fill="#c9962e" font-family="Georgia, serif" font-size="64" letter-spacing="12">REFINED</text>
+  <text x="400" y="860" text-anchor="middle" fill="#e8e4da" font-family="Georgia, serif" font-size="24" letter-spacing="4">THROUGH THE FIRE. OUT AS GOLD.</text>
+  <text x="400" y="945" text-anchor="middle" fill="#8a867c" font-family="Georgia, serif" font-size="20" letter-spacing="6">ZECHARIAH 13:9</text>
+</svg>
