@@ -27,10 +27,43 @@ npm run preview  # serve the built site
 | `/` | Homepage: hero, drop banner, story strip, craft block. |
 | `/shop` | The drop grid. REFINED (hero piece, smallest run) featured first. |
 | `/products/<slug>` | Product pages for all five pieces. |
+| `/arcade` | NARROW. ARCADE — six original browser games (see below). |
 | `/the-road` | Manifesto. |
 | `/faq` | QUESTIONS. |
 | `/cart` | Client-side cart. |
 | `/404` | Wide is the road. |
+| `/sitemap.xml`, `/robots.txt`, `/llms.txt` | Build-time discoverability endpoints (search engines + LLMs). |
+
+## NARROW. ARCADE
+
+`/arcade` is a wall of six TV cabinets, each running a live attract-mode
+preview of an original canvas game (Rally, Siege, Serpent, Starfall,
+Roadrunner, Gatecrash). Launching a cabinet opens a full-screen CRT overlay:
+instructions gate first, then play, with channel-surfing between games,
+share deep-links (`/arcade#play=snake`), synth sound (mutable, persisted),
+and fullscreen. Pure vanilla canvas — zero dependencies.
+
+Code layout under `src/scripts/arcade/`:
+
+- `catalog.js` — pure metadata (id, title, goal, controls, accent). The ONLY
+  file both the build (SEO markup, llms.txt) and the client import, so copy
+  can never drift between the two.
+- `games.js` — the six game factories. Each implements
+  `reset/step/render/score` over a fixed 480×320 virtual field and a `demo`
+  flag for self-play.
+- `engine.js` — canvas fitting (DPR, letterbox), 120 Hz fixed-step host,
+  input snapshot, attract-mode preview runner (20 fps, paused offscreen),
+  honest localStorage stats (best score + play counts, per-device only).
+- `portal.js` — orchestration: previews, CRT overlay, channel surf, deep
+  links, share, sound toggle.
+
+**Adding game #7:** one metadata object in `catalog.js`, one factory in
+`games.js`, one id in the `CATALOG` list. Nothing else changes — the wall,
+sitemap, JSON-LD, and llms.txt all derive from the catalog.
+
+**No fake numbers.** Same rule as stock counters: scores and play counts
+shown are the visitor's own device-local truth. Aggregate/global stats only
+if a real backend ever provides real ones.
 
 ## Architecture
 

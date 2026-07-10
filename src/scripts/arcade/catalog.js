@@ -7,6 +7,7 @@
 export const META = {
   pong: {
     id: 'pong',
+    scoreBlip: true,
     title: 'RALLY',
     blurb: 'Endless pong. Return the ball forever against a relentless AI.',
     goal: 'Keep the ball in play. Every return you make scores a point — miss it once and the round ends.',
@@ -15,6 +16,7 @@ export const META = {
   },
   breakout: {
     id: 'breakout',
+    scoreBlip: true,
     title: 'SIEGE',
     blurb: 'Break every brick, then break more. Three lives, rising speed.',
     goal: 'Bounce the ball off your bat to smash every brick. You have three lives before the siege breaks.',
@@ -23,6 +25,7 @@ export const META = {
   },
   snake: {
     id: 'snake',
+    scoreBlip: true,
     title: 'SERPENT',
     blurb: 'The classic grid snake. Grow long, never eat yourself.',
     goal: 'Eat the red squares to grow longer. Hit a wall or your own tail and it is over.',
@@ -47,6 +50,7 @@ export const META = {
   },
   reflex: {
     id: 'reflex',
+    scoreBlip: true,
     title: 'GATECRASH',
     blurb: 'A reflex test. Hit each gate ring before it closes.',
     goal: 'Tap each ring before its timer closes. Let three slip past and you are out.',

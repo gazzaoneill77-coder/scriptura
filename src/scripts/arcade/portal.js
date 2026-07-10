@@ -9,6 +9,7 @@
 import { GameHost, Preview, readBest, readPlays, bumpPlay } from './engine.js';
 import { FACTORIES } from './games.js';
 import { CATALOG } from './catalog.js';
+import { sfx, unlockAudio, isMuted, toggleMute } from './audio.js';
 import { href } from '../../lib/url.js';
 
 const ORDER = CATALOG.map((g) => g.id);
@@ -82,12 +83,22 @@ function boot() {
   document.body.appendChild(play.el);
 
   const host = new GameHost(play.canvas, { onEject: eject });
-  host.onScore = (s) => (play.score.textContent = `SCORE ${s}`);
+  let lastScore = 0;
+  host.onScore = (s) => {
+    play.score.textContent = `SCORE ${s}`;
+    if (s > lastScore && CATALOG[current]?.scoreBlip) sfx.blip();
+    lastScore = s;
+  };
   host.onStatus = (st) => {
     play.status.dataset.state = st;
-    if (st === 'over') play.status.textContent = 'GAME OVER · TAP OR SPACE TO RETRY';
-    else if (st === 'ready') play.status.textContent = 'TAP OR PRESS ANY KEY TO START';
-    else play.status.textContent = '';
+    if (st === 'over') {
+      play.status.textContent = 'GAME OVER · TAP OR SPACE TO RETRY';
+      sfx.over();
+    } else if (st === 'ready') {
+      play.status.textContent = 'TAP OR PRESS ANY KEY TO START';
+    } else {
+      play.status.textContent = '';
+    }
   };
 
   let current = -1;
@@ -108,7 +119,14 @@ function boot() {
     if (play.info.hidden) return;
     play.info.hidden = true;
     host.paused = false;
-    bumpPlay(ORDER[current]); // count the play only when it actually starts
+    unlockAudio(); // begin() always runs inside a user gesture
+    sfx.start();
+    if (!play._counted) {
+      // once per load — reopening ? HOW mid-game must not inflate the count
+      play._counted = true;
+      lastScore = 0;
+      bumpPlay(ORDER[current]);
+    }
     // drop any input buffered while the panel was up
     host.input.keys.clear();
     host.input.pressed.clear();
@@ -131,6 +149,7 @@ function boot() {
     play.ch.textContent = `CH ${String(current + 1).padStart(2, '0')} / ${ORDER.length}`;
     play.status.dataset.state = 'ready';
     play.status.textContent = '';
+    play._counted = false;
     // shareable / bookmarkable deep link, no reload
     try {
       history.replaceState(null, '', `#play=${meta.id}`);
@@ -141,6 +160,8 @@ function boot() {
   }
 
   function launch(id) {
+    unlockAudio(); // launch is always a user gesture
+    sfx.click();
     document.body.classList.add('playing');
     play.el.hidden = false;
     pausePreviews();
@@ -151,6 +172,7 @@ function boot() {
 
   function surf(dir) {
     if (!playing()) return;
+    sfx.click();
     host.stop();
     loadIndex(current + dir);
     host.start();
@@ -193,6 +215,11 @@ function boot() {
   play.next.addEventListener('click', () => surf(1));
   play.full.addEventListener('click', () => toggleFullscreen(play.crt));
   play.share.addEventListener('click', share);
+  play.mute.textContent = isMuted() ? '🔇 SOUND' : '🔊 SOUND';
+  play.mute.addEventListener('click', () => {
+    play.mute.textContent = toggleMute() ? '🔇 SOUND' : '🔊 SOUND';
+    sfx.click(); // audible confirmation when unmuting, no-op when muting
+  });
   play.playBtn.addEventListener('click', begin);
   play.infoBtn.addEventListener('click', () => (play.info.hidden ? showInfo() : begin()));
   // First tap / keypress on the screen also begins. The info panel covers the
@@ -253,6 +280,9 @@ function buildOverlay() {
   const el = document.createElement('div');
   el.className = 'play';
   el.hidden = true;
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-modal', 'true');
+  el.setAttribute('aria-label', 'Game player');
   el.innerHTML = `
     <div class="crt" data-crt tabindex="-1">
       <canvas class="crt-canvas" tabindex="0" aria-label="Game screen"></canvas>
@@ -280,6 +310,7 @@ function buildOverlay() {
       </div>
       <button class="pb" data-info-btn aria-label="How to play">? HOW</button>
       <button class="pb" data-share aria-label="Share this game">↗ SHARE</button>
+      <button class="pb" data-mute aria-label="Toggle sound">🔊 SOUND</button>
       <button class="pb" data-full aria-label="Toggle fullscreen">⛶ FULL</button>
       <a class="pb pb-funnel" href="${href('/shop')}">THE DROP →</a>
     </div>`;
@@ -303,7 +334,8 @@ function buildOverlay() {
     prev: el.querySelector('[data-prev]'),
     next: el.querySelector('[data-next]'),
     full: el.querySelector('[data-full]'),
-    share: el.querySelector('[data-share]')
+    share: el.querySelector('[data-share]'),
+    mute: el.querySelector('[data-mute]')
   };
 }
 
