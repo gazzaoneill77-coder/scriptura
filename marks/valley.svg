@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="VALLEY — a single beam of light breaking the dark">
+  <rect width="800" height="1000" fill="#0b0b0b"/>
+  <defs>
+    <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8e4da" stop-opacity="0.9"/>
+      <stop offset="0.7" stop-color="#e8e4da" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#e8e4da" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <polygon points="385,0 415,0 560,1000 240,1000" fill="url(#beam)"/>
+  <path d="M0 780 L210 560 L340 700 L470 520 L620 720 L800 540 L800 1000 L0 1000 Z" fill="#050505"/>
+  <text x="400" y="120" text-anchor="middle" fill="#e8e4da" font-family="Georgia, 'Times New Roman', serif" font-size="64" letter-spacing="10">VALLEY</text>
+  <text x="400" y="945" text-anchor="middle" fill="#8a867c" font-family="Georgia, serif" font-size="22" letter-spacing="6">PSALM 23:4</text>
+</svg>

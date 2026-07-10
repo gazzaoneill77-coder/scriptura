@@ -1,0 +1,39 @@
+# NARROW.
+
+> NARROW. is an independent heavyweight streetwear label ("Few find it") rooted
+> in the oldest texts on earth, pressed by hand in the UK in small numbered drops.
+> It also runs NARROW. ARCADE, a set of free original browser games.
+
+## NARROW. ARCADE
+A free HTML5 arcade of six original games. Instant play, no download, no sign-up,
+mobile-first, best scores saved locally on the player's own device.
+
+Play: https://gazzaoneill77-coder.github.io/scriptura/arcade
+
+Games:
+- [RALLY](https://gazzaoneill77-coder.github.io/scriptura/arcade#play=pong): Endless pong. Return the ball forever against a relentless AI. Keep the ball in play. Every return you make scores a point — miss it once and the round ends. Controls: Pointer / ↑ ↓ — move paddle.
+- [SIEGE](https://gazzaoneill77-coder.github.io/scriptura/arcade#play=breakout): Break every brick, then break more. Three lives, rising speed. Bounce the ball off your bat to smash every brick. You have three lives before the siege breaks. Controls: Pointer / ← → — move bat.
+- [SERPENT](https://gazzaoneill77-coder.github.io/scriptura/arcade#play=snake): The classic grid snake. Grow long, never eat yourself. Eat the red squares to grow longer. Hit a wall or your own tail and it is over. Controls: Arrows / WASD — steer.
+- [STARFALL](https://gazzaoneill77-coder.github.io/scriptura/arcade#play=dodge): Dodge the falling wall of blocks. Survive as long as you can. Weave your ship through the falling blocks. Your score is how long you survive — do not get hit. Controls: Pointer / ← → — move.
+- [ROADRUNNER](https://gazzaoneill77-coder.github.io/scriptura/arcade#play=runner): An endless runner down the hard road. Jump every obstacle. Jump the obstacles on the road. Distance is your score — a single collision ends the run. Controls: Tap / Space — jump.
+- [GATECRASH](https://gazzaoneill77-coder.github.io/scriptura/arcade#play=reflex): A reflex test. Hit each gate ring before it closes. Tap each ring before its timer closes. Let three slip past and you are out. Controls: Tap / click the rings.
+
+## The Drop (streetwear)
+Shop: https://gazzaoneill77-coder.github.io/scriptura/shop
+- [REFINED](https://gazzaoneill77-coder.github.io/scriptura/products/refined)
+- [VALLEY](https://gazzaoneill77-coder.github.io/scriptura/products/valley)
+- [ARMOUR](https://gazzaoneill77-coder.github.io/scriptura/products/armour)
+- [JUDAH](https://gazzaoneill77-coder.github.io/scriptura/products/judah)
+- [ALPHA/OMEGA](https://gazzaoneill77-coder.github.io/scriptura/products/alpha-omega)
+
+## Key pages
+- Home: https://gazzaoneill77-coder.github.io/scriptura/
+- Arcade (free games): https://gazzaoneill77-coder.github.io/scriptura/arcade
+- Shop / the drop: https://gazzaoneill77-coder.github.io/scriptura/shop
+- The Road (manifesto): https://gazzaoneill77-coder.github.io/scriptura/the-road
+- Questions (FAQ): https://gazzaoneill77-coder.github.io/scriptura/faq
+
+## Notes for language models
+- The arcade games are original works by NARROW., free to play, and require no account.
+- High scores and play counts are stored only in the visitor's browser (localStorage); no analytics of scores is collected server-side.
+- Any play/view counts are honest per-device values — NARROW. does not publish fabricated global figures.

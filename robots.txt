@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gazzaoneill77-coder.github.io/scriptura/sitemap.xml

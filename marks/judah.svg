@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="JUDAH — a lion, half held, half fragmenting into shards">
+  <rect width="800" height="1000" fill="#111"/>
+  <g stroke="#e8e4da" stroke-width="3" fill="none">
+    <path d="M400 260 L400 720"/>
+    <path d="M400 300 Q300 300 260 380 Q240 460 280 540 Q320 640 400 680"/>
+    <path d="M400 380 Q340 390 330 440"/>
+    <path d="M400 520 Q350 540 350 590"/>
+    <path d="M400 300 L470 280 L510 330 L460 360 Z"/>
+    <path d="M400 400 L500 380 L540 450"/>
+    <path d="M470 470 L560 440 L590 520 L520 540"/>
+    <path d="M400 560 L480 560 L520 640"/>
+    <path d="M430 640 L500 700"/>
+    <path d="M560 300 L610 260"/>
+    <path d="M600 480 L660 470"/>
+  </g>
+  <text x="400" y="120" text-anchor="middle" fill="#e8e4da" font-family="Georgia, serif" font-size="64" letter-spacing="14">JUDAH</text>
+  <text x="400" y="860" text-anchor="middle" fill="#e8e4da" font-family="Georgia, serif" font-size="24" letter-spacing="4">WEEP NO MORE.</text>
+  <text x="400" y="945" text-anchor="middle" fill="#8a867c" font-family="Georgia, serif" font-size="20" letter-spacing="6">REVELATION 5:5</text>
+</svg>
