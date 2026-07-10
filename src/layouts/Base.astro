@@ -4,20 +4,49 @@ import GateList from '../components/GateList.astro';
 import { href } from '../lib/url.js';
 import '../styles/global.css';
 
-const { title, description = 'NARROW. Heavyweight streetwear for the hard road. Few find it.', bare = false } = Astro.props;
+const {
+  title,
+  description = 'NARROW. Heavyweight streetwear for the hard road. Few find it.',
+  bare = false,
+  image = null,
+  type = 'website',
+  noindex = false
+} = Astro.props;
 const path = Astro.url.pathname;
 const current = (h) => (path === h || path === `${h}/` ? 'page' : undefined);
+const fullTitle = title ? `${title} — NARROW.` : 'NARROW. — Few find it.';
+// Absolute URLs for canonical + social cards, resilient to the Pages subpath.
+const origin = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(path, origin).href;
+const ogImage = image ? new URL(image, origin).href : null;
 ---
 <html lang="en-GB">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title ? `${title} — NARROW.` : 'NARROW. — Few find it.'}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#070707" />
+    <link rel="manifest" href={href('/site.webmanifest')} />
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="NARROW." />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <!-- Twitter -->
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23070707'/><text x='16' y='23' text-anchor='middle' fill='%23e8e4da' font-family='Georgia' font-size='20'>N.</text></svg>" />
+    <slot name="head" />
   </head>
   <body>
     {!bare && (
@@ -28,6 +57,7 @@ const current = (h) => (path === h || path === `${h}/` ? 'page' : undefined);
             <a class="logo" href={href('/')}>NARROW.</a>
             <nav class="main">
               <a href={href('/shop')} aria-current={current(href('/shop'))}>THE DROP</a>
+              <a href={href('/arcade')} aria-current={current(href('/arcade'))}>ARCADE</a>
               <a href={href('/the-road')} aria-current={current(href('/the-road'))}>THE ROAD</a>
               <a href={href('/faq')} aria-current={current(href('/faq'))}>QUESTIONS.</a>
               <a href={href('/cart')} class="cart-link" aria-current={current(href('/cart'))}>

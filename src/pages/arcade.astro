@@ -1,0 +1,192 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/arcade.css';
+import { CATALOG } from '../scripts/arcade/catalog.js';
+import { href } from '../lib/url.js';
+
+const title = 'ARCADE';
+const description =
+  'NARROW. ARCADE — six original browser games you can play instantly, no download and no sign-up. Rally, Siege, Serpent, Starfall, Roadrunner and Gatecrash, built for the hard road.';
+
+// Absolute URLs for structured data, resilient to the GitHub Pages subpath.
+const origin = Astro.site ?? new URL(Astro.url.origin);
+const abs = (p) => new URL(p, origin).href;
+const pageUrl = abs(href('/arcade'));
+const homeUrl = abs(href('/'));
+
+const faqs = [
+  {
+    q: 'Do I need to download or install anything to play?',
+    a: 'No. Every game in NARROW. ARCADE runs instantly in your browser using HTML5 canvas. There is nothing to download, no plugin, and no account required — tap a game and play.'
+  },
+  {
+    q: 'Is NARROW. ARCADE free?',
+    a: 'Yes. All six games are free to play, on desktop and mobile, with no ads interrupting play and no paywall.'
+  },
+  {
+    q: 'Can I play on my phone?',
+    a: 'Yes. The arcade is mobile-first. Every game supports one-thumb pointer controls, and the games that use a keyboard on desktop fall back to touch on mobile.'
+  },
+  {
+    q: 'Are my high scores saved?',
+    a: 'Your best score and play counts are saved locally on your own device using localStorage. They are private to you — the site does not upload them anywhere.'
+  },
+  {
+    q: 'What games are included?',
+    a:
+      'Six original games: ' +
+      CATALOG.map((g) => `${g.title} (${g.blurb.replace(/\.$/, '')})`).join('; ') +
+      '.'
+  }
+];
+
+const games = CATALOG.map((g, i) => ({
+  '@type': 'VideoGame',
+  position: i + 1,
+  name: g.title,
+  description: `${g.blurb} ${g.goal}`,
+  url: `${pageUrl}#play=${g.id}`,
+  genre: 'Arcade',
+  gamePlatform: 'Web browser',
+  applicationCategory: 'GameApplication',
+  operatingSystem: 'Any (HTML5 / modern browser)',
+  author: { '@type': 'Organization', name: 'NARROW.' },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'GBP', availability: 'https://schema.org/InStock' }
+}));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': pageUrl,
+      url: pageUrl,
+      name: 'NARROW. ARCADE',
+      description,
+      isPartOf: { '@type': 'WebSite', name: 'NARROW.', url: homeUrl },
+      mainEntity: {
+        '@type': 'ItemList',
+        name: 'NARROW. ARCADE games',
+        numberOfItems: games.length,
+        itemListElement: games.map((game, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: game
+        }))
+      }
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: homeUrl },
+        { '@type': 'ListItem', position: 2, name: 'Arcade', item: pageUrl }
+      ]
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a }
+      }))
+    }
+  ]
+};
+---
+
+<Base title={title} description={description} type="website">
+  <Fragment slot="head">
+    <meta name="keywords" content="free online games, browser games, HTML5 arcade, play pong, play snake, play breakout, no download games, mobile games, instant play" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+
+  <div class="arcade">
+    <header class="arc-hero">
+      <p class="arc-kicker">NARROW. ARCADE</p>
+      <h1>PLAY THE NARROW ROAD</h1>
+      <p>
+        Six original browser games. Instant play, no downloads, no sign-up. Every screen on the
+        wall is a live game playing itself — pick one, take the controls, and see how far you get.
+      </p>
+      <div class="stat-row">
+        <span><b>6</b> GAMES</span>
+        <span><b>0s</b> INSTALL</span>
+        <span><b>∞</b> REPLAYS</span>
+        <span><b>FREE</b> FOREVER</span>
+      </div>
+    </header>
+
+    <section class="wall" aria-label="Game wall">
+      <ul class="cabinets" data-wall>
+        {
+          CATALOG.map((g, i) => (
+            <li class="cabinet" data-game={g.id} style={`--accent:${g.accent}`}>
+              <button class="cab-launch" type="button" aria-label={`Play ${g.title} — ${g.blurb}`}>
+                <div class="screen" data-screen>
+                  <span class="live-dot" aria-hidden="true"><i /># {String(i + 1).padStart(2, '0')}</span>
+                  <span class="top-badge" data-top hidden>★ YOUR TOP</span>
+                </div>
+                <div class="cab-meta">
+                  <h3>{g.title}</h3>
+                  <p>{g.goal}</p>
+                  <span class="controls">{g.controls}</span>
+                  <div class="cab-stats">
+                    <span data-best>NOT YET PLAYED</span>
+                    <span data-plays />
+                  </div>
+                </div>
+                <div class="cab-cta">▶ PRESS {i + 1} OR TAP TO PLAY</div>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <aside class="arc-funnel">
+      <p>Enjoyed the arcade? It's built by the same hands as the clothing. <b>Back the drop.</b></p>
+      <a href={href('/shop')}>SEE THE DROP →</a>
+    </aside>
+
+    <section class="arc-prose">
+      <h2>Free browser games, built for the hard road</h2>
+      <p>
+        NARROW. ARCADE is a small collection of original arcade games that run instantly in your
+        browser — no download, no install, no account. Each game is hand-built with plain HTML5
+        canvas, so it loads fast and plays smoothly on phones, tablets and desktops alike. Tap any
+        cabinet on the wall above to launch it full-screen, or press its number key.
+      </p>
+
+      <h2>The games</h2>
+      {
+        CATALOG.map((g, i) => (
+          <>
+            <h3>{i + 1}. {g.title}</h3>
+            <p>{g.blurb} {g.goal} Controls: {g.controls}.</p>
+          </>
+        ))
+      }
+
+      <h2>How to play</h2>
+      <p>
+        Click or tap a cabinet to open it. Read the objective on the instructions panel, then press
+        <b> PLAY</b> (or tap the screen / press any key) to begin. While playing you can channel-surf
+        to the next game with the CH buttons, reopen the instructions with <b>? HOW</b>, share a game
+        with a direct link, or press <b>EXIT</b> / <b>ESC</b> to return to the wall. Your best score
+        and play counts are saved on your own device — nothing is uploaded.
+      </p>
+
+      <h2>Questions</h2>
+      {
+        faqs.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))
+      }
+    </section>
+  </div>
+
+  <script src="../scripts/arcade/portal.js"></script>
+</Base>
