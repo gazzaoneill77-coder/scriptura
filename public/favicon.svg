@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Dwellwise">
+  <rect width="32" height="32" rx="7" fill="#0d5c4f"/>
+  <path d="M16 6l8 10-8 10-8-10z" fill="#ffffff" opacity="0.95"/>
+  <path d="M16 11l4 5-4 5-4-5z" fill="#0d5c4f"/>
+</svg>

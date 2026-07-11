@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Dwellwise logo">
+  <rect width="512" height="512" rx="104" fill="#0d5c4f"/>
+  <path d="M256 96l128 160-128 160-128-160z" fill="#ffffff" opacity="0.95"/>
+  <path d="M256 176l64 80-64 80-64-80z" fill="#0d5c4f"/>
+</svg>

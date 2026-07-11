@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config';
 const base = process.env.BASE_PATH || '/';
 const site = process.env.SITE_URL
   ? `${process.env.SITE_URL}${process.env.BASE_PATH ?? ''}`
-  : 'https://narrow.example';
+  : 'https://www.dwellwise.com';
 
 export default defineConfig({
   output: 'static',

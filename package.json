@@ -1,8 +1,9 @@
 {
-  "name": "narrow-store",
+  "name": "dwellwise",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "description": "Dwellwise — a home & smart-home technology buying-advice authority site.",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

@@ -1,0 +1,14 @@
+---
+// Executive summary as scannable bullets. Sits near the top of every article so
+// a human (or an LLM) gets the whole verdict in five seconds. High-value for
+// LLMO: these lines are the most quotable part of the page.
+const { items = [] } = Astro.props;
+---
+{items.length > 0 && (
+  <aside class="takeaways" aria-label="Key takeaways">
+    <h2 class="takeaways__title">Key takeaways</h2>
+    <ul class="takeaways__list">
+      {items.map((item) => <li>{item}</li>)}
+    </ul>
+  </aside>
+)}

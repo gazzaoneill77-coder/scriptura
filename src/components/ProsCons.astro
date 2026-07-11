@@ -1,0 +1,21 @@
+---
+// Balanced pros and cons. A trust signal (we name the downsides) and a highly
+// citable, scannable structure that AI answers reproduce almost verbatim.
+const { pros = [], cons = [] } = Astro.props;
+---
+{(pros.length > 0 || cons.length > 0) && (
+  <div class="proscons">
+    <div class="proscons__col proscons__col--pro">
+      <h3 class="proscons__title">
+        <span class="proscons__icon" aria-hidden="true">✓</span> Pros
+      </h3>
+      <ul>{pros.map((p) => <li>{p}</li>)}</ul>
+    </div>
+    <div class="proscons__col proscons__col--con">
+      <h3 class="proscons__title">
+        <span class="proscons__icon" aria-hidden="true">✕</span> Cons
+      </h3>
+      <ul>{cons.map((c) => <li>{c}</li>)}</ul>
+    </div>
+  </div>
+)}

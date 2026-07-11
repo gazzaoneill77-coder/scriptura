@@ -1,25 +1,49 @@
 ---
-import site from '../data/site.json';
-import GateList from '../components/GateList.astro';
-import { href } from '../lib/url.js';
+import { site } from '../data/site.js';
+import { href, absolute } from '../lib/url.js';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
 import '../styles/global.css';
 
 const {
   title,
-  description = 'NARROW. Heavyweight streetwear for the hard road. Few find it.',
-  bare = false,
+  description = site.description,
   image = null,
   type = 'website',
-  noindex = false
+  noindex = false,
+  publishedTime,
+  modifiedTime
 } = Astro.props;
-const path = Astro.url.pathname;
-const current = (h) => (path === h || path === `${h}/` ? 'page' : undefined);
-const fullTitle = title ? `${title} — NARROW.` : 'NARROW. — Few find it.';
-// Absolute URLs for canonical + social cards, resilient to the Pages subpath.
-const origin = Astro.site ?? new URL(Astro.url.origin);
-const canonical = new URL(path, origin).href;
-const ogImage = image ? new URL(image, origin).href : null;
+
+const astroSite = Astro.site;
+const fullTitle = title ? `${title} · ${site.brand}` : `${site.brand} · ${site.tagline}`;
+const canonical = absolute(Astro.url.pathname, astroSite);
+const ogImage = absolute(image || href('/og-default.svg'), astroSite);
+
+// Site-wide entity graph: who publishes this site, and what the site is. Gives
+// search engines and LLMs a stable identity to attribute recommendations to.
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': absolute(href('/'), astroSite) + '#organization',
+  name: site.brand,
+  url: absolute(href('/'), astroSite),
+  description: site.description,
+  logo: absolute(href('/logo.svg'), astroSite),
+  sameAs: Object.values(site.social)
+};
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': absolute(href('/'), astroSite) + '#website',
+  name: site.brand,
+  url: absolute(href('/'), astroSite),
+  inLanguage: 'en-GB',
+  publisher: { '@id': absolute(href('/'), astroSite) + '#organization' }
+};
 ---
+<!doctype html>
 <html lang="en-GB">
   <head>
     <meta charset="utf-8" />
@@ -28,67 +52,42 @@ const ogImage = image ? new URL(image, origin).href : null;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <meta name="theme-color" content="#070707" />
+    <meta name="theme-color" content="#0d5c4f" />
     <link rel="manifest" href={href('/site.webmanifest')} />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+
     <!-- Open Graph -->
-    <meta property="og:site_name" content="NARROW." />
+    <meta property="og:site_name" content={site.brand} />
     <meta property="og:type" content={type} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:image" content={ogImage} />
+    {type === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {type === 'article' && modifiedTime && (
+      <meta property="article:modified_time" content={modifiedTime} />
+    )}
+
     <!-- Twitter -->
-    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={site.twitterHandle} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23070707'/><text x='16' y='23' text-anchor='middle' fill='%23e8e4da' font-family='Georgia' font-size='20'>N.</text></svg>" />
+    <meta name="twitter:image" content={ogImage} />
+
+    <JsonLd schema={orgSchema} />
+    <JsonLd schema={websiteSchema} />
     <slot name="head" />
   </head>
   <body>
-    {!bare && (
-      <>
-        <div class="announce">{site.announcement}</div>
-        <header class="site">
-          <div class="bar">
-            <a class="logo" href={href('/')}>NARROW.</a>
-            <nav class="main">
-              <a href={href('/shop')} aria-current={current(href('/shop'))}>THE DROP</a>
-              <a href={href('/arcade')} aria-current={current(href('/arcade'))}>ARCADE</a>
-              <a href={href('/the-road')} aria-current={current(href('/the-road'))}>THE ROAD</a>
-              <a href={href('/faq')} aria-current={current(href('/faq'))}>QUESTIONS.</a>
-              <a href={href('/cart')} class="cart-link" aria-current={current(href('/cart'))}>
-                CART
-                <span class="cart-count" data-cart-count></span>
-              </a>
-            </nav>
-          </div>
-        </header>
-      </>
-    )}
-
-    <slot />
-
-    {!bare && (
-      <footer class="site">
-        <h2>THE GATE LIST.</h2>
-        <p class="lead">Drops are announced here first. Numbers are limited. Position matters.</p>
-        <GateList />
-        <div class="foot-meta">
-          <span>NARROW. — Few find it.</span>
-          <nav>
-            <a href={href('/shop')}>THE DROP</a>
-            <a href={href('/the-road')}>THE ROAD</a>
-            <a href={href('/faq')}>QUESTIONS.</a>
-          </nav>
-        </div>
-      </footer>
-    )}
-
-    <script src="../scripts/cart.js"></script>
-    <script src="../scripts/fx.js"></script>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>

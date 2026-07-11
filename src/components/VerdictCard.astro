@@ -1,0 +1,45 @@
+---
+// The verdict summary box for a single-product review. Placed directly under the
+// title so a human (or an AI answer) gets the bottom line — score, price, who
+// it's for, pros/cons — before reading a word of the body.
+import Rating from './Rating.astro';
+import ProsCons from './ProsCons.astro';
+import AffiliateButton from './AffiliateButton.astro';
+
+const { product } = Astro.props;
+const specs = product.specs || {};
+const specEntries = Object.entries(specs);
+---
+<aside class="verdict" aria-label="Our verdict">
+  <div class="verdict__top">
+    <div>
+      {product.badge && <p class="verdict__badge">{product.badge}</p>}
+      <p class="verdict__label">Our verdict</p>
+      {product.bestFor && (
+        <p class="verdict__bestfor">Best for: {product.bestFor}</p>
+      )}
+    </div>
+    {typeof product.rating === 'number' && (
+      <div class="verdict__score">
+        <Rating value={product.rating} showValue={false} />
+        <span class="verdict__num">{product.rating.toFixed(1)}<small>/5</small></span>
+      </div>
+    )}
+  </div>
+
+  {product.verdict && <p class="verdict__text">{product.verdict}</p>}
+
+  <ProsCons pros={product.pros} cons={product.cons} />
+
+  {specEntries.length > 0 && (
+    <dl class="verdict__specs">
+      {specEntries.map(([k, v]) => (
+        <div class="verdict__spec"><dt>{k}</dt><dd>{v}</dd></div>
+      ))}
+    </dl>
+  )}
+
+  <div class="verdict__cta">
+    <AffiliateButton url={product.url} price={product.price} />
+  </div>
+</aside>

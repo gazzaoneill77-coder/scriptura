@@ -1,0 +1,15 @@
+---
+// Card linking to a category hub (pillar page). Used on the homepage and
+// wherever we surface the topic clusters.
+import { href } from '../lib/url.js';
+
+const { category, count } = Astro.props;
+---
+<a class="ccard" href={href(`/${category.slug}`)}>
+  <span class="ccard__emoji" aria-hidden="true">{category.emoji}</span>
+  <span class="ccard__name">{category.name}</span>
+  <span class="ccard__tagline">{category.tagline}</span>
+  {typeof count === 'number' && count > 0 && (
+    <span class="ccard__count">{count} {count === 1 ? 'article' : 'articles'}</span>
+  )}
+</a>

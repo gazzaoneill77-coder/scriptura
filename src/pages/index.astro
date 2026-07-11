@@ -1,71 +1,81 @@
 ---
 import Base from '../layouts/Base.astro';
-import data from '../data/products.json';
+import CategoryCard from '../components/CategoryCard.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { site } from '../data/site.js';
+import { categories } from '../data/categories.js';
+import { articles, getArticlesByCategory } from '../lib/content.js';
 import { href } from '../lib/url.js';
 
-const story = [...data.products].sort((a, b) => a.order - b.order);
-const storyLabels = {
-  valley: ['TRIAL.', 'Valley.'],
-  armour: ['PROTECTION.', 'Armour.'],
-  refined: ['REFINEMENT.', 'Refined.'],
-  judah: ['VICTORY.', 'Judah.'],
-  'alpha-omega': ['ETERNITY.', 'Alpha/Omega.']
-};
-
-// Cube faces: front is the wordmark, the other five carry the piece marks.
-const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+const featured = articles.slice(0, 6);
+const counts = Object.fromEntries(
+  categories.map((c) => [c.slug, getArticlesByCategory(c.slug).length])
+);
 ---
-<Base>
+<Base description={site.description}>
   <section class="hero">
-    <div class="cube-stage" aria-hidden="true">
-      <div class="cube">
-        {faces.map((face, i) => (
-          <div class={`face ${face}`}>
-            {i === 0 ? <span class="face-word">N.</span> : <img src={href(story[i - 1].mark)} alt="" loading="eager" />}
-          </div>
-        ))}
-      </div>
-    </div>
-    <h1>NARROW.</h1>
-    <p class="scripture">“Narrow is the gate, and few find it.”</p>
-    <p class="sub">Heavyweight streetwear for the hard road.</p>
-    <a class="btn" href={href('/shop')}>ENTER</a>
-  </section>
-
-  <section class="band center">
-    <div class="wrap reveal">
-      <p class="kicker">DROP {data.drop.number}</p>
-      <h2>{data.drop.name}</h2>
-      <p class="lead">{data.drop.tagline}<br />When they're gone, they're gone. No restocks. No exceptions.</p>
-      <div class="cta-row">
-        <a class="btn solid" href={href('/shop')}>SHOP THE DROP</a>
-        <a class="btn ghost" href="#gate">GET NOTIFIED</a>
+    <div class="container hero__inner">
+      <p class="hero__eyebrow">Independent home &amp; smart-home reviews</p>
+      <h1 class="hero__title">Smarter decisions for a better home.</h1>
+      <p class="hero__lead">
+        {site.brand} tests the technology that runs your home — robot vacuums,
+        security cameras, mesh WiFi and more — and tells you plainly which is
+        worth your money, and which to skip.
+      </p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href={href('/reviews')}>Browse reviews</a>
+        <a class="btn btn--ghost" href={href('/how-we-test')}>How we test</a>
       </div>
     </div>
   </section>
 
-  <section class="band center">
-    <div class="wrap">
-      <p class="kicker reveal">ONE STORY. FIVE PIECES.</p>
-      <div class="story-strip">
-        {story.map((p) => (
-          <a class="story-cell reveal tilt" href={href(`/products/${p.slug}`)}>
-            <img src={href(p.mark)} alt={p.name} loading="lazy" />
-            <div class="label">
-              <strong>{storyLabels[p.slug][0]}</strong>
-              <span>{storyLabels[p.slug][1]}</span>
-            </div>
-          </a>
-        ))}
+  <section class="trust">
+    <div class="container trust__grid">
+      <div class="trust__item">
+        <span class="trust__icon" aria-hidden="true">🔬</span>
+        <h2>Hands-on testing</h2>
+        <p>We buy and live with products in real homes — not spec sheets, not guesswork.</p>
       </div>
-      <p class="story-foot reveal">Wear the whole walk. Or start where you are.</p>
+      <div class="trust__item">
+        <span class="trust__icon" aria-hidden="true">⚖️</span>
+        <h2>Genuinely independent</h2>
+        <p>Our picks are chosen on merit. Affiliate links never change what we recommend.</p>
+      </div>
+      <div class="trust__item">
+        <span class="trust__icon" aria-hidden="true">🎯</span>
+        <h2>Straight answers</h2>
+        <p>Clear verdicts, honest pros and cons, and the right choice for your situation.</p>
+      </div>
     </div>
   </section>
 
-  <section class="band center craft" id="gate">
-    <div class="wrap reveal">
-      <p class="kicker">THE PRESS</p>
-      <p>Printed by hand. Pressed one at a time. Heavyweight cotton that holds its shape after the fiftieth wash. We don't do fast fashion. We do few.</p>
+  <section class="container home-section">
+    <div class="section-head">
+      <h2 class="section-title">Browse by category</h2>
+      <p class="section-sub">Everything we cover for the connected home.</p>
+    </div>
+    <div class="cardgrid cardgrid--cats">
+      {categories.map((c) => <CategoryCard category={c} count={counts[c.slug]} />)}
+    </div>
+  </section>
+
+  {featured.length > 0 && (
+    <section class="container home-section">
+      <div class="section-head">
+        <h2 class="section-title">Latest reviews &amp; guides</h2>
+        <p class="section-sub">Fresh, hands-on buying advice.</p>
+      </div>
+      <div class="cardgrid">
+        {featured.map((a) => <ArticleCard article={a} />)}
+      </div>
+    </section>
+  )}
+
+  <section class="cta-band">
+    <div class="container cta-band__inner">
+      <h2>New to the smart home?</h2>
+      <p>Start with our plain-English guides — no jargon, no upselling.</p>
+      <a class="btn btn--primary" href={href('/guides')}>Read the guides</a>
     </div>
   </section>
 </Base>

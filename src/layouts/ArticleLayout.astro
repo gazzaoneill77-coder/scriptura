@@ -1,0 +1,202 @@
+---
+import Base from './Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ShortAnswer from '../components/ShortAnswer.astro';
+import KeyTakeaways from '../components/KeyTakeaways.astro';
+import Faq from '../components/Faq.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import PickCard from '../components/PickCard.astro';
+import VerdictCard from '../components/VerdictCard.astro';
+import Disclosure from '../components/Disclosure.astro';
+import AuthorByline from '../components/AuthorByline.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import JsonLd from '../components/JsonLd.astro';
+
+import { site } from '../data/site.js';
+import { getCategory } from '../data/categories.js';
+import { getAuthor } from '../data/authors.js';
+import { getRelated } from '../lib/content.js';
+import { href, absolute } from '../lib/url.js';
+import { isoDate } from '../lib/format.js';
+
+const { article } = Astro.props;
+const { Content } = article;
+
+const category = getCategory(article.category);
+const author = getAuthor(article.author);
+const related = getRelated(article, 3);
+const s = Astro.site;
+
+const TYPE_LABEL = {
+  roundup: 'Buyer’s guide',
+  review: 'Review',
+  comparison: 'Comparison',
+  guide: 'Guide',
+  'how-to': 'How-to'
+};
+
+// Commercial pages (anything with affiliate links) show the disclosure.
+const isCommercial = ['roundup', 'review', 'comparison'].includes(article.type);
+
+// Auto-build an "at a glance" comparison table from the picks of a roundup,
+// unless the article supplied its own comparison. Saves the author work and
+// guarantees every roundup ships a citable table.
+const comparison =
+  article.comparison ||
+  (article.type === 'roundup' && article.picks?.length
+    ? {
+        caption: 'At a glance',
+        columns: [
+          { key: 'name', label: 'Product' },
+          { key: 'rating', label: 'Rating' },
+          { key: 'bestFor', label: 'Best for' },
+          { key: 'price', label: 'Price' }
+        ],
+        rows: article.picks.map((p, i) => ({
+          name: p.name,
+          href: p.slug ? `#${p.slug}` : undefined,
+          badge: i === 0 ? p.badge : undefined,
+          best: i === 0,
+          rating: typeof p.rating === 'number' ? `${p.rating.toFixed(1)}/5` : '—',
+          bestFor: p.bestFor || '—',
+          price: p.price || '—'
+        }))
+      }
+    : null);
+
+// ---- Structured data -------------------------------------------------------
+const canonical = absolute(Astro.url.pathname, s);
+const imageAbs = absolute(article.ogImage || href('/og-default.svg'), s);
+const authorSchema = {
+  '@type': author.type || 'Person',
+  name: author.name,
+  url: author.url ? absolute(href(author.url), s) : undefined
+};
+const publisher = {
+  '@type': 'Organization',
+  name: site.brand,
+  logo: { '@type': 'ImageObject', url: absolute(href('/logo.svg'), s) }
+};
+
+const articleSchema = {
+  '@type': article.type === 'how-to' ? 'HowTo' : 'Article',
+  headline: article.title,
+  description: article.description || article.summary,
+  datePublished: isoDate(article.publishDate),
+  dateModified: isoDate(article.updatedDate || article.publishDate),
+  author: authorSchema,
+  publisher,
+  image: imageAbs,
+  mainEntityOfPage: canonical,
+  ...(article.type === 'how-to' && article.steps
+    ? {
+        step: article.steps.map((st, i) => ({
+          '@type': 'HowToStep',
+          position: i + 1,
+          name: st.name,
+          text: st.text
+        }))
+      }
+    : {})
+};
+
+// A single-product review also emits a Product + Review node with our score.
+const product = article.product;
+const productSchema =
+  article.type === 'review' && product && typeof product.rating === 'number'
+    ? {
+        '@type': 'Product',
+        name: product.name,
+        review: {
+          '@type': 'Review',
+          reviewRating: {
+            '@type': 'Rating',
+            ratingValue: product.rating,
+            bestRating: 5
+          },
+          author: authorSchema,
+          datePublished: isoDate(article.publishDate)
+        }
+      }
+    : null;
+
+// Emit article (+ product) as one @graph in the document body. JSON-LD is valid
+// anywhere in the document, and rendering it in the body sidesteps a slot quirk
+// that dropped head-projected schema.
+const graphSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [articleSchema, ...(productSchema ? [productSchema] : [])]
+};
+
+const breadcrumbItems = [
+  { name: 'Home', href: href('/') },
+  ...(category ? [{ name: category.name, href: href(`/${category.slug}`) }] : []),
+  { name: article.title, href: Astro.url.pathname }
+];
+---
+<Base
+  title={article.title}
+  description={article.description || article.summary}
+  type="article"
+  image={article.ogImage}
+  publishedTime={isoDate(article.publishDate)}
+  modifiedTime={isoDate(article.updatedDate || article.publishDate)}
+>
+  <article class="container article">
+    <JsonLd schema={graphSchema} />
+    <Breadcrumbs items={breadcrumbItems} />
+
+    <header class="article__header">
+      <p class="article__kicker">
+        {category && <span>{category.name}</span>}
+        <span class="article__type">{TYPE_LABEL[article.type] || 'Article'}</span>
+      </p>
+      <h1 class="article__title">{article.title}</h1>
+      <AuthorByline
+        author={author}
+        publishDate={article.publishDate}
+        updatedDate={article.updatedDate}
+      />
+    </header>
+
+    {article.sample && (
+      <p class="template-note" role="note">
+        <strong>Template article.</strong> Prices, specs and scores here are
+        illustrative and must be replaced with verified, hands-on data before
+        this page is published.
+      </p>
+    )}
+
+    {isCommercial && <Disclosure />}
+
+    {article.summary && <ShortAnswer text={article.summary} />}
+    <KeyTakeaways items={article.keyTakeaways} />
+
+    {comparison && <ComparisonTable {...comparison} />}
+
+    {article.type === 'review' && product && <VerdictCard product={product} />}
+
+    {article.type === 'roundup' && article.picks?.length > 0 && (
+      <section class="picks" aria-label="Our picks">
+        {article.picks.map((pick, i) => (
+          <PickCard pick={pick} rank={i + 1} />
+        ))}
+      </section>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <Faq faqs={article.faqs} />
+
+    {related.length > 0 && (
+      <section class="related" aria-label="Related reading">
+        <h2 class="related__heading">Related reading</h2>
+        <div class="cardgrid">
+          {related.map((a) => <ArticleCard article={a} />)}
+        </div>
+      </section>
+    )}
+  </article>
+</Base>

@@ -1,17 +1,13 @@
 {
-  "name": "NARROW. — Few find it.",
-  "short_name": "NARROW.",
-  "description": "Heavyweight streetwear for the hard road, plus NARROW. ARCADE — six free original browser games.",
+  "name": "Dwellwise",
+  "short_name": "Dwellwise",
+  "description": "Independent home & smart-home technology buying advice.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#070707",
-  "theme_color": "#070707",
+  "background_color": "#ffffff",
+  "theme_color": "#0d5c4f",
   "icons": [
-    {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    }
+    { "src": "logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
   ]
 }
