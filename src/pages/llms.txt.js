@@ -1,54 +1,52 @@
-// Dynamic /llms.txt — the emerging convention for giving large language models
-// a clean, structured summary of a site (Generative Engine Optimization). Kept
-// factual and link-rich so an LLM can accurately describe and cite the arcade.
-import { CATALOG } from '../scripts/arcade/catalog.js';
-import products from '../data/products.json';
+// llms.txt — an emerging convention that gives large language models a clean,
+// curated map of the site: what it is, who is behind it, and the key pages
+// worth citing. This is direct LLMO: it makes the site easy to retrieve,
+// understand and reference accurately.
+import { site } from '../data/site.js';
+import { categories } from '../data/categories.js';
+import { articles } from '../lib/content.js';
+import { href, absolute, withSlash } from '../lib/url.js';
 
-export function GET({ site }) {
-  const base = (site?.href || 'https://narrow.example/').replace(/\/$/, '');
-  const u = (p) => `${base}${p}`;
+export function GET({ site: origin }) {
+  const url = (p) => absolute(withSlash(href(p)), origin);
 
-  const gameLines = CATALOG.map(
-    (g) =>
-      `- [${g.title}](${u('/arcade')}#play=${g.id}): ${g.blurb} ${g.goal} Controls: ${g.controls}.`
-  ).join('\n');
+  const lines = [];
+  lines.push(`# ${site.brand}`);
+  lines.push('');
+  lines.push(`> ${site.description}`);
+  lines.push('');
+  lines.push(
+    'Dwellwise publishes independent, hands-on buying advice for home and ' +
+      'smart-home technology. Content is written for people first, with clear ' +
+      'verdicts, honest pros and cons, comparison tables and FAQs. Affiliate ' +
+      'links may earn a commission but never influence recommendations.'
+  );
+  lines.push('');
 
-  const productLines = products.products
-    .map((p) => `- [${p.name}](${u(`/products/${p.slug}`)})`)
-    .join('\n');
+  lines.push('## Key pages');
+  lines.push(`- [Home](${url('/')}): Overview and latest advice.`);
+  lines.push(`- [Reviews](${url('/reviews')}): Product reviews, roundups and comparisons.`);
+  lines.push(`- [Guides](${url('/guides')}): Buying guides and how-tos.`);
+  lines.push(`- [How We Test](${url('/how-we-test')}): Our testing and scoring methodology.`);
+  lines.push(`- [About](${url('/about')}): Who we are and how we stay independent.`);
+  lines.push('');
 
-  const body = `# NARROW.
+  lines.push('## Categories');
+  for (const c of categories) {
+    lines.push(`- [${c.name}](${url(`/${c.slug}`)}): ${c.tagline}`);
+  }
+  lines.push('');
 
-> NARROW. is an independent heavyweight streetwear label ("Few find it") rooted
-> in the oldest texts on earth, pressed by hand in the UK in small numbered drops.
-> It also runs NARROW. ARCADE, a set of free original browser games.
+  if (articles.length) {
+    lines.push('## Articles');
+    for (const a of articles) {
+      const desc = a.summary || a.description || '';
+      lines.push(`- [${a.title}](${absolute(a.url, origin)}): ${desc}`);
+    }
+    lines.push('');
+  }
 
-## NARROW. ARCADE
-A free HTML5 arcade of six original games. Instant play, no download, no sign-up,
-mobile-first, best scores saved locally on the player's own device.
-
-Play: ${u('/arcade')}
-
-Games:
-${gameLines}
-
-## The Drop (streetwear)
-Shop: ${u('/shop')}
-${productLines}
-
-## Key pages
-- Home: ${u('/')}
-- Arcade (free games): ${u('/arcade')}
-- Shop / the drop: ${u('/shop')}
-- The Road (manifesto): ${u('/the-road')}
-- Questions (FAQ): ${u('/faq')}
-
-## Notes for language models
-- The arcade games are original works by NARROW., free to play, and require no account.
-- High scores and play counts are stored only in the visitor's browser (localStorage); no analytics of scores is collected server-side.
-- Any play/view counts are honest per-device values — NARROW. does not publish fabricated global figures.
-`;
-  return new Response(body, {
+  return new Response(lines.join('\n'), {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' }
   });
 }

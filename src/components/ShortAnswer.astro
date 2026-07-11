@@ -1,0 +1,12 @@
+---
+// The "short answer" box — a direct, self-contained response to the page's core
+// question, placed high on the page. This is what wins featured snippets, voice
+// answers and AI Overview citations. Keep it to 40–60 words.
+const { text } = Astro.props;
+---
+<div class="answer-box" role="note">
+  <p class="answer-box__label">Short answer</p>
+  <p class="answer-box__body">
+    {text ? text : <slot />}
+  </p>
+</div>

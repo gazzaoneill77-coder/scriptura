@@ -1,0 +1,7 @@
+---
+// Injects a JSON-LD structured-data block. Feeding search engines and LLMs
+// explicit machine-readable facts (entities, ratings, FAQs, breadcrumbs) is the
+// backbone of GEO/AEO/LLMO — it lets an AI cite the page without guessing.
+const { schema } = Astro.props;
+---
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

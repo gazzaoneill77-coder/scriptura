@@ -1,0 +1,10 @@
+---
+// Affiliate disclosure. Legally required in most markets and a trust signal in
+// its own right — shown at the top of any page carrying affiliate links.
+import { disclosure } from '../data/site.js';
+const { compact = false } = Astro.props;
+---
+<p class:list={['disclosure', compact && 'disclosure--compact']}>
+  <span class="disclosure__mark" aria-hidden="true">ⓘ</span>
+  {disclosure}
+</p>

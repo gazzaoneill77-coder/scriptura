@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { site } from '../data/site.js';
+import { href } from '../lib/url.js';
+---
+<Base
+  title="Affiliate &amp; Editorial Disclosure"
+  description="How Dwellwise makes money, and the editorial policy that keeps our recommendations independent."
+>
+  <div class="container prose prose--page">
+    <Breadcrumbs items={[{ name: 'Home', href: href('/') }, { name: 'Disclosure', href: href('/disclosure') }]} />
+    <h1>Affiliate &amp; editorial disclosure</h1>
+    <p class="lead">Plain and up front: how {site.brand} makes money, and why it never changes our advice.</p>
+
+    <h2>Affiliate links</h2>
+    <p>
+      {site.brand} is reader-supported. Many of the product links on our site are
+      affiliate links, which means we may earn a small commission if you buy
+      through them. This comes at <strong>no extra cost to you</strong> — the
+      price is exactly the same as going direct.
+    </p>
+    <p>
+      This income funds the site and the products we buy to test. It is what lets
+      us stay independent instead of relying on manufacturers.
+    </p>
+
+    <h2>How it affects our recommendations</h2>
+    <p>
+      It doesn’t. We choose and rank products on merit alone. A higher commission
+      never buys a higher place, we do not accept payment for a favourable
+      rating, and manufacturers never see our verdicts before they publish. When
+      the best product in a category has no affiliate programme, we still
+      recommend it.
+    </p>
+
+    <h2>Review samples</h2>
+    <p>
+      We buy most of what we test. Occasionally a manufacturer lends or provides
+      a sample; when they do, it comes with no conditions and earns no special
+      treatment. We tell you on the page when a review is based on a supplied
+      sample.
+    </p>
+
+    <h2>Accuracy</h2>
+    <p>
+      We work hard to keep prices, specifications and availability correct, but
+      these change often. Always confirm the current details on the retailer’s
+      site before you buy. If you spot an error, please tell us at
+      <a href={`mailto:${site.email}`}>{site.email}</a>.
+    </p>
+  </div>
+</Base>

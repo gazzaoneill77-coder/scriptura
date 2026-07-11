@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { getReviews } from '../lib/content.js';
+import { href } from '../lib/url.js';
+
+const posts = getReviews();
+const description =
+  'Hands-on reviews, best-of roundups and head-to-head comparisons of home and ' +
+  'smart-home technology from the Dwellwise test team.';
+---
+<Base title="Reviews" description={description}>
+  <div class="container">
+    <Breadcrumbs items={[{ name: 'Home', href: href('/') }, { name: 'Reviews', href: href('/reviews') }]} />
+    <header class="list-header">
+      <h1>Reviews</h1>
+      <p>{description}</p>
+    </header>
+    {posts.length > 0 ? (
+      <div class="cardgrid">
+        {posts.map((a) => <ArticleCard article={a} />)}
+      </div>
+    ) : (
+      <p class="empty-note">Our first reviews are being written now — check back soon.</p>
+    )}
+  </div>
+</Base>

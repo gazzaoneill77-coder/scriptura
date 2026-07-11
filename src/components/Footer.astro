@@ -1,0 +1,48 @@
+---
+import { site } from '../data/site.js';
+import { categories } from '../data/categories.js';
+import { href } from '../lib/url.js';
+
+const year = new Date().getFullYear();
+const company = [
+  { label: 'About', href: '/about' },
+  { label: 'How We Test', href: '/how-we-test' },
+  { label: 'Reviews', href: '/reviews' },
+  { label: 'Guides', href: '/guides' },
+  { label: 'Affiliate Disclosure', href: '/disclosure' }
+];
+---
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__brand">
+      <a class="brand" href={href('/')}>
+        <span class="brand__mark" aria-hidden="true">◆</span>
+        <span class="brand__name">{site.brand}</span>
+      </a>
+      <p class="site-footer__tagline">{site.tagline}</p>
+    </div>
+
+    <nav class="site-footer__col" aria-label="Categories">
+      <h2 class="site-footer__heading">Categories</h2>
+      <ul>
+        {categories.map((c) => (
+          <li><a href={href(`/${c.slug}`)}>{c.name}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav class="site-footer__col" aria-label="Company">
+      <h2 class="site-footer__heading">Dwellwise</h2>
+      <ul>
+        {company.map((c) => (
+          <li><a href={href(c.href)}>{c.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="container site-footer__legal">
+    <p>{site.brand} is reader-supported and may earn a commission on purchases made through links on this site. This never affects our recommendations.</p>
+    <p>© {year} {site.legalName}. Independent buying advice for the connected home.</p>
+  </div>
+</footer>

@@ -1,0 +1,23 @@
+---
+// The affiliate call-to-action. Uses rel="sponsored nofollow" (required by
+// search engines for paid/affiliate links) and opens in a new tab. If no URL is
+// set yet, it renders a neutral disabled state rather than a broken link, so
+// half-finished articles never ship a dead button.
+const { url, label = 'Check price', price } = Astro.props;
+---
+{url ? (
+  <a
+    class="affiliate-btn"
+    href={url}
+    target="_blank"
+    rel="sponsored nofollow noopener"
+    data-affiliate
+  >
+    {label}{price ? ` — ${price}` : ''}
+    <span class="affiliate-btn__arrow" aria-hidden="true">↗</span>
+  </a>
+) : (
+  <span class="affiliate-btn affiliate-btn--pending" aria-disabled="true">
+    Price coming soon
+  </span>
+)}

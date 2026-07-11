@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { getGuides } from '../lib/content.js';
+import { href } from '../lib/url.js';
+
+const posts = getGuides();
+const description =
+  'Plain-English buying guides and how-tos for the connected home — how to ' +
+  'choose, set up and get the most from your smart-home technology.';
+---
+<Base title="Guides" description={description}>
+  <div class="container">
+    <Breadcrumbs items={[{ name: 'Home', href: href('/') }, { name: 'Guides', href: href('/guides') }]} />
+    <header class="list-header">
+      <h1>Buying guides &amp; how-tos</h1>
+      <p>{description}</p>
+    </header>
+    {posts.length > 0 ? (
+      <div class="cardgrid">
+        {posts.map((a) => <ArticleCard article={a} />)}
+      </div>
+    ) : (
+      <p class="empty-note">Our first guides are being written now — check back soon.</p>
+    )}
+  </div>
+</Base>

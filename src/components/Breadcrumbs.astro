@@ -1,0 +1,35 @@
+---
+// Visible breadcrumb trail + BreadcrumbList structured data. Gives humans a
+// sense of place and gives engines/LLMs the page's position in the site
+// hierarchy — reinforcing the topic-cluster structure.
+import JsonLd from './JsonLd.astro';
+import { absolute, withSlash } from '../lib/url.js';
+
+const { items = [] } = Astro.props;
+const site = Astro.site;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.name,
+    item: absolute(withSlash(item.href), site)
+  }))
+};
+---
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {items.map((item, i) => (
+      <li>
+        {i < items.length - 1 ? (
+          <a href={item.href}>{item.name}</a>
+        ) : (
+          <span aria-current="page">{item.name}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+<JsonLd schema={schema} />

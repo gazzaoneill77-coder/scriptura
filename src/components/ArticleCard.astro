@@ -1,0 +1,33 @@
+---
+// Card for an article in any listing (hub pages, related, homepage). Internal
+// links like these are what distribute authority through the topic clusters.
+import { getCategory } from '../data/categories.js';
+import { formatDate } from '../lib/format.js';
+
+const { article } = Astro.props;
+const category = getCategory(article.category);
+
+const TYPE_LABEL = {
+  roundup: 'Best of',
+  review: 'Review',
+  comparison: 'Comparison',
+  guide: 'Guide',
+  'how-to': 'How-to'
+};
+---
+<a class="acard" href={article.url}>
+  <span class="acard__emoji" aria-hidden="true">
+    {article.heroEmoji || category?.emoji || '📄'}
+  </span>
+  <span class="acard__body">
+    <span class="acard__meta">
+      <span class="acard__type">{TYPE_LABEL[article.type] || 'Article'}</span>
+      {category && <span class="acard__cat">{category.name}</span>}
+    </span>
+    <span class="acard__title">{article.title}</span>
+    {article.summary && <span class="acard__excerpt">{article.summary}</span>}
+    {article.updatedDate && (
+      <span class="acard__date">Updated {formatDate(article.updatedDate)}</span>
+    )}
+  </span>
+</a>

@@ -1,0 +1,17 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { articles, getArticleBySlug } from '../../lib/content.js';
+
+export function getStaticPaths() {
+  return articles.map((a) => ({
+    params: { category: a.category, slug: a.slug }
+  }));
+}
+
+// Resolve the full article (including its rendered Content component) here in
+// the page render rather than passing it through getStaticPaths, which only
+// carries plain serialisable params.
+const { slug } = Astro.params;
+const article = getArticleBySlug(slug);
+---
+<ArticleLayout article={article} />

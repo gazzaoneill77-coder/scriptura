@@ -1,0 +1,78 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ShortAnswer from '../../components/ShortAnswer.astro';
+import Faq from '../../components/Faq.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import JsonLd from '../../components/JsonLd.astro';
+import { categories, getCategory } from '../../data/categories.js';
+import { getArticlesByCategory } from '../../lib/content.js';
+import { href, absolute } from '../../lib/url.js';
+
+export function getStaticPaths() {
+  return categories.map((c) => ({ params: { category: c.slug } }));
+}
+
+const { category: slug } = Astro.params;
+const category = getCategory(slug);
+const posts = getArticlesByCategory(slug);
+const s = Astro.site;
+
+const breadcrumbItems = [
+  { name: 'Home', href: href('/') },
+  { name: category.name, href: href(`/${category.slug}`) }
+];
+
+// CollectionPage + ItemList so engines understand this hub owns the topic and
+// which articles sit beneath it.
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: category.headline,
+  description: category.description,
+  url: absolute(Astro.url.pathname, s),
+  ...(posts.length
+    ? {
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: posts.map((p, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: absolute(p.url, s),
+            name: p.title
+          }))
+        }
+      }
+    : {})
+};
+---
+<Base title={category.headline} description={category.description}>
+  <div class="container">
+    <JsonLd schema={collectionSchema} />
+    <Breadcrumbs items={breadcrumbItems} />
+
+    <header class="hub__header">
+      <p class="hub__emoji" aria-hidden="true">{category.emoji}</p>
+      <h1>{category.headline}</h1>
+      <p class="hub__intro">{category.intro}</p>
+    </header>
+
+    <ShortAnswer text={category.summary} />
+
+    <section class="hub__articles" aria-label={`${category.name} articles`}>
+      <h2 class="section-title">Latest in {category.name}</h2>
+      {posts.length > 0 ? (
+        <div class="cardgrid">
+          {posts.map((a) => <ArticleCard article={a} />)}
+        </div>
+      ) : (
+        <p class="empty-note">
+          Fresh {category.name.toLowerCase()} reviews and guides are on the way.
+          In the meantime, the questions below cover the essentials.
+        </p>
+      )}
+    </section>
+
+    <Faq faqs={category.faqs} heading={`${category.name}: your questions answered`} />
+  </div>
+</Base>

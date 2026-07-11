@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { site } from '../data/site.js';
+import { categories } from '../data/categories.js';
+import { href } from '../lib/url.js';
+---
+<Base
+  title="About Dwellwise"
+  description="Who we are, what we cover, and why you can trust Dwellwise for home and smart-home buying advice."
+>
+  <div class="container prose prose--page">
+    <Breadcrumbs items={[{ name: 'Home', href: href('/') }, { name: 'About', href: href('/about') }]} />
+    <h1>About {site.brand}</h1>
+    <p class="lead">{site.brand} exists to make one thing easy: choosing the right technology for your home, with total confidence.</p>
+
+    <p>
+      The smart home should make life simpler. Too often, buying into it does the
+      opposite — a wall of near-identical products, inflated specs, and reviews
+      that never actually touched the thing. We started {site.brand} to cut
+      through that: hands-on testing, honest verdicts, and clear recommendations
+      for real homes and real budgets.
+    </p>
+
+    <h2>What we cover</h2>
+    <p>We focus on the technology that runs the modern home:</p>
+    <ul>
+      {categories.map((c) => (
+        <li><a href={href(`/${c.slug}`)}>{c.name}</a> — {c.tagline}</li>
+      ))}
+    </ul>
+
+    <h2>How we work</h2>
+    <p>
+      Every recommendation starts with independent research and, wherever
+      possible, hands-on testing in a real home. We score products against a
+      consistent framework, name the downsides as clearly as the strengths, and
+      tell you who each product is — and isn’t — right for. Our full process is
+      on the <a href={href('/how-we-test')}>How We Test</a> page.
+    </p>
+
+    <h2>How we stay independent</h2>
+    <p>
+      {site.brand} is reader-supported. When you buy through links on our site
+      we may earn a commission, at no extra cost to you. That income keeps the
+      site running and testing possible — but it never decides our verdicts.
+      Manufacturers do not get to review our coverage before it goes live, and
+      we do not accept payment for a good rating. Read the full
+      <a href={href('/disclosure')}> affiliate and editorial policy</a>.
+    </p>
+
+    <h2>Get in touch</h2>
+    <p>
+      Spotted something we got wrong, or want us to test a product? Email
+      <a href={`mailto:${site.email}`}>{site.email}</a>. We read everything.
+    </p>
+  </div>
+</Base>

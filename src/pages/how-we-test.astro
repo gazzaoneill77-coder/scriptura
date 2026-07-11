@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faq from '../components/Faq.astro';
+import { site } from '../data/site.js';
+import { href } from '../lib/url.js';
+
+const faqs = [
+  {
+    q: 'Do you actually test the products you review?',
+    a: 'Wherever possible, yes — we buy and use products in real homes. When a ' +
+      'recommendation is based on research rather than hands-on testing, we say ' +
+      'so clearly on the page.'
+  },
+  {
+    q: 'Do brands pay for good reviews?',
+    a: 'No. We never accept payment in exchange for a rating or placement, and ' +
+      'manufacturers do not see our verdicts before publication. We earn through ' +
+      'affiliate commissions on products readers choose to buy.'
+  },
+  {
+    q: 'How often do you update reviews?',
+    a: 'We revisit reviews and roundups as products change, prices move and new ' +
+      'competitors launch. Every article shows its last-updated date.'
+  }
+];
+---
+<Base
+  title="How We Test"
+  description="Our testing and scoring methodology — how Dwellwise reaches its recommendations, and how we stay independent."
+>
+  <div class="container prose prose--page">
+    <Breadcrumbs items={[{ name: 'Home', href: href('/') }, { name: 'How We Test', href: href('/how-we-test') }]} />
+    <h1>How we test</h1>
+    <p class="lead">Every {site.brand} recommendation is earned. Here is exactly how we reach it.</p>
+
+    <h2>1. We research the whole market</h2>
+    <p>
+      Before we recommend anything, we map the category — the leading products,
+      the specs that actually matter, the common complaints, and the price bands.
+      This is what lets us tell you not just which product is good, but which is
+      right for your situation.
+    </p>
+
+    <h2>2. We test in real homes</h2>
+    <p>
+      Specs on a box tell you little about living with a product. Wherever
+      possible we buy the products ourselves and use them the way you would —
+      over days and weeks, in ordinary homes, against the tasks they are meant
+      to handle.
+    </p>
+
+    <h2>3. We score against a consistent framework</h2>
+    <p>Each product is judged on the same criteria for its category, typically:</p>
+    <ul>
+      <li><strong>Performance</strong> — how well it does its core job.</li>
+      <li><strong>Ease of use</strong> — setup, the app, and everyday living-with.</li>
+      <li><strong>Build &amp; reliability</strong> — how it holds up over time.</li>
+      <li><strong>Value</strong> — performance and features for the price, including ongoing costs like subscriptions and filters.</li>
+    </ul>
+    <p>
+      Scores are out of 5. We weight the criteria that matter most in each
+      category, and we always name the trade-offs.
+    </p>
+
+    <h2>4. We stay independent</h2>
+    <p>
+      We buy most of what we test. When a manufacturer provides a review sample,
+      it never comes with conditions, and it never earns a better score. Our
+      income comes from affiliate commissions on the products readers choose to
+      buy — see our <a href={href('/disclosure')}>disclosure</a> for the full
+      detail.
+    </p>
+
+    <h2>5. We keep it current</h2>
+    <p>
+      The market moves fast. We revisit our recommendations as prices change and
+      new products launch, and every page carries a visible last-updated date so
+      you always know how fresh our advice is.
+    </p>
+
+    <Faq faqs={faqs} heading="How we test: common questions" />
+  </div>
+</Base>

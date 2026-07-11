@@ -1,0 +1,38 @@
+---
+// Data-driven comparison table. Comparison tables are one of the single most
+// cited formats in AI Overviews and answer engines, and they help humans decide
+// at a glance. Horizontally scrollable on small screens so the page body never
+// overflows.
+//
+// Props:
+//   caption  Accessible table caption / title
+//   columns  [{ key, label }]  — the first column is the row label
+//   rows     [{ name, href, badge, best, [key]: value, ... }]
+const { caption, columns = [], rows = [] } = Astro.props;
+const [first, ...rest] = columns;
+---
+{rows.length > 0 && columns.length > 0 && (
+  <figure class="cmp">
+    {caption && <figcaption class="cmp__caption">{caption}</figcaption>}
+    <div class="cmp__scroll">
+      <table class="cmp__table">
+        <thead>
+          <tr>
+            {columns.map((c) => <th scope="col">{c.label}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr class:list={[row.best && 'cmp__row--best']}>
+              <th scope="row">
+                {row.href ? <a href={row.href}>{row.name}</a> : row.name}
+                {row.badge && <span class="cmp__badge">{row.badge}</span>}
+              </th>
+              {rest.map((c) => <td>{row[c.key]}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </figure>
+)}

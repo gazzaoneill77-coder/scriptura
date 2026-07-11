@@ -1,0 +1,23 @@
+---
+// Byline with author and last-updated date. Author attribution and a visible,
+// recent update date are direct E-E-A-T trust signals for both search engines
+// and readers.
+import { formatDate, isoDate } from '../lib/format.js';
+import { href } from '../lib/url.js';
+
+const { author, publishDate, updatedDate } = Astro.props;
+const updated = updatedDate || publishDate;
+---
+<div class="byline">
+  <span class="byline__by">
+    By {author?.url
+      ? <a href={href(author.url)}>{author?.name}</a>
+      : author?.name}
+    {author?.role && <span class="byline__role"> · {author.role}</span>}
+  </span>
+  {updated && (
+    <span class="byline__date">
+      Updated <time datetime={isoDate(updated)}>{formatDate(updated)}</time>
+    </span>
+  )}
+</div>

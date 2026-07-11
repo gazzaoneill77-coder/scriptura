@@ -1,10 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
+import { categories } from '../data/categories.js';
 import { href } from '../lib/url.js';
 ---
-<Base title="LOST">
-  <div class="lost">
-    <p>“Wide is the road that leads to destruction. This is one of those pages.”</p>
-    <a class="btn" href={href('/')}>BACK TO THE NARROW</a>
+<Base title="Page not found" description="The page you were looking for could not be found." noindex={true}>
+  <div class="container notfound">
+    <p class="notfound__code" aria-hidden="true">404</p>
+    <h1>We couldn’t find that page</h1>
+    <p>It may have moved, or the link might be broken. Try one of these instead:</p>
+    <div class="cardgrid cardgrid--cats">
+      {categories.map((c) => (
+        <a class="ccard" href={href(`/${c.slug}`)}>
+          <span class="ccard__emoji" aria-hidden="true">{c.emoji}</span>
+          <span class="ccard__name">{c.name}</span>
+          <span class="ccard__tagline">{c.tagline}</span>
+        </a>
+      ))}
+    </div>
+    <p class="notfound__home"><a href={href('/')}>← Back to the homepage</a></p>
   </div>
 </Base>

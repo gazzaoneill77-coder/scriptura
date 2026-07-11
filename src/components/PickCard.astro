@@ -1,0 +1,44 @@
+---
+// A single recommendation in a "best of" roundup. Each pick is a self-contained,
+// citable unit: badge (why it's here), rating, who it's best for, a one-line
+// verdict, pros/cons, key specs and the affiliate CTA.
+import Rating from './Rating.astro';
+import ProsCons from './ProsCons.astro';
+import AffiliateButton from './AffiliateButton.astro';
+
+const { pick, rank } = Astro.props;
+const specs = pick.specs || {};
+const specEntries = Object.entries(specs);
+---
+<article class="pick" id={pick.slug || undefined}>
+  <div class="pick__head">
+    {rank && <span class="pick__rank" aria-hidden="true">{rank}</span>}
+    <div class="pick__headings">
+      {pick.badge && <p class="pick__badge">{pick.badge}</p>}
+      <h3 class="pick__name">{pick.name}</h3>
+      {pick.bestFor && <p class="pick__bestfor">Best for: {pick.bestFor}</p>}
+    </div>
+    {typeof pick.rating === 'number' && (
+      <div class="pick__rating"><Rating value={pick.rating} /></div>
+    )}
+  </div>
+
+  {pick.summary && <p class="pick__summary">{pick.summary}</p>}
+
+  <ProsCons pros={pick.pros} cons={pick.cons} />
+
+  {specEntries.length > 0 && (
+    <dl class="pick__specs">
+      {specEntries.map(([k, v]) => (
+        <div class="pick__spec">
+          <dt>{k}</dt>
+          <dd>{v}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
+
+  <div class="pick__cta">
+    <AffiliateButton url={pick.url} price={pick.price} label={`Check price`} />
+  </div>
+</article>
