@@ -1,0 +1,406 @@
+{
+  "id": "tiler",
+  "specVersion": 5,
+  "packVersion": "1.0.0-draft",
+  "name": "The Tiler's Pricing Calculator",
+  "region": "GB",
+  "units": "metric",
+
+  "jobTypes": [
+    { "id": "bathroom_walls", "label": "Bathroom walls", "icon": "tile",
+      "asks": ["areas", "substrate", "spec"], "minimum": "half_day" },
+    { "id": "bathroom_floor", "label": "Bathroom floor", "icon": "floor",
+      "asks": ["areas", "substrate", "spec"], "minimum": "half_day" },
+    { "id": "wet_room", "label": "Wet room", "icon": "shower",
+      "asks": ["areas", "substrate", "spec"], "minimum": "day",
+      "defaults": { "tanking": true } },
+    { "id": "splashback", "label": "Kitchen splashback", "icon": "kitchen",
+      "asks": ["areas", "substrate", "spec"], "minimum": "half_day" },
+    { "id": "floor_tiling", "label": "Floor tiling", "icon": "floor",
+      "asks": ["areas", "substrate", "spec"], "minimum": "half_day" },
+    { "id": "outdoor_tiling", "label": "Outdoor or patio tiling", "icon": "sun",
+      "asks": ["areas", "substrate", "spec"], "minimum": "day" },
+    { "id": "repair_regrout", "label": "Repair and regrout", "icon": "wrench",
+      "asks": ["areas", "spec"], "minimum": "half_day" }
+  ],
+
+  "questions": [
+    { "id": "wall_area", "label": "Wall area", "type": "number", "unit": "m2",
+      "control": "dimension-pad", "group": "areas", "default": 0, "min": 0, "max": 300 },
+    { "id": "floor_area", "label": "Floor area", "type": "number", "unit": "m2",
+      "control": "dimension-pad", "group": "areas", "default": 0, "min": 0, "max": 300 },
+
+    { "id": "substrate", "label": "What are you tiling onto?", "type": "enum",
+      "control": "cards", "group": "substrate", "default": "plaster",
+      "options": [
+        { "value": "plaster", "label": "Plaster" },
+        { "value": "plasterboard", "label": "Plasterboard" },
+        { "value": "backer_board", "label": "Cement backer board" },
+        { "value": "render", "label": "Sand and cement render" },
+        { "value": "screed", "label": "Screed" },
+        { "value": "timber", "label": "Timber floor", "sub": "Needs overboarding" },
+        { "value": "existing_tile", "label": "Existing tile" }
+      ] },
+
+    { "id": "substrate_condition", "label": "How flat is it?", "type": "enum",
+      "control": "segmented", "group": "substrate", "default": "sound",
+      "options": [
+        { "value": "sound", "label": "Sound and flat" },
+        { "value": "minor", "label": "Minor variation" },
+        { "value": "out_of_true", "label": "Out of level or square" }
+      ] },
+
+    { "id": "overboard", "label": "Overboard first?", "type": "boolean",
+      "control": "toggle", "group": "substrate", "default": false },
+    { "id": "levelling", "label": "Levelling compound?", "type": "boolean",
+      "control": "toggle", "group": "substrate", "default": false },
+    { "id": "tanking", "label": "Tank / waterproof?", "type": "boolean",
+      "control": "toggle", "group": "substrate", "default": false,
+      "help": "Mandatory in a wet room." },
+    { "id": "remove_existing", "label": "Remove existing tiles?", "type": "boolean",
+      "control": "toggle", "group": "substrate", "default": false },
+    { "id": "removal_bedded_render", "label": "Are they bedded on render?", "type": "boolean",
+      "control": "toggle", "group": "substrate", "default": false,
+      "appliesWhen": "remove_existing" },
+
+    { "id": "ufh", "label": "Underfloor heating", "type": "enum", "control": "segmented",
+      "group": "substrate", "default": "none",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "electric", "label": "Electric mat", "sub": "You install it" },
+        { "value": "water", "label": "Water", "sub": "Tile over existing" }
+      ] },
+
+    { "id": "tile_size", "label": "Tile size", "type": "enum", "control": "cards",
+      "group": "spec", "default": "300x600",
+      "options": [
+        { "value": "mosaic", "label": "Mosaic" },
+        { "value": "100x100", "label": "100 × 100" },
+        { "value": "200x250", "label": "200 × 250" },
+        { "value": "300x600", "label": "300 × 600" },
+        { "value": "600x600", "label": "600 × 600" },
+        { "value": "large_format", "label": "1200 × 600", "sub": "Two-person handling" }
+      ] },
+
+    { "id": "tile_material", "label": "Tile material", "type": "enum", "control": "cards",
+      "group": "spec", "default": "porcelain",
+      "options": [
+        { "value": "ceramic", "label": "Ceramic" },
+        { "value": "porcelain", "label": "Porcelain" },
+        { "value": "stone", "label": "Natural stone", "sub": "Sizing variation, needs sealing" },
+        { "value": "glass", "label": "Glass" },
+        { "value": "mosaic", "label": "Mosaic sheets" }
+      ] },
+
+    { "id": "layout", "label": "Layout", "type": "enum", "control": "segmented",
+      "group": "spec", "default": "straight",
+      "options": [
+        { "value": "straight", "label": "Straight" },
+        { "value": "brick", "label": "Brick bond" },
+        { "value": "diagonal", "label": "Diagonal" },
+        { "value": "herringbone", "label": "Herringbone" }
+      ] },
+
+    { "id": "grout_type", "label": "Grout", "type": "enum", "control": "segmented",
+      "group": "spec", "default": "cement",
+      "options": [
+        { "value": "cement", "label": "Cement" },
+        { "value": "epoxy", "label": "Epoxy", "sub": "Three times the work" }
+      ] },
+
+    { "id": "cutouts", "label": "Cutouts", "type": "count", "control": "stepper",
+      "group": "spec", "default": 0, "help": "Sockets, pipes, shower valves, downlights." },
+    { "id": "trim_length", "label": "Edge trim", "type": "number", "unit": "m",
+      "control": "slider", "group": "spec", "default": 0, "min": 0, "max": 80, "step": 0.5 },
+    { "id": "silicone_length", "label": "Silicone", "type": "number", "unit": "m",
+      "control": "slider", "group": "spec", "default": 0, "min": 0, "max": 80, "step": 0.5 },
+
+    { "id": "client_supplies_tiles", "label": "Client supplying the tiles?", "type": "boolean",
+      "control": "toggle", "group": "spec", "default": false },
+    { "id": "occupied", "label": "Anyone living there?", "type": "boolean",
+      "control": "toggle", "group": "spec", "default": true },
+
+    { "id": "surveyed", "label": "Have you seen it?", "type": "enum", "control": "segmented",
+      "group": "spec", "default": "visited",
+      "options": [
+        { "value": "visited", "label": "Been there" },
+        { "value": "photos", "label": "Photos only" },
+        { "value": "described", "label": "Described to me" }
+      ] }
+  ],
+
+  "derivations": [
+    { "id": "total_area", "expr": "wall_area + floor_area" },
+    { "id": "is_wet_room", "expr": "job_type == 'wet_room'" },
+    { "id": "small_room", "expr": "total_area > 0 && total_area < 4" },
+    { "id": "is_large_format", "expr": "tile_size == 'large_format'" },
+    { "id": "is_mosaic", "expr": "tile_size == 'mosaic' || tile_material == 'mosaic'" },
+    { "id": "is_stone", "expr": "tile_material == 'stone'" },
+
+    { "id": "wall_tiling_area", "expr": "wall_area" },
+    { "id": "floor_tiling_area", "expr": "floor_area" },
+
+    { "id": "cut_waste_pct",
+      "expr": "if(layout == 'herringbone', 0.18, if(layout == 'diagonal', 0.15, if(is_large_format, 0.08, 0.10))) + if(is_stone, 0.15, 0)",
+      "note": "Layout waste plus a stone surcharge for shade sorting and breakage" },
+
+    { "id": "adhesive_kg_m2",
+      "expr": "if(is_large_format, 8, if(tile_size == '600x600' || tile_size == '300x600', 5.5, 3.5))" },
+    { "id": "adhesive_kg", "expr": "total_area * adhesive_kg_m2 * 1.05" },
+    { "id": "grout_kg", "expr": "total_area * if(is_large_format, 1.5, if(is_mosaic, 1.2, 0.7))" },
+
+    { "id": "needs_overboard", "expr": "overboard || substrate == 'timber'" },
+    { "id": "overboard_area", "expr": "if(needs_overboard, total_area, 0)" },
+    { "id": "levelling_area", "expr": "if(levelling, floor_area, 0)" },
+    { "id": "tanking_area", "expr": "if(tanking || is_wet_room, total_area, 0)" },
+    { "id": "removal_area", "expr": "if(remove_existing, total_area, 0)" },
+    { "id": "removal_render_area", "expr": "if(remove_existing && removal_bedded_render, total_area, 0)" },
+    { "id": "removal_standard_area", "expr": "removal_area - removal_render_area" },
+    { "id": "ufh_area", "expr": "if(ufh == 'electric', floor_area, 0)" },
+
+    { "id": "levelling_clips", "expr": "if(is_large_format, total_area * 12, 0)" },
+    { "id": "silicone_tubes", "expr": "ceil(silicone_length / 6)" },
+    { "id": "wet_room_untanked", "expr": "is_wet_room && !tanking" },
+    { "id": "price_per_m2", "expr": "if(total_area > 0, total_price_pence / total_area, 0)" },
+    { "id": "estimated_days_raw", "expr": "max(1, ceil(total_hours / 7.5))" }
+  ],
+
+  "tasks": [
+    { "id": "remove_tiles", "label": "Remove existing tiles",
+      "group": "Preparation", "tags": ["labour", "prep"], "quantity": "removal_standard_area",
+      "rate": { "low": 0.25, "typical": 0.35, "high": 0.60, "unit": "hr/m2" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "remove_tiles_render", "label": "Remove tiles bedded on render",
+      "group": "Preparation", "tags": ["labour", "prep"], "quantity": "removal_render_area",
+      "rate": { "low": 0.40, "typical": 0.55, "high": 0.90, "unit": "hr/m2" },
+      "source": "practitioner review 2026-02 — different method, separate task" },
+
+    { "id": "overboard_task", "label": "Overboard with cement backer board",
+      "group": "Preparation", "tags": ["labour", "prep"], "quantity": "overboard_area",
+      "rate": { "low": 0.22, "typical": 0.30, "high": 0.45, "unit": "hr/m2" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "levelling_task", "label": "Levelling compound",
+      "group": "Preparation", "tags": ["labour", "prep"], "quantity": "levelling_area",
+      "rate": { "low": 0.18, "typical": 0.25, "high": 0.40, "unit": "hr/m2" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "tanking_task", "label": "Tanking and waterproofing",
+      "group": "Waterproofing", "tags": ["labour", "prep"], "quantity": "tanking_area",
+      "rate": { "low": 0.25, "typical": 0.35, "high": 0.55, "unit": "hr/m2" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "ufh_task", "label": "Underfloor heating mat",
+      "group": "Preparation", "tags": ["labour", "prep"], "quantity": "ufh_area",
+      "rate": { "low": 0.25, "typical": 0.35, "high": 0.55, "unit": "hr/m2" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "tile_walls", "label": "Wall tiling",
+      "group": "Tiling", "tags": ["labour", "tiling"], "quantity": "wall_tiling_area",
+      "rate": { "low": 0.42, "typical": 0.55, "high": 0.80, "unit": "hr/m2" },
+      "appliesWhen": "!is_large_format && !is_mosaic", "minHours": 1.0,
+      "source": "practitioner review 2026-02" },
+
+    { "id": "tile_floors", "label": "Floor tiling",
+      "group": "Tiling", "tags": ["labour", "tiling"], "quantity": "floor_tiling_area",
+      "rate": { "low": 0.58, "typical": 0.75, "high": 1.05, "unit": "hr/m2" },
+      "appliesWhen": "!is_large_format && !is_mosaic", "minHours": 1.0,
+      "source": "practitioner review 2026-02" },
+
+    { "id": "tile_large_format", "label": "Large format tiling",
+      "group": "Tiling", "tags": ["labour", "tiling"], "quantity": "total_area",
+      "rate": { "low": 0.85, "typical": 1.10, "high": 1.60, "unit": "hr/m2" },
+      "appliesWhen": "is_large_format", "crewSize": 2, "minHours": 2.0,
+      "source": "practitioner review 2026-02 — two-person handling throughout" },
+
+    { "id": "tile_mosaic", "label": "Mosaic tiling",
+      "group": "Tiling", "tags": ["labour", "tiling"], "quantity": "total_area",
+      "rate": { "low": 1.20, "typical": 1.60, "high": 2.40, "unit": "hr/m2" },
+      "appliesWhen": "is_mosaic", "minHours": 1.0,
+      "source": "practitioner review 2026-02" },
+
+    { "id": "cutouts_task", "label": "Cutouts",
+      "group": "Tiling", "tags": ["labour", "tiling"], "quantity": "cutouts",
+      "rate": { "low": 0.10, "typical": 0.15, "high": 0.25, "unit": "hr/each" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "trim_task", "label": "Edge trim",
+      "group": "Grouting and finishing", "tags": ["labour"], "quantity": "trim_length",
+      "rate": { "low": 0.12, "typical": 0.18, "high": 0.28, "unit": "hr/m" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "grout_cement", "label": "Grouting — cement",
+      "group": "Grouting and finishing", "tags": ["labour"], "quantity": "total_area",
+      "rate": { "low": 0.09, "typical": 0.12, "high": 0.20, "unit": "hr/m2" },
+      "appliesWhen": "grout_type == 'cement'", "source": "practitioner review 2026-02" },
+
+    { "id": "grout_epoxy", "label": "Grouting — epoxy",
+      "group": "Grouting and finishing", "tags": ["labour"], "quantity": "total_area",
+      "rate": { "low": 0.25, "typical": 0.35, "high": 0.55, "unit": "hr/m2" },
+      "appliesWhen": "grout_type == 'epoxy'",
+      "source": "practitioner review 2026-02 — different material and method, separate task" },
+
+    { "id": "silicone_task", "label": "Silicone",
+      "group": "Grouting and finishing", "tags": ["labour"], "quantity": "silicone_length",
+      "rate": { "low": 0.07, "typical": 0.10, "high": 0.16, "unit": "hr/m" },
+      "source": "practitioner review 2026-02" },
+
+    { "id": "seal_stone", "label": "Seal natural stone",
+      "group": "Grouting and finishing", "tags": ["labour"], "quantity": "total_area",
+      "rate": { "low": 0.08, "typical": 0.12, "high": 0.20, "unit": "hr/m2" },
+      "appliesWhen": "is_stone", "source": "practitioner review 2026-02" },
+
+    { "id": "setup", "label": "Set-up, protection and clean-down",
+      "group": "Preparation", "tags": ["labour"], "quantity": "estimated_days_raw",
+      "rate": { "low": 0.50, "typical": 0.75, "high": 1.10, "unit": "hr/day" },
+      "source": "practitioner review 2026-02" }
+  ],
+
+  "materials": [
+    { "id": "tiles", "label": "Tiles", "sku": "tile.{tile_material}.{tile_size}",
+      "group": "Materials", "quantity": "total_area",
+      "consumption": { "expr": "1", "unit": "m2/m2" },
+      "wastePct": 0.10, "wastePctRef": "cut_waste_pct",
+      "purchaseUnits": [ { "size": 1, "unit": "m2" } ],
+      "appliesWhen": "!client_supplies_tiles",
+      "singleBatch": true,
+      "notes": "Order the whole job in one batch — shade varies between production runs and a short order mid-job is a re-tile" },
+
+    { "id": "adhesive", "label": "Tile adhesive", "sku": "tile.adhesive.flexible",
+      "group": "Materials", "quantity": "adhesive_kg",
+      "consumption": { "expr": "1", "unit": "kg/kg" }, "wastePct": 0.05,
+      "purchaseUnits": [ { "size": 20, "unit": "kg" } ],
+      "roundingStrategy": "cheapest_combination" },
+
+    { "id": "grout_mat", "label": "Grout", "sku": "tile.grout.{grout_type}",
+      "group": "Materials", "quantity": "grout_kg",
+      "consumption": { "expr": "1", "unit": "kg/kg" }, "wastePct": 0.08,
+      "purchaseUnits": [ { "size": 3, "unit": "kg" }, { "size": 5, "unit": "kg" } ],
+      "roundingStrategy": "cheapest_combination" },
+
+    { "id": "tanking_kit", "label": "Tanking kit", "sku": "tile.tanking.kit",
+      "group": "Materials", "quantity": "tanking_area",
+      "consumption": { "expr": "1", "unit": "m2/m2" }, "wastePct": 0.10,
+      "purchaseUnits": [ { "size": 5, "unit": "m2" }, { "size": 10, "unit": "m2" } ],
+      "appliesWhen": "tanking_area > 0", "notes": "+10% for overlaps; one kit minimum" },
+
+    { "id": "backer_board", "label": "Cement backer board", "sku": "tile.backer_board",
+      "group": "Materials", "quantity": "overboard_area",
+      "consumption": { "expr": "1 / 0.72", "unit": "sheet/m2" }, "wastePct": 0.10,
+      "purchaseUnits": [ { "size": 1, "unit": "sheet" } ],
+      "appliesWhen": "needs_overboard", "notes": "1.2 x 0.6 m sheets" },
+
+    { "id": "levelling_compound_mat", "label": "Levelling compound",
+      "sku": "tile.levelling_compound", "group": "Materials", "quantity": "levelling_area",
+      "consumption": { "expr": "4", "unit": "kg/m2" }, "wastePct": 0.05,
+      "purchaseUnits": [ { "size": 20, "unit": "kg" } ],
+      "appliesWhen": "levelling" },
+
+    { "id": "clips", "label": "Levelling clips and wedges", "sku": "tile.levelling_clips",
+      "group": "Materials", "quantity": "levelling_clips",
+      "consumption": { "expr": "1", "unit": "each/each" }, "wastePct": 0,
+      "purchaseUnits": [ { "size": 100, "unit": "each" } ],
+      "appliesWhen": "is_large_format", "notes": "12 per m² — large format only" },
+
+    { "id": "trim_mat", "label": "Edge trim", "sku": "tile.trim",
+      "group": "Materials", "quantity": "trim_length",
+      "consumption": { "expr": "1", "unit": "m/m" }, "wastePct": 0.10,
+      "purchaseUnits": [ { "size": 2.5, "unit": "m" } ] },
+
+    { "id": "silicone_mat", "label": "Silicone", "sku": "tile.silicone",
+      "group": "Materials", "quantity": "silicone_tubes",
+      "consumption": { "expr": "1", "unit": "each/each" }, "wastePct": 0,
+      "purchaseUnits": [ { "size": 1, "unit": "each" } ] },
+
+    { "id": "sealer", "label": "Stone sealer", "sku": "tile.sealer",
+      "group": "Materials", "quantity": "total_area",
+      "consumption": { "expr": "1 / 12", "unit": "L/m2" }, "wastePct": 0.05,
+      "purchaseUnits": [ { "size": 1, "unit": "L" }, { "size": 5, "unit": "L" } ],
+      "appliesWhen": "is_stone" },
+
+    { "id": "sundries", "label": "Sundries — spacers, blades, sponges, mixing",
+      "group": "Materials",
+      "pricing": { "type": "greater_of", "percentOfMaterials": 0.07, "perDayPence": 2000 } }
+  ],
+
+  "modifiers": [
+    { "id": "stone", "when": "is_stone", "factor": 1.25, "scope": ["tiling"],
+      "explain": "Natural stone — sizing variation and careful setting out" },
+    { "id": "glass_mosaic", "when": "tile_material == 'glass'", "factor": 1.20,
+      "scope": ["tiling"], "explain": "Glass tiles — adhesive shows through, slower work" },
+    { "id": "herringbone", "when": "layout == 'herringbone'", "factor": 1.40,
+      "scope": ["tiling"], "explain": "Herringbone — every tile is a set-out decision" },
+    { "id": "diagonal", "when": "layout == 'diagonal'", "factor": 1.25,
+      "scope": ["tiling"], "explain": "Diagonal layout — more cuts" },
+    { "id": "brick_bond", "when": "layout == 'brick'", "factor": 1.10,
+      "scope": ["tiling"], "explain": "Brick bond" },
+    { "id": "out_of_true", "when": "substrate_condition == 'out_of_true'", "factor": 1.20,
+      "scope": ["tiling", "prep"], "explain": "Out of level or square — packing and adjusting throughout" },
+    { "id": "minor_variation", "when": "substrate_condition == 'minor'", "factor": 1.10,
+      "scope": ["prep"], "explain": "Minor substrate variation" },
+    { "id": "small_room_cuts", "when": "small_room", "factor": 1.30,
+      "scope": ["tiling"], "explain": "Small area — cuts and edges dominate" },
+    { "id": "occupied", "when": "occupied", "factor": 1.10,
+      "scope": ["labour", "prep"], "explain": "Occupied property — protection and dust control" },
+    { "id": "wet_room_care", "when": "is_wet_room", "factor": 1.20,
+      "scope": ["prep"], "explain": "Wet room — falls, detailing and waterproofing junctions" }
+  ],
+
+  "extras": [],
+
+  "risk": {
+    "surveyConfidence": { "visited": 0, "photos": 0.10, "described": 0.18 },
+    "unknownConditions": [
+      { "when": "substrate == 'existing_tile' || substrate_condition == 'out_of_true'", "add": 0.15,
+        "explain": "Substrate condition not fully known until the old surface comes off" },
+      { "when": "remove_existing && !removal_bedded_render", "add": 0.12,
+        "explain": "Backing behind the existing tiles unconfirmed" },
+      { "when": "client_supplies_tiles", "add": 0.08,
+        "explain": "Client-supplied tiles — breakage and short orders are on you to work around" }
+    ],
+    "cap": 0.30,
+    "priceVolatility": { "low": 0, "medium": 0.03, "high": 0.06 }
+  },
+
+  "defaults": { "contingencyStance": "balanced" },
+
+  "validation": [
+    { "level": "error", "when": "wet_room_untanked",
+      "message": "A wet room must be tanked. Add waterproofing — this is not an optional line." },
+    { "level": "error", "when": "total_area == 0",
+      "message": "Nothing measured yet — add a wall or floor area." },
+
+    { "level": "warning", "when": "is_large_format && levelling_clips == 0",
+      "message": "Large format tiles with no levelling system priced. Lippage on 1200 mm tiles is not fixable after the event." },
+    { "level": "warning", "when": "is_stone && !is_wet_room && total_area > 0 && grout_type == 'cement'",
+      "message": "Natural stone with cement grout — check the stone is not acid-sensitive and that a sealer goes on before grouting." },
+    { "level": "warning", "when": "substrate == 'timber' && !needs_overboard",
+      "message": "Tiling directly onto a timber floor. Overboard it, or it will crack." },
+    { "level": "warning", "when": "price_per_m2 < 2500",
+      "message": "Under £25/m² all in. Most tilers need £35–60/m² on domestic work to make money." },
+    { "level": "warning", "when": "modifier_cap_hit",
+      "message": "This job hit the difficulty cap. Worth a proper look before you send it." },
+    { "level": "warning", "when": "effective_hourly_pence < settings.labour_cost_pence",
+      "message": "You're charging less per hour than the work costs you." }
+  ],
+
+  "presentation": {
+    "groups": ["Preparation", "Waterproofing", "Tiling", "Grouting and finishing", "Materials"],
+    "exclusions": [
+      "Disconnection or reconnection of plumbing, electrical or sanitaryware",
+      "Removal of sanitaryware, kitchen units or appliances",
+      "Plastering or rendering beyond the levelling stated above",
+      "Replacement of tiles damaged after handover",
+      "Supply of tiles where the client is supplying them, including shortfalls and breakages",
+      "Removal or disturbance of asbestos-containing materials"
+    ],
+    "assumptions": [
+      "Substrate is dry, sound and ready to receive tiles unless preparation is priced above",
+      "All tiles are on site and from a single batch before work starts",
+      "Water and power available on site",
+      "The room is clear of fittings and furniture on arrival"
+    ],
+    "validityDays": 30
+  }
+}

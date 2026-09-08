@@ -26,12 +26,14 @@ wrappable into a native shell later without rewriting the engine.
 | [`04-plumber.md`](04-plumber.md) | Input/Output matrix — Plumber |
 | [`05-landscaper.md`](05-landscaper.md) | Input/Output matrix — Landscaper |
 | [`08-electrician.md`](08-electrician.md) | Input/Output matrix — Electrician |
+| [`09-tiler.md`](09-tiler.md) | Input/Output matrix — Tiler |
 | [`06-data-architecture.md`](06-data-architecture.md) | Supabase/Postgres schema, RLS, offline sync, native-wrap path |
 | [`07-ux-and-handoff.md`](07-ux-and-handoff.md) | Mobile-first input UX, quote review, PDF generation, WhatsApp/email share, paywall placement |
 | [`trade-packs/decorator.pack.json`](trade-packs/decorator.pack.json) | Worked example of a complete trade pack |
 | [`trade-packs/plumber.pack.json`](trade-packs/plumber.pack.json) | Second complete pack — the test that the pack architecture holds |
 | [`trade-packs/landscaper.pack.json`](trade-packs/landscaper.pack.json) | Third complete pack — forced the first structural change (programme vs price) |
 | [`trade-packs/electrician.pack.json`](trade-packs/electrician.pack.json) | Fourth pack — corrected the v2 `requires` design from a block to a fork |
+| [`trade-packs/tiler.pack.json`](trade-packs/tiler.pack.json) | Fifth pack — forced `crewSize`, separating labour hours from elapsed days |
 | [`trade-packs/validate-packs.py`](trade-packs/validate-packs.py) | Prototype publish-time validator: references, cycles, DSL whitelist, sourced rates |
 
 ---

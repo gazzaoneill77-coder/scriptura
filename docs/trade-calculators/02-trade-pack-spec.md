@@ -589,3 +589,84 @@ The trend is the one to watch: **trade four produced fewer new mechanisms than t
 but the one it produced was a correction, not an addition.** The lesson is not to
 generalise a regulatory rule from a single trade — Gas Safe and Part P look alike and
 behave differently, and only a second regulated trade could expose that.
+
+---
+
+## Spec v4 → v5: what the Tiler forced
+
+Fifth trade, deliberately chosen as a **close neighbour of the Decorator** — m², a
+substrate, a coverage rate — to test whether the vocabulary had settled. It mostly had:
+`wastePctRef` (v3) carried layout-driven cut waste untouched, and the two-task idiom
+absorbed epoxy grout and render-bedded tile removal without discussion.
+
+One thing broke, and it is the direct descendant of the v3 structural change.
+
+### 1. `tasks[].crewSize` — hours and elapsed time are not the same (STRUCTURAL)
+
+Large format tiles (1200 × 600) are a **two-person job throughout** — one person cannot
+safely lift, butter and place them. That is not a difficulty multiplier; the labour rate
+already reflects the slower work. It is a statement about **how many people are on site**.
+
+v3 established that price and duration can diverge (weather adds programme float, not
+money). The Tiler is the mirror image: a two-person task costs the **same labour hours**
+but takes **half the elapsed days**.
+
+```jsonc
+{ "id": "tile_large_format", "quantity": "total_area",
+  "rate": { "typical": 1.10, "unit": "hr/m2" },
+  "crewSize": 2 }
+```
+
+Engine change, at the same output stage v3 touched:
+
+```
+labourCost    = Σ(task.hours) × rate            // unchanged — hours are hours
+elapsedDays   = Σ(task.hours / task.crewSize) / chargeableHoursPerDay
+```
+
+Two consequences worth stating, because both are easy to get wrong:
+
+- **Overhead absorption still uses total hours, not elapsed days.** Two people on site for
+  one day consume two people-days of van, insurance and phone. Dividing overhead by elapsed
+  days would under-recover by exactly the crew size.
+- **A second person is not free.** Where the user is an employer, `crewSize: 2` should draw
+  on a second labour cost rate; for a sole trader hiring a labourer for a day, it is a
+  subcontract line. The pack declares the crew size; **the settings decide what a second
+  pair of hands costs**, and MVP can reasonably default to the same rate and flag it.
+
+`crewSize` defaults to 1, so every existing pack is unaffected.
+
+### 2. `materials[].singleBatch` (NEW, small but expensive to omit)
+
+Tile shade varies between production batches. Ordering 22 m² and coming back for 3 m² is
+not a small problem — it is a re-tile, at the tiler's cost. The flag tells the internal
+breakdown to print the material as **one batch quantity** and warns against splitting it.
+
+The mechanism generalises beyond tiling: paint from one mixing batch, stone from one block,
+timber from one shipment. It is a **procurement constraint**, not a pricing one — the first
+of that kind in the spec, and worth watching in case more appear.
+
+### 3. Confirmed twice more: two methods, two tasks (NO CHANGE)
+
+Epoxy grout at 0.35 hr/m² versus cement at 0.12 hr/m² is a 3× difference in material and
+method; render-bedded tile removal versus standard likewise. Both are separate tasks gated
+on an answer. Fourth and fifth instances — this idiom is now the most-reused decision in the
+whole spec and belongs at the top of the authoring guide, not in a footnote.
+
+### Running total after five trades
+
+| Finding type | Count |
+| --- | --- |
+| Vocabulary additions | 10 |
+| Structural changes | 2 |
+| Design corrections to an earlier finding | 1 |
+| Documentation gaps | 2 |
+| Idioms recorded, no change needed | 2 |
+| Earlier findings that generalised untouched | 2 |
+
+Both structural changes landed in the same place — **the boundary between cost and
+programme** — and neither touched stages 1–9. That is a meaningful signal: the pricing
+pipeline proper has been stable across five trades, while the *output* model needed two
+extensions. If a sixth trade forces a third change, the honest read is that quote outputs
+were under-designed from the start, and the cheapest fix is to model programme as a
+first-class output alongside price rather than continuing to bolt on flags.
