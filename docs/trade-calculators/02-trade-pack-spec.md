@@ -491,3 +491,101 @@ right and the original user-level setting was wrong.
 Roughly two days of engine work across three trades, and the shape of the cost is
 reassuring: the vocabulary keeps absorbing new trades, and the one structural change
 bought a capability that later trades need anyway.
+
+---
+
+## Spec v3 → v4: what the Electrician forced
+
+Fourth trade, and the first chosen specifically to attack an earlier finding rather than to
+add commercial breadth. All four packs validate clean.
+
+**Verdict: one significant addition, and the `requires` design from v2 turned out to be
+half-right.**
+
+### 1. `requires` / `orElse` — a fork, not a block (SIGNIFICANT)
+
+v2 added `jobTypes[].requires` for the Plumber, where the rule is absolute: gas work
+without Gas Safe registration is illegal, so the pack refuses it. I generalised from one
+example and built a **block**.
+
+Electrical work proved that wrong. Notifiable work in a dwelling has **two lawful routes**:
+
+- a registered competent person (NICEIC, NAPIT, ELECSA, STROMA) **self-certifies**, or
+- anyone else **notifies building control and pays a fee** — typically £200–400.
+
+Refusing the job would be flatly incorrect; the unregistered electrician can absolutely do
+the work. What they cannot do is self-certify, and the fee is often larger than the job's
+profit — so the calculator's real job is to **price the correct route**, and to make the
+cost of not being registered visible.
+
+```jsonc
+{ "id": "consumer_unit", "notifiable": true }
+```
+```jsonc
+{ "level": "error",
+  "when": "is_notifiable && sub_region == 'england_wales' && !settings.registrations.part_p_scheme && part_p_route == 'self_certify'",
+  "message": "You're not registered with a Part P scheme, so you can't self-certify. Switch to building control notification — the fee is added to the quote." }
+```
+```jsonc
+{ "id": "building_control_fee", "label": "Building control notification",
+  "pricing": { "type": "fixed", "sku": "cert.building_control.electrical" },
+  "when": "needs_building_control", "excludeFromMarginBase": true }
+```
+
+So `requires` gains an `orElse`: **when the qualification is absent, take this route and add
+this cost, instead of refusing.** The Plumber's hard block stays as the degenerate case —
+`requires` with no `orElse`. The distinction is regulatory, so it must be declared per job
+type by the pack author, never inferred.
+
+**Correcting the v2 write-up:** I described `requires` there as generalising straight to
+"the Electrician's NICEIC/Part P". That was too confident. It generalised in shape but not
+in behaviour, and the difference is the whole finding.
+
+### 2. Sub-region gating (NEW)
+
+Part P is **England and Wales**. Scotland works to building warrants, Northern Ireland to
+its own regulations. `region: "GB"` on the pack is too coarse, so notification logic is
+gated on a `sub_region` answer. Every UK trade with a statutory regime will need this —
+building control, planning and permitted development all diverge across the four nations.
+
+### 3. `sum()` binds a scoped item alias — undocumented (DOCUMENTATION GAP)
+
+The validator rejected the Electrician's `sum(new_circuits, c.count)` while accepting
+`sum(rooms, r.length)` and `sum(fixtures, f.count)`. The packs were right and **the
+validator was wrong** — it carried a hardcoded whitelist of `r`, `f`, `p` rather than
+reading the binding, because the spec never said what the binding is.
+
+The actual rule, now written down:
+
+> `sum(collection, expr)` and `map(collection, expr)` bind each item to a **single-letter
+> alias scoped to that expression**. The alias is conventionally the collection's first
+> letter. Because the scope is per-expression, `p` may mean `points` in one derivation and
+> `plants` in another with no collision.
+
+An implicit binding that three packs relied on and no document described is exactly the
+kind of gap that makes a second, independent engine implementation diverge silently. Worth
+noting how it surfaced: not by reading the spec, but by a tool refusing to accept a
+correct pack.
+
+### 4. Confirmed again: two tasks for two methods (NO CHANGE)
+
+`ev_short` and `ev_long` are separate tasks gated on `ev_long_run`, not one task with a
+multiplier — a PME install with an O-PEN device and a TT install with an earth rod and
+separation are different jobs, not harder versions of one. Third independent instance of
+the idiom.
+
+### Running total after four trades
+
+| Finding type | Count |
+| --- | --- |
+| Vocabulary additions | 9 |
+| Structural changes | 1 |
+| Design corrections to an earlier finding | 1 |
+| Documentation gaps | 2 |
+| Idioms recorded, no change needed | 2 |
+| Earlier findings that generalised untouched | 1 |
+
+The trend is the one to watch: **trade four produced fewer new mechanisms than trade two,
+but the one it produced was a correction, not an addition.** The lesson is not to
+generalise a regulatory rule from a single trade — Gas Safe and Part P look alike and
+behave differently, and only a second regulated trade could expose that.

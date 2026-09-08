@@ -23,7 +23,7 @@ def check(path):
     qids = {q["id"] for q in d.get("questions",[])}
     # repeater sub-fields are addressed as r.x / f.x / p.x inside sum()
     dids = {x["id"] for x in d.get("derivations",[])}
-    known = qids | dids | ENGINE_CTX | {"settings","r","f","p","true","false"}
+    known = qids | dids | ENGINE_CTX | {"settings","true","false"}
 
     # 1. derivation DAG order + cycles
     seen = set()
@@ -31,6 +31,7 @@ def check(path):
         toks,fns = idents(x["expr"])
         for t in toks:
             base = t.split(".")[0]
+            if len(base) == 1: continue          # scoped loop alias
             if base in dids and base not in seen and base != x["id"]:
                 warns.append(f"derivation '{x['id']}' references '{base}' declared later (engine must topo-sort)")
         if x["id"] in idents(x["expr"])[0]:
@@ -38,14 +39,24 @@ def check(path):
         seen.add(x["id"])
 
     # 2. all expressions: unknown functions + unresolved identifiers
+    def bound_aliases(expr):
+        """sum(collection, <expr over item>) binds a scoped single-letter item alias.
+        The alias is implicit in the spec; accept any single letter used as `x.field`
+        inside an expression that iterates. See spec v3 -> v4 finding on scoped aliases."""
+        if not isinstance(expr,str) or not re.search(r"\b(sum|map|count)\s*\(", expr):
+            return set()
+        stripped = re.sub(r"'[^']*'", " ", expr)
+        return set(re.findall(r"\b([a-z])\.", stripped))
+
     def scan(expr, where):
         toks,fns = idents(expr)
+        aliases = bound_aliases(expr)
         for fn in fns:
             if fn not in ALLOWED_FNS:
                 errs.append(f"{where}: function '{fn}()' is outside the whitelisted DSL")
         for t in toks:
             base = t.split(".")[0]
-            if base in ALLOWED_FNS or base in known: continue
+            if base in ALLOWED_FNS or base in known or base in aliases: continue
             if re.fullmatch(r"\d+(\.\d+)?", base): continue
             errs.append(f"{where}: unresolved reference '{t}'")
 
