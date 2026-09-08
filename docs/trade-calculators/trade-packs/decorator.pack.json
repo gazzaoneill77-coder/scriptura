@@ -1,0 +1,938 @@
+{
+  "id": "decorator",
+  "specVersion": 1,
+  "packVersion": "1.0.0-draft",
+  "name": "The Decorator's Pricing Calculator",
+  "region": "GB",
+  "units": "metric",
+  "jobTypes": [
+    {
+      "id": "interior_full",
+      "label": "Whole house — interior",
+      "icon": "house",
+      "asks": [
+        "rooms",
+        "condition",
+        "spec",
+        "context"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "interior_room",
+      "label": "One or two rooms",
+      "icon": "door",
+      "asks": [
+        "rooms",
+        "condition",
+        "spec",
+        "context"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "woodwork_only",
+      "label": "Woodwork only",
+      "icon": "brush",
+      "asks": [
+        "rooms",
+        "woodwork",
+        "context"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "wallpapering",
+      "label": "Wallpapering",
+      "icon": "roll",
+      "asks": [
+        "rooms",
+        "paper",
+        "context"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "new_plaster",
+      "label": "New plaster / new build",
+      "icon": "trowel",
+      "asks": [
+        "rooms",
+        "spec",
+        "context"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "exterior",
+      "label": "Exterior",
+      "icon": "sun",
+      "asks": [
+        "exterior",
+        "access",
+        "context"
+      ],
+      "minimum": "day"
+    }
+  ],
+  "questions": [
+    {
+      "id": "property_type",
+      "label": "What kind of property?",
+      "type": "enum",
+      "control": "cards",
+      "group": "context",
+      "default": "semi",
+      "options": [
+        {
+          "value": "flat",
+          "label": "Flat"
+        },
+        {
+          "value": "terrace",
+          "label": "Terraced"
+        },
+        {
+          "value": "semi",
+          "label": "Semi-detached"
+        },
+        {
+          "value": "detached",
+          "label": "Detached"
+        },
+        {
+          "value": "commercial",
+          "label": "Commercial"
+        }
+      ]
+    },
+    {
+      "id": "property_age",
+      "label": "Roughly how old is it?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "1960_2000",
+      "options": [
+        {
+          "value": "pre_1960",
+          "label": "Pre-1960",
+          "sub": "Lath and plaster likely"
+        },
+        {
+          "value": "1960_2000",
+          "label": "1960–2000"
+        },
+        {
+          "value": "post_2000",
+          "label": "Post-2000"
+        },
+        {
+          "value": "new_build",
+          "label": "New build",
+          "sub": "New plaster"
+        }
+      ]
+    },
+    {
+      "id": "occupied",
+      "label": "Will anyone be living there?",
+      "type": "enum",
+      "control": "cards",
+      "group": "context",
+      "default": "occupied",
+      "options": [
+        {
+          "value": "empty",
+          "label": "Empty",
+          "sub": "Free run of the place"
+        },
+        {
+          "value": "occupied",
+          "label": "Occupied",
+          "sub": "Furniture to work around"
+        },
+        {
+          "value": "occupied_busy",
+          "label": "Occupied, kids or pets",
+          "sub": "Extra protection"
+        }
+      ]
+    },
+    {
+      "id": "surveyed",
+      "label": "Have you seen the job?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "visited",
+      "options": [
+        {
+          "value": "visited",
+          "label": "Been there"
+        },
+        {
+          "value": "photos",
+          "label": "Photos only"
+        },
+        {
+          "value": "described",
+          "label": "Described to me"
+        }
+      ]
+    },
+    {
+      "id": "rooms",
+      "label": "Rooms",
+      "type": "repeater",
+      "control": "repeater",
+      "group": "rooms",
+      "minItems": 1,
+      "duplicateLabel": "Same as last room",
+      "fields": [
+        {
+          "id": "room_type",
+          "label": "Room",
+          "type": "enum",
+          "control": "chips",
+          "default": "bedroom",
+          "options": [
+            {
+              "value": "bedroom",
+              "label": "Bedroom"
+            },
+            {
+              "value": "lounge",
+              "label": "Lounge"
+            },
+            {
+              "value": "kitchen",
+              "label": "Kitchen"
+            },
+            {
+              "value": "bathroom",
+              "label": "Bathroom"
+            },
+            {
+              "value": "hall_stairs_landing",
+              "label": "Hall, stairs & landing"
+            }
+          ]
+        },
+        {
+          "id": "length",
+          "label": "Length",
+          "type": "number",
+          "unit": "m",
+          "control": "dimension-pad",
+          "default": 3.6,
+          "min": 0.5,
+          "max": 25
+        },
+        {
+          "id": "width",
+          "label": "Width",
+          "type": "number",
+          "unit": "m",
+          "control": "dimension-pad",
+          "default": 3.2,
+          "min": 0.5,
+          "max": 25
+        },
+        {
+          "id": "height",
+          "label": "Ceiling height",
+          "type": "number",
+          "unit": "m",
+          "control": "slider",
+          "default": 2.4,
+          "min": 2.0,
+          "max": 4.5,
+          "step": 0.05
+        },
+        {
+          "id": "surfaces",
+          "label": "What are you painting?",
+          "type": "multi_enum",
+          "control": "chips",
+          "default": [
+            "walls",
+            "ceiling"
+          ],
+          "options": [
+            {
+              "value": "walls",
+              "label": "Walls"
+            },
+            {
+              "value": "ceiling",
+              "label": "Ceiling"
+            },
+            {
+              "value": "woodwork",
+              "label": "Woodwork"
+            },
+            {
+              "value": "radiators",
+              "label": "Radiators"
+            }
+          ]
+        },
+        {
+          "id": "doors",
+          "label": "Doors",
+          "type": "count",
+          "control": "stepper",
+          "default": 1
+        },
+        {
+          "id": "window_area",
+          "label": "Window area",
+          "type": "number",
+          "unit": "m2",
+          "control": "chips-sum",
+          "default": 1.8,
+          "presets": [
+            {
+              "label": "Small",
+              "value": 1.0
+            },
+            {
+              "label": "Standard",
+              "value": 1.8
+            },
+            {
+              "label": "Large",
+              "value": 3.0
+            },
+            {
+              "label": "Patio doors",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": "radiators",
+          "label": "Radiators",
+          "type": "count",
+          "control": "stepper",
+          "default": 1
+        }
+      ]
+    },
+    {
+      "id": "wall_condition",
+      "label": "What are the walls like?",
+      "help": "Be honest — this is the number that decides whether you make money.",
+      "type": "enum",
+      "control": "cards",
+      "group": "condition",
+      "default": "minor",
+      "affects": [
+        "prep",
+        "material_emulsion"
+      ],
+      "options": [
+        {
+          "value": "good",
+          "label": "Good",
+          "sub": "Sound, previously painted"
+        },
+        {
+          "value": "minor",
+          "label": "Minor work",
+          "sub": "A few nail holes and cracks"
+        },
+        {
+          "value": "poor",
+          "label": "Poor",
+          "sub": "Lots of filling and sanding"
+        },
+        {
+          "value": "lining",
+          "label": "Needs lining",
+          "sub": "Cracked or poor plaster"
+        }
+      ]
+    },
+    {
+      "id": "substrate",
+      "label": "What's on the walls now?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "condition",
+      "default": "painted",
+      "options": [
+        {
+          "value": "painted",
+          "label": "Painted"
+        },
+        {
+          "value": "new_plaster",
+          "label": "New plaster"
+        },
+        {
+          "value": "wallpapered",
+          "label": "Wallpapered"
+        },
+        {
+          "value": "bare",
+          "label": "Bare"
+        }
+      ]
+    },
+    {
+      "id": "colour_change",
+      "label": "Colour change?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "spec",
+      "default": "similar",
+      "options": [
+        {
+          "value": "similar",
+          "label": "Same or similar"
+        },
+        {
+          "value": "light_to_dark",
+          "label": "Light to dark"
+        },
+        {
+          "value": "dark_to_light",
+          "label": "Dark to light",
+          "sub": "Needs an extra coat"
+        }
+      ]
+    },
+    {
+      "id": "coats",
+      "label": "Coats",
+      "type": "count",
+      "control": "stepper",
+      "group": "spec",
+      "default": 2,
+      "min": 1,
+      "max": 4
+    },
+    {
+      "id": "paint_tier",
+      "label": "Paint",
+      "type": "enum",
+      "control": "cards",
+      "group": "spec",
+      "default": "trade_mid",
+      "options": [
+        {
+          "value": "trade_contract",
+          "label": "Contract",
+          "sub": "Budget trade emulsion"
+        },
+        {
+          "value": "trade_mid",
+          "label": "Trade",
+          "sub": "Standard trade quality"
+        },
+        {
+          "value": "premium",
+          "label": "Premium",
+          "sub": "Designer brands"
+        }
+      ]
+    },
+    {
+      "id": "client_supplies_paint",
+      "label": "Client supplying the paint?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "spec",
+      "default": false
+    },
+    {
+      "id": "strip_wallpaper",
+      "label": "Stripping wallpaper?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "condition",
+      "default": false
+    },
+    {
+      "id": "wallpaper_layers",
+      "label": "How many layers?",
+      "type": "count",
+      "control": "stepper",
+      "group": "condition",
+      "default": 1,
+      "appliesWhen": "strip_wallpaper"
+    }
+  ],
+  "derivations": [
+    {
+      "id": "wall_area_gross",
+      "unit": "m2",
+      "expr": "sum(rooms, if(r.surfaces contains 'walls', 2 * (r.length + r.width) * r.height, 0))"
+    },
+    {
+      "id": "openings_area",
+      "unit": "m2",
+      "expr": "sum(rooms, if(r.surfaces contains 'walls', r.doors * 1.98 + r.window_area, 0))"
+    },
+    {
+      "id": "wall_area_net",
+      "unit": "m2",
+      "expr": "max(wall_area_gross - openings_area, wall_area_gross * 0.6)"
+    },
+    {
+      "id": "ceiling_area",
+      "unit": "m2",
+      "expr": "sum(rooms, if(r.surfaces contains 'ceiling', r.length * r.width, 0))"
+    },
+    {
+      "id": "perimeter",
+      "unit": "m",
+      "expr": "sum(rooms, if(r.surfaces contains 'woodwork', 2 * (r.length + r.width) - r.doors * 0.9, 0))"
+    },
+    {
+      "id": "openings_count",
+      "expr": "sum(rooms, r.doors + if(r.window_area > 0, 1, 0))"
+    },
+    {
+      "id": "door_count",
+      "expr": "sum(rooms, if(r.surfaces contains 'woodwork', r.doors, 0))"
+    },
+    {
+      "id": "radiator_count",
+      "expr": "sum(rooms, if(r.surfaces contains 'radiators', r.radiators, 0))"
+    },
+    {
+      "id": "room_count",
+      "expr": "count(rooms)"
+    },
+    {
+      "id": "max_ceiling_height",
+      "expr": "max(map(rooms, r.height))"
+    },
+    {
+      "id": "has_hsl",
+      "expr": "count(map(rooms, r.room_type == 'hall_stairs_landing')) > 0"
+    },
+    {
+      "id": "effective_coats",
+      "expr": "coats + if(colour_change == 'dark_to_light', 1, 0)"
+    },
+    {
+      "id": "coverage_lpm2",
+      "expr": "if(substrate == 'new_plaster', 8, if(paint_tier == 'premium', 12, 11))"
+    },
+    {
+      "id": "paintable_area",
+      "expr": "wall_area_net + ceiling_area"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "prep_fill_sand",
+      "label": "Preparation — filling, caulking and sanding",
+      "group": "Preparation",
+      "tags": [
+        "prep"
+      ],
+      "quantity": "wall_area_net",
+      "rate": {
+        "low": 0.035,
+        "typical": 0.055,
+        "high": 0.09,
+        "unit": "hr/m2"
+      },
+      "minHours": 1.0,
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "strip_paper",
+      "label": "Strip existing wallpaper",
+      "group": "Preparation",
+      "tags": [
+        "prep"
+      ],
+      "quantity": "wall_area_net",
+      "rate": {
+        "low": 0.15,
+        "typical": 0.22,
+        "high": 0.4,
+        "unit": "hr/m2"
+      },
+      "multiplierRef": "wallpaper_layer_factor",
+      "appliesWhen": "strip_wallpaper",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "protection",
+      "label": "Masking and protection",
+      "group": "Preparation",
+      "tags": [
+        "protection"
+      ],
+      "quantity": "room_count",
+      "rate": {
+        "low": 0.6,
+        "typical": 0.85,
+        "high": 1.3,
+        "unit": "hr/room"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "ceilings_emulsion",
+      "label": "Emulsion to ceilings",
+      "group": "Ceilings",
+      "tags": [
+        "paint",
+        "reach"
+      ],
+      "quantity": "ceiling_area",
+      "rate": {
+        "low": 0.095,
+        "typical": 0.115,
+        "high": 0.145,
+        "unit": "hr/m2"
+      },
+      "multiplierRef": "effective_coats",
+      "minHours": 0.75,
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "walls_emulsion",
+      "label": "Emulsion to walls",
+      "group": "Walls",
+      "tags": [
+        "paint",
+        "walls"
+      ],
+      "quantity": "wall_area_net",
+      "rate": {
+        "low": 0.085,
+        "typical": 0.105,
+        "high": 0.13,
+        "unit": "hr/m2"
+      },
+      "multiplierRef": "effective_coats",
+      "minHours": 1.5,
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "cut_in",
+      "label": "Cutting in around openings",
+      "group": "Walls",
+      "tags": [
+        "paint",
+        "walls"
+      ],
+      "quantity": "openings_count",
+      "rate": {
+        "low": 0.18,
+        "typical": 0.25,
+        "high": 0.35,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "skirting",
+      "label": "Skirting and architrave — prepare and paint",
+      "group": "Woodwork",
+      "tags": [
+        "woodwork"
+      ],
+      "quantity": "perimeter",
+      "rate": {
+        "low": 0.22,
+        "typical": 0.3,
+        "high": 0.45,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "doors_paint",
+      "label": "Doors — both sides and frame",
+      "group": "Woodwork",
+      "tags": [
+        "woodwork"
+      ],
+      "quantity": "door_count",
+      "rate": {
+        "low": 1.3,
+        "typical": 1.9,
+        "high": 2.8,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "radiators_paint",
+      "label": "Radiators",
+      "group": "Woodwork",
+      "tags": [
+        "woodwork"
+      ],
+      "quantity": "radiator_count",
+      "rate": {
+        "low": 0.5,
+        "typical": 0.75,
+        "high": 1.1,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    }
+  ],
+  "materials": [
+    {
+      "id": "emulsion",
+      "label": "Emulsion paint",
+      "sku": "paint.emulsion.matt.{paint_tier}",
+      "group": "Materials",
+      "quantity": "paintable_area",
+      "consumption": {
+        "expr": "1 / coverage_lpm2",
+        "unit": "L/m2"
+      },
+      "multiplierRef": "effective_coats",
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 2.5,
+          "unit": "L"
+        },
+        {
+          "size": 5,
+          "unit": "L"
+        },
+        {
+          "size": 10,
+          "unit": "L"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination",
+      "appliesWhen": "!client_supplies_paint",
+      "notes": "New plaster mist coat drops coverage ~30% — handled in coverage_lpm2"
+    },
+    {
+      "id": "woodwork_paint",
+      "label": "Satinwood and undercoat",
+      "sku": "paint.satinwood.trade",
+      "group": "Materials",
+      "quantity": "perimeter * 0.25 + door_count * 4.5",
+      "consumption": {
+        "expr": "1 / 15",
+        "unit": "L/m2"
+      },
+      "multiplierRef": "coats",
+      "wastePct": 0.08,
+      "purchaseUnits": [
+        {
+          "size": 0.75,
+          "unit": "L"
+        },
+        {
+          "size": 2.5,
+          "unit": "L"
+        },
+        {
+          "size": 5,
+          "unit": "L"
+        }
+      ],
+      "appliesWhen": "!client_supplies_paint && perimeter + door_count > 0"
+    },
+    {
+      "id": "sundries",
+      "label": "Sundries — filler, caulk, tape, dust sheets, abrasives",
+      "group": "Materials",
+      "pricing": {
+        "type": "greater_of",
+        "percentOfMaterials": 0.12,
+        "perDayPence": 2500
+      },
+      "stage": "post_programme"
+    }
+  ],
+  "modifiers": [
+    {
+      "id": "poor_walls",
+      "when": "wall_condition == 'poor'",
+      "factor": 1.25,
+      "scope": [
+        "prep",
+        "walls"
+      ],
+      "explain": "Poor wall condition — extra filling and sanding"
+    },
+    {
+      "id": "needs_lining",
+      "when": "wall_condition == 'lining'",
+      "factor": 1.6,
+      "scope": [
+        "prep",
+        "walls"
+      ],
+      "explain": "Walls need lining before painting"
+    },
+    {
+      "id": "high_ceilings",
+      "when": "max_ceiling_height > 2.7",
+      "factor": "clamp(1 + (max_ceiling_height - 2.7) * 0.20, 1, 1.35)",
+      "scope": [
+        "reach",
+        "walls"
+      ],
+      "explain": "High ceilings — working at height"
+    },
+    {
+      "id": "hsl",
+      "when": "has_hsl",
+      "factor": 1.4,
+      "scope": [
+        "prep",
+        "walls",
+        "reach",
+        "protection"
+      ],
+      "explain": "Hall, stairs and landing — awkward access and staging"
+    },
+    {
+      "id": "occupied",
+      "when": "occupied == 'occupied'",
+      "factor": 1.1,
+      "scope": [
+        "protection"
+      ],
+      "explain": "Occupied property — protecting furniture"
+    },
+    {
+      "id": "occupied_busy",
+      "when": "occupied == 'occupied_busy'",
+      "factor": 1.18,
+      "scope": [
+        "protection"
+      ],
+      "explain": "Occupied with children or pets — extra protection"
+    },
+    {
+      "id": "old_property",
+      "when": "property_age == 'pre_1960'",
+      "factor": 1.1,
+      "scope": [
+        "prep"
+      ],
+      "explain": "Older property — lath and plaster, unknown substrates"
+    },
+    {
+      "id": "premium_paint",
+      "when": "paint_tier == 'premium'",
+      "factor": 1.05,
+      "scope": [
+        "paint"
+      ],
+      "explain": "Premium paint — slower, more careful application"
+    },
+    {
+      "id": "wallpaper_layer_factor",
+      "when": "wallpaper_layers > 1",
+      "factor": "clamp(1 + (wallpaper_layers - 1) * 0.5, 1, 2.5)",
+      "scope": [
+        "prep"
+      ],
+      "explain": "Multiple layers of wallpaper to strip"
+    }
+  ],
+  "risk": {
+    "surveyConfidence": {
+      "visited": 0,
+      "photos": 0.08,
+      "described": 0.18
+    },
+    "unknownConditions": [
+      {
+        "when": "property_age == 'pre_1960'",
+        "add": 0.1,
+        "explain": "Older property — unknown substrates"
+      },
+      {
+        "when": "substrate == 'bare'",
+        "add": 0.08,
+        "explain": "Bare substrate — priming needs may vary"
+      },
+      {
+        "when": "strip_wallpaper && wallpaper_layers > 1",
+        "add": 0.08,
+        "explain": "Multiple wallpaper layers — stripping is unpredictable"
+      }
+    ],
+    "cap": 0.3,
+    "priceVolatility": {
+      "low": 0,
+      "medium": 0.03,
+      "high": 0.06
+    }
+  },
+  "defaults": {
+    "coats": 2,
+    "ceilingHeight": 2.4,
+    "contingencyStance": "balanced"
+  },
+  "validation": [
+    {
+      "level": "error",
+      "when": "room_count == 0",
+      "message": "Add at least one room"
+    },
+    {
+      "level": "error",
+      "when": "paintable_area == 0 && perimeter == 0",
+      "message": "Nothing selected to paint — choose surfaces in at least one room"
+    },
+    {
+      "level": "warning",
+      "when": "price_per_m2 < 8",
+      "message": "This works out under £8/m². Most decorators need £12–18/m² to make money."
+    },
+    {
+      "level": "warning",
+      "when": "modifier_cap_hit",
+      "message": "This job hit the difficulty cap. Worth a site visit before you send it."
+    },
+    {
+      "level": "warning",
+      "when": "achieved_margin < 0.10",
+      "message": "Margin under 10% — one bad day on site and this job loses money."
+    },
+    {
+      "level": "warning",
+      "when": "estimated_days > 15 && !has_staged_payments",
+      "message": "Over three weeks of work with no stage payments. Consider a payment schedule."
+    }
+  ],
+  "presentation": {
+    "groups": [
+      "Preparation",
+      "Ceilings",
+      "Walls",
+      "Woodwork",
+      "Materials",
+      "Extras"
+    ],
+    "exclusions": [
+      "Removal of wallpaper unless stated above",
+      "Repair of damaged plaster beyond routine filling and caulking",
+      "Moving heavy furniture, lifting fitted carpets or taking down curtain poles",
+      "Painting of previously unpainted or unprimed surfaces unless stated",
+      "Any work arising from damp, mould or structural movement"
+    ],
+    "assumptions": [
+      "Free access to the property between 08:00 and 17:00 on working days",
+      "Water and electricity available on site",
+      "Rooms clear of small furniture and personal items on arrival",
+      "Colours confirmed before work starts"
+    ],
+    "validityDays": 30
+  }
+}

@@ -1,0 +1,1986 @@
+{
+  "id": "electrician",
+  "specVersion": 4,
+  "packVersion": "1.0.0-draft",
+  "name": "The Electrician's Pricing Calculator",
+  "region": "GB",
+  "units": "metric",
+  "jobTypes": [
+    {
+      "id": "consumer_unit",
+      "label": "Consumer unit replacement",
+      "icon": "board",
+      "asks": [
+        "context",
+        "existing",
+        "access",
+        "certification"
+      ],
+      "minimum": "day",
+      "notifiable": true
+    },
+    {
+      "id": "rewire_full",
+      "label": "Full rewire",
+      "icon": "house",
+      "asks": [
+        "context",
+        "existing",
+        "points",
+        "access",
+        "certification"
+      ],
+      "minimum": "day",
+      "notifiable": true
+    },
+    {
+      "id": "rewire_partial",
+      "label": "Partial rewire",
+      "icon": "half_house",
+      "asks": [
+        "context",
+        "existing",
+        "points",
+        "access",
+        "certification"
+      ],
+      "minimum": "day",
+      "notifiable": true
+    },
+    {
+      "id": "additional_circuit",
+      "label": "New circuit",
+      "icon": "circuit",
+      "asks": [
+        "context",
+        "existing",
+        "circuits",
+        "access",
+        "certification"
+      ],
+      "minimum": "half_day",
+      "notifiable": true
+    },
+    {
+      "id": "ev_charger",
+      "label": "EV charger",
+      "icon": "ev",
+      "asks": [
+        "context",
+        "existing",
+        "ev",
+        "certification"
+      ],
+      "minimum": "half_day",
+      "notifiable": true
+    },
+    {
+      "id": "lighting",
+      "label": "Lighting",
+      "icon": "bulb",
+      "asks": [
+        "context",
+        "points",
+        "access"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "sockets_accessories",
+      "label": "Sockets and accessories",
+      "icon": "socket",
+      "asks": [
+        "context",
+        "points",
+        "access"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "fault_finding",
+      "label": "Fault finding",
+      "icon": "search",
+      "asks": [
+        "context",
+        "existing",
+        "repair"
+      ],
+      "minimum": "callout"
+    },
+    {
+      "id": "eicr",
+      "label": "EICR / inspection and testing",
+      "icon": "clipboard",
+      "asks": [
+        "context",
+        "existing",
+        "certification"
+      ],
+      "minimum": "half_day",
+      "requires": [
+        "registrations.inspection_testing"
+      ],
+      "requiresMessage": "An EICR must be issued by someone competent in inspection and testing (e.g. C&G 2391). Add your qualification in Settings."
+    },
+    {
+      "id": "outbuilding",
+      "label": "Outbuilding or garden supply",
+      "icon": "shed",
+      "asks": [
+        "context",
+        "existing",
+        "circuits",
+        "access",
+        "certification"
+      ],
+      "minimum": "day",
+      "notifiable": true
+    }
+  ],
+  "questions": [
+    {
+      "id": "sub_region",
+      "label": "Where's the job?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "england_wales",
+      "help": "Part P applies in England and Wales. Scotland and NI have their own routes.",
+      "options": [
+        {
+          "value": "england_wales",
+          "label": "England & Wales"
+        },
+        {
+          "value": "scotland",
+          "label": "Scotland"
+        },
+        {
+          "value": "ni",
+          "label": "Northern Ireland"
+        }
+      ]
+    },
+    {
+      "id": "property_type",
+      "label": "Property",
+      "type": "enum",
+      "control": "cards",
+      "group": "context",
+      "default": "house",
+      "options": [
+        {
+          "value": "flat",
+          "label": "Flat"
+        },
+        {
+          "value": "house",
+          "label": "House"
+        },
+        {
+          "value": "hmo",
+          "label": "HMO"
+        },
+        {
+          "value": "commercial",
+          "label": "Commercial"
+        },
+        {
+          "value": "landlord",
+          "label": "Landlord / rental"
+        }
+      ]
+    },
+    {
+      "id": "property_age",
+      "label": "Roughly how old is it?",
+      "type": "enum",
+      "control": "cards",
+      "group": "context",
+      "default": "1980_2005",
+      "help": "The single biggest driver of what you'll find behind the plaster.",
+      "options": [
+        {
+          "value": "pre_1966",
+          "label": "Pre-1966",
+          "sub": "Rubber or VIR cable likely"
+        },
+        {
+          "value": "1966_1980",
+          "label": "1966–1980",
+          "sub": "No RCD, possibly no CPC"
+        },
+        {
+          "value": "1980_2005",
+          "label": "1980–2005"
+        },
+        {
+          "value": "post_2005",
+          "label": "Post-2005"
+        }
+      ]
+    },
+    {
+      "id": "occupied",
+      "label": "Anyone living there?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "context",
+      "default": true
+    },
+    {
+      "id": "floor_level",
+      "label": "Which floor?",
+      "type": "count",
+      "control": "stepper",
+      "group": "context",
+      "default": 0,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "id": "surveyed",
+      "label": "Have you seen it?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "visited",
+      "options": [
+        {
+          "value": "visited",
+          "label": "Been there"
+        },
+        {
+          "value": "photos",
+          "label": "Photos only"
+        },
+        {
+          "value": "described",
+          "label": "Described to me"
+        }
+      ]
+    },
+    {
+      "id": "consumer_unit_existing",
+      "label": "What's the board now?",
+      "type": "enum",
+      "control": "cards",
+      "group": "existing",
+      "default": "rcd_split",
+      "options": [
+        {
+          "value": "rewireable",
+          "label": "Rewireable fuses",
+          "sub": "Needs replacing"
+        },
+        {
+          "value": "mcb_no_rcd",
+          "label": "MCBs, no RCD"
+        },
+        {
+          "value": "rcd_split",
+          "label": "Split-load RCD"
+        },
+        {
+          "value": "dual_rcd",
+          "label": "Dual RCD"
+        },
+        {
+          "value": "rcbo",
+          "label": "RCBO board"
+        }
+      ]
+    },
+    {
+      "id": "earthing",
+      "label": "Earthing arrangement",
+      "type": "enum",
+      "control": "cards",
+      "group": "existing",
+      "default": "tncs",
+      "options": [
+        {
+          "value": "tns",
+          "label": "TN-S"
+        },
+        {
+          "value": "tncs",
+          "label": "TN-C-S (PME)"
+        },
+        {
+          "value": "tt",
+          "label": "TT",
+          "sub": "Earth rod"
+        },
+        {
+          "value": "unknown",
+          "label": "Not established"
+        }
+      ]
+    },
+    {
+      "id": "bonding",
+      "label": "Main protective bonding",
+      "type": "enum",
+      "control": "segmented",
+      "group": "existing",
+      "default": "unknown",
+      "options": [
+        {
+          "value": "present",
+          "label": "Present and adequate"
+        },
+        {
+          "value": "absent",
+          "label": "Absent or undersized"
+        },
+        {
+          "value": "unknown",
+          "label": "Not checked"
+        }
+      ]
+    },
+    {
+      "id": "cable_type",
+      "label": "Existing cable",
+      "type": "enum",
+      "control": "segmented",
+      "group": "existing",
+      "default": "pvc",
+      "options": [
+        {
+          "value": "pvc",
+          "label": "PVC"
+        },
+        {
+          "value": "rubber",
+          "label": "Rubber / VIR",
+          "sub": "Rewire, not repair"
+        },
+        {
+          "value": "lead",
+          "label": "Lead sheathed"
+        },
+        {
+          "value": "unknown",
+          "label": "Not established"
+        }
+      ]
+    },
+    {
+      "id": "circuit_count",
+      "label": "Circuits on the board",
+      "type": "count",
+      "control": "stepper",
+      "group": "existing",
+      "default": 8,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "id": "as_built_available",
+      "label": "Any as-built information?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "existing",
+      "default": false
+    },
+    {
+      "id": "points",
+      "label": "Points",
+      "type": "repeater",
+      "control": "repeater",
+      "group": "points",
+      "minItems": 0,
+      "duplicateLabel": "Add another",
+      "fields": [
+        {
+          "id": "point_type",
+          "label": "Type",
+          "type": "enum",
+          "control": "chips",
+          "default": "socket_double",
+          "options": [
+            {
+              "value": "socket_single",
+              "label": "Single socket"
+            },
+            {
+              "value": "socket_double",
+              "label": "Double socket"
+            },
+            {
+              "value": "light_point",
+              "label": "Light point"
+            },
+            {
+              "value": "downlight",
+              "label": "Downlight"
+            },
+            {
+              "value": "switch",
+              "label": "Switch"
+            },
+            {
+              "value": "spur",
+              "label": "Fused spur"
+            },
+            {
+              "value": "cooker_outlet",
+              "label": "Cooker outlet"
+            },
+            {
+              "value": "shower_outlet",
+              "label": "Shower outlet"
+            },
+            {
+              "value": "alarm",
+              "label": "Smoke / heat alarm"
+            },
+            {
+              "value": "extractor",
+              "label": "Extractor fan"
+            },
+            {
+              "value": "outdoor_socket",
+              "label": "Outdoor socket"
+            },
+            {
+              "value": "data_point",
+              "label": "Data point"
+            }
+          ]
+        },
+        {
+          "id": "count",
+          "label": "How many",
+          "type": "count",
+          "control": "stepper",
+          "default": 1
+        },
+        {
+          "id": "mounting",
+          "label": "Mounting",
+          "type": "enum",
+          "control": "segmented",
+          "default": "existing_box",
+          "options": [
+            {
+              "value": "existing_box",
+              "label": "Existing back box"
+            },
+            {
+              "value": "new_surface",
+              "label": "New, surface"
+            },
+            {
+              "value": "new_chased",
+              "label": "New, chased"
+            },
+            {
+              "value": "new_drylined",
+              "label": "New, dry-lined"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new_circuits",
+      "label": "New circuits",
+      "type": "repeater",
+      "control": "repeater",
+      "group": "circuits",
+      "minItems": 0,
+      "fields": [
+        {
+          "id": "circuit_type",
+          "label": "Circuit",
+          "type": "enum",
+          "control": "chips",
+          "default": "ring",
+          "options": [
+            {
+              "value": "ring",
+              "label": "Ring final"
+            },
+            {
+              "value": "radial",
+              "label": "Radial"
+            },
+            {
+              "value": "lighting",
+              "label": "Lighting"
+            },
+            {
+              "value": "cooker",
+              "label": "Cooker"
+            },
+            {
+              "value": "shower",
+              "label": "Shower"
+            },
+            {
+              "value": "outbuilding",
+              "label": "Outbuilding"
+            }
+          ]
+        },
+        {
+          "id": "count",
+          "label": "How many",
+          "type": "count",
+          "control": "stepper",
+          "default": 1
+        }
+      ]
+    },
+    {
+      "id": "cable_runs",
+      "label": "Cable runs",
+      "type": "repeater",
+      "control": "repeater",
+      "group": "access",
+      "minItems": 0,
+      "fields": [
+        {
+          "id": "length",
+          "label": "Length",
+          "type": "number",
+          "unit": "m",
+          "control": "slider",
+          "default": 10,
+          "min": 1,
+          "max": 150,
+          "step": 1
+        },
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "enum",
+          "control": "chips",
+          "default": "2.5",
+          "options": [
+            {
+              "value": "1.0",
+              "label": "1.0 mm²"
+            },
+            {
+              "value": "1.5",
+              "label": "1.5 mm²"
+            },
+            {
+              "value": "2.5",
+              "label": "2.5 mm²"
+            },
+            {
+              "value": "4",
+              "label": "4 mm²"
+            },
+            {
+              "value": "6",
+              "label": "6 mm²"
+            },
+            {
+              "value": "10",
+              "label": "10 mm²"
+            },
+            {
+              "value": "16",
+              "label": "16 mm²"
+            }
+          ]
+        },
+        {
+          "id": "route",
+          "label": "Route",
+          "type": "enum",
+          "control": "segmented",
+          "default": "clipped",
+          "options": [
+            {
+              "value": "clipped",
+              "label": "Clipped, accessible"
+            },
+            {
+              "value": "fished",
+              "label": "Fished through fabric"
+            },
+            {
+              "value": "swa",
+              "label": "SWA, buried"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wall_construction",
+      "label": "Walls",
+      "type": "enum",
+      "control": "cards",
+      "group": "access",
+      "default": "plasterboard",
+      "options": [
+        {
+          "value": "plasterboard",
+          "label": "Plasterboard / dot-and-dab"
+        },
+        {
+          "value": "solid",
+          "label": "Solid masonry"
+        },
+        {
+          "value": "lath",
+          "label": "Lath and plaster"
+        },
+        {
+          "value": "concrete",
+          "label": "Concrete"
+        }
+      ]
+    },
+    {
+      "id": "floor_access",
+      "label": "Floors",
+      "type": "enum",
+      "control": "cards",
+      "group": "access",
+      "default": "boards",
+      "options": [
+        {
+          "value": "boards",
+          "label": "Boards liftable"
+        },
+        {
+          "value": "laminate",
+          "label": "Laminate or engineered"
+        },
+        {
+          "value": "concrete",
+          "label": "Concrete"
+        },
+        {
+          "value": "carpet",
+          "label": "Carpet"
+        }
+      ]
+    },
+    {
+      "id": "loft_access",
+      "label": "Loft",
+      "type": "enum",
+      "control": "segmented",
+      "group": "access",
+      "default": "good",
+      "options": [
+        {
+          "value": "good",
+          "label": "Good"
+        },
+        {
+          "value": "boarded",
+          "label": "Boarded / insulated"
+        },
+        {
+          "value": "restricted",
+          "label": "Restricted"
+        },
+        {
+          "value": "none",
+          "label": "No access"
+        }
+      ]
+    },
+    {
+      "id": "chasing_metres",
+      "label": "Chasing",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "access",
+      "default": 0,
+      "min": 0,
+      "max": 80,
+      "step": 1
+    },
+    {
+      "id": "floorboard_area",
+      "label": "Floorboards to lift",
+      "type": "number",
+      "unit": "m2",
+      "control": "slider",
+      "group": "access",
+      "default": 0,
+      "min": 0,
+      "max": 120,
+      "step": 1
+    },
+    {
+      "id": "making_good",
+      "label": "Making good",
+      "type": "multi_enum",
+      "control": "chips",
+      "group": "access",
+      "default": [],
+      "help": "Anything not ticked prints as an exclusion.",
+      "options": [
+        {
+          "value": "plastering",
+          "label": "Plastering"
+        },
+        {
+          "value": "decorating",
+          "label": "Decorating"
+        }
+      ]
+    },
+    {
+      "id": "ev_distance",
+      "label": "Distance from board to charger",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "ev",
+      "default": 10,
+      "min": 1,
+      "max": 80,
+      "step": 1
+    },
+    {
+      "id": "ev_open_device",
+      "label": "Charger has a built-in O-PEN device?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "ev",
+      "default": true,
+      "help": "On PME, without one you need an earth rod and separation."
+    },
+    {
+      "id": "main_fuse",
+      "label": "Main fuse rating",
+      "type": "enum",
+      "control": "segmented",
+      "group": "ev",
+      "default": "100",
+      "options": [
+        {
+          "value": "60",
+          "label": "60 A"
+        },
+        {
+          "value": "80",
+          "label": "80 A"
+        },
+        {
+          "value": "100",
+          "label": "100 A"
+        },
+        {
+          "value": "unknown",
+          "label": "Not checked"
+        }
+      ]
+    },
+    {
+      "id": "load_management",
+      "label": "Load management needed?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "ev",
+      "default": false
+    },
+    {
+      "id": "dno_application",
+      "label": "DNO notification or application?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "ev",
+      "default": false
+    },
+    {
+      "id": "part_p_route",
+      "label": "Certification route",
+      "type": "enum",
+      "control": "cards",
+      "group": "certification",
+      "default": "self_certify",
+      "options": [
+        {
+          "value": "self_certify",
+          "label": "I self-certify",
+          "sub": "Registered competent person"
+        },
+        {
+          "value": "building_control",
+          "label": "Building control notification",
+          "sub": "Fee applies"
+        }
+      ]
+    },
+    {
+      "id": "repair_hours_estimate",
+      "label": "How long do you reckon?",
+      "type": "number",
+      "unit": "hr",
+      "control": "slider",
+      "group": "repair",
+      "default": 2,
+      "min": 0.5,
+      "max": 12,
+      "step": 0.5
+    }
+  ],
+  "derivations": [
+    {
+      "id": "point_count",
+      "expr": "sum(points, p.count)"
+    },
+    {
+      "id": "points_existing_box",
+      "expr": "sum(points, if(p.mounting == 'existing_box', p.count, 0))"
+    },
+    {
+      "id": "points_surface",
+      "expr": "sum(points, if(p.mounting == 'new_surface', p.count, 0))"
+    },
+    {
+      "id": "points_chased",
+      "expr": "sum(points, if(p.mounting == 'new_chased', p.count, 0))"
+    },
+    {
+      "id": "points_drylined",
+      "expr": "sum(points, if(p.mounting == 'new_drylined', p.count, 0))"
+    },
+    {
+      "id": "downlight_count",
+      "expr": "sum(points, if(p.point_type == 'downlight', p.count, 0))"
+    },
+    {
+      "id": "alarm_count",
+      "expr": "sum(points, if(p.point_type == 'alarm', p.count, 0))"
+    },
+    {
+      "id": "extractor_count",
+      "expr": "sum(points, if(p.point_type == 'extractor', p.count, 0))"
+    },
+    {
+      "id": "standard_point_count",
+      "expr": "point_count - downlight_count - alarm_count - extractor_count"
+    },
+    {
+      "id": "new_circuit_count",
+      "expr": "sum(new_circuits, c.count)"
+    },
+    {
+      "id": "circuit_ring",
+      "expr": "sum(new_circuits, if(c.circuit_type == 'ring', c.count, 0))"
+    },
+    {
+      "id": "circuit_lighting",
+      "expr": "sum(new_circuits, if(c.circuit_type == 'lighting', c.count, 0))"
+    },
+    {
+      "id": "circuit_appliance",
+      "expr": "sum(new_circuits, if(c.circuit_type == 'cooker' || c.circuit_type == 'shower' || c.circuit_type == 'radial' || c.circuit_type == 'outbuilding', c.count, 0))"
+    },
+    {
+      "id": "cable_clipped",
+      "expr": "sum(cable_runs, if(r.route == 'clipped', r.length, 0))"
+    },
+    {
+      "id": "cable_fished",
+      "expr": "sum(cable_runs, if(r.route == 'fished', r.length, 0))"
+    },
+    {
+      "id": "cable_swa",
+      "expr": "sum(cable_runs, if(r.route == 'swa', r.length, 0))"
+    },
+    {
+      "id": "cable_total",
+      "expr": "cable_clipped + cable_fished + cable_swa"
+    },
+    {
+      "id": "cable_25",
+      "expr": "sum(cable_runs, if(r.size == '2.5', r.length, 0))"
+    },
+    {
+      "id": "cable_15",
+      "expr": "sum(cable_runs, if(r.size == '1.5', r.length, 0))"
+    },
+    {
+      "id": "cable_heavy",
+      "expr": "sum(cable_runs, if(r.size == '6' || r.size == '10' || r.size == '16', r.length, 0))"
+    },
+    {
+      "id": "is_rewire",
+      "expr": "job_type == 'rewire_full' || job_type == 'rewire_partial'"
+    },
+    {
+      "id": "is_notifiable",
+      "expr": "sub_region == 'england_wales' && (job_type == 'consumer_unit' || is_rewire || job_type == 'additional_circuit' || job_type == 'ev_charger' || job_type == 'outbuilding')"
+    },
+    {
+      "id": "needs_building_control",
+      "expr": "is_notifiable && part_p_route == 'building_control'"
+    },
+    {
+      "id": "cu_replacement",
+      "expr": "job_type == 'consumer_unit' || is_rewire"
+    },
+    {
+      "id": "bonding_units",
+      "expr": "if(bonding == 'present', 0, 2)",
+      "note": "Gas and water bonds — the near-universal CU-change remedial"
+    },
+    {
+      "id": "needs_earth_rod",
+      "expr": "earthing == 'tt' || (job_type == 'ev_charger' && earthing == 'tncs' && !ev_open_device)"
+    },
+    {
+      "id": "ev_long_run",
+      "expr": "job_type == 'ev_charger' && (ev_distance > 20 || needs_earth_rod)"
+    },
+    {
+      "id": "ev_short_run",
+      "expr": "job_type == 'ev_charger' && !ev_long_run"
+    },
+    {
+      "id": "test_circuits",
+      "expr": "circuit_count + new_circuit_count"
+    },
+    {
+      "id": "price_per_point",
+      "expr": "if(point_count > 0, total_price_pence / point_count, 0)"
+    },
+    {
+      "id": "cable_unknown",
+      "expr": "cable_type == 'unknown' || cable_type == 'rubber' || cable_type == 'lead'"
+    },
+    {
+      "id": "making_good_selected",
+      "expr": "count(making_good) > 0"
+    },
+    {
+      "id": "load_check_missing",
+      "expr": "(job_type == 'ev_charger' || circuit_appliance > 0) && main_fuse == 'unknown'"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "fault_find",
+      "label": "Fault finding and diagnosis",
+      "group": "First fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "repair_hours_estimate",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.0,
+        "high": 1.0,
+        "unit": "hr/hr"
+      },
+      "minHours": 1.0,
+      "appliesWhen": "job_type == 'fault_finding'",
+      "source": "trade norm — 1 hr minimum"
+    },
+    {
+      "id": "rewire_points",
+      "label": "Rewire — first and second fix",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "point_count",
+      "rate": {
+        "low": 1.2,
+        "typical": 1.5,
+        "high": 1.9,
+        "unit": "hr/point"
+      },
+      "appliesWhen": "is_rewire",
+      "source": "industry per-point rule of thumb, practitioner review 2026-02"
+    },
+    {
+      "id": "point_existing_box",
+      "label": "Accessories — existing back boxes",
+      "group": "Second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "points_existing_box",
+      "rate": {
+        "low": 0.25,
+        "typical": 0.4,
+        "high": 0.6,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "!is_rewire",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "point_surface",
+      "label": "New points — surface mounted",
+      "group": "Second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "points_surface",
+      "rate": {
+        "low": 0.5,
+        "typical": 0.75,
+        "high": 1.1,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "!is_rewire",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "point_chased",
+      "label": "New points — chased and buried",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "chasing"
+      ],
+      "quantity": "points_chased",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.6,
+        "high": 2.4,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "!is_rewire",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "point_drylined",
+      "label": "New points — dry-lined",
+      "group": "First fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "points_drylined",
+      "rate": {
+        "low": 0.6,
+        "typical": 0.9,
+        "high": 1.4,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "!is_rewire",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "downlights",
+      "label": "Downlights",
+      "group": "Second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "downlight_count",
+      "rate": {
+        "low": 0.35,
+        "typical": 0.5,
+        "high": 0.85,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "!is_rewire",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "alarms",
+      "label": "Mains-interlinked alarms",
+      "group": "Second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "alarm_count",
+      "rate": {
+        "low": 0.7,
+        "typical": 1.0,
+        "high": 1.6,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "extractors",
+      "label": "Extractor fans",
+      "group": "Second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "extractor_count",
+      "rate": {
+        "low": 1.2,
+        "typical": 2.0,
+        "high": 3.2,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "circuit_ring_task",
+      "label": "New ring final circuit",
+      "group": "Circuits",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "circuit_ring",
+      "rate": {
+        "low": 3.5,
+        "typical": 5.0,
+        "high": 7.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "circuit_lighting_task",
+      "label": "New lighting circuit",
+      "group": "Circuits",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "circuit_lighting",
+      "rate": {
+        "low": 2.5,
+        "typical": 3.5,
+        "high": 5.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "circuit_appliance_task",
+      "label": "New appliance circuit",
+      "group": "Circuits",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "circuit_appliance",
+      "rate": {
+        "low": 3.0,
+        "typical": 4.0,
+        "high": 6.0,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "cu_change",
+      "label": "Consumer unit replacement",
+      "group": "Consumer unit and supply",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 4.0,
+        "typical": 5.5,
+        "high": 8.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "cu_replacement",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "bonding_task",
+      "label": "Main protective bonding",
+      "group": "Consumer unit and supply",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "bonding_units",
+      "rate": {
+        "low": 0.75,
+        "typical": 1.25,
+        "high": 2.2,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "cu_replacement",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "earth_rod_task",
+      "label": "Earth electrode installation and testing",
+      "group": "Consumer unit and supply",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.75,
+        "high": 3.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "needs_earth_rod",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "ev_short",
+      "label": "EV charger installation",
+      "group": "Circuits",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 3.0,
+        "typical": 4.0,
+        "high": 6.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "ev_short_run",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "ev_long",
+      "label": "EV charger installation — long run or TT",
+      "group": "Circuits",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 6.0,
+        "typical": 8.5,
+        "high": 13.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "ev_long_run",
+      "source": "practitioner review 2026-02 — separate task, not a modifier: different method"
+    },
+    {
+      "id": "cable_clipped_task",
+      "label": "Cable — clipped direct",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "cable_clipped",
+      "rate": {
+        "low": 0.06,
+        "typical": 0.1,
+        "high": 0.16,
+        "unit": "hr/m"
+      },
+      "appliesWhen": "!is_rewire",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "cable_fished_task",
+      "label": "Cable — fished through building fabric",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "cable_fished",
+      "rate": {
+        "low": 0.2,
+        "typical": 0.35,
+        "high": 0.6,
+        "unit": "hr/m"
+      },
+      "appliesWhen": "!is_rewire",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "cable_swa_task",
+      "label": "SWA — dug, laid and terminated",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "cable_swa",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "chasing_task",
+      "label": "Chasing walls",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "chasing"
+      ],
+      "quantity": "chasing_metres",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.4,
+        "high": 0.65,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "floorboards_task",
+      "label": "Lift and relay floorboards",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "routes"
+      ],
+      "quantity": "floorboard_area",
+      "rate": {
+        "low": 0.18,
+        "typical": 0.25,
+        "high": 0.4,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "eicr_circuits",
+      "label": "Inspection and testing — per circuit",
+      "group": "Testing and certification",
+      "tags": [
+        "labour",
+        "testing"
+      ],
+      "quantity": "circuit_count",
+      "rate": {
+        "low": 0.25,
+        "typical": 0.35,
+        "high": 0.55,
+        "unit": "hr/circuit"
+      },
+      "appliesWhen": "job_type == 'eicr'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "eicr_report",
+      "label": "Report preparation and issue",
+      "group": "Testing and certification",
+      "tags": [
+        "labour",
+        "testing"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 0.75,
+        "typical": 1.25,
+        "high": 2.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "job_type == 'eicr'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "certification_testing",
+      "label": "Testing and certification",
+      "group": "Testing and certification",
+      "tags": [
+        "labour",
+        "testing"
+      ],
+      "quantity": "test_circuits",
+      "rate": {
+        "low": 0.15,
+        "typical": 0.25,
+        "high": 0.4,
+        "unit": "hr/circuit"
+      },
+      "appliesWhen": "job_type != 'eicr'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "making_good_plaster",
+      "label": "Making good — plastering",
+      "group": "Second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "chasing_metres",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/m"
+      },
+      "appliesWhen": "making_good contains 'plastering'",
+      "source": "practitioner review 2026-02"
+    }
+  ],
+  "materials": [
+    {
+      "id": "cable_25_mat",
+      "label": "T&E cable 2.5 mm²",
+      "sku": "cable.te.2_5",
+      "group": "Materials",
+      "quantity": "cable_25",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 50,
+          "unit": "m"
+        },
+        {
+          "size": 100,
+          "unit": "m"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination",
+      "notes": "Sold on drums — buy to drum size, not to metres needed"
+    },
+    {
+      "id": "cable_15_mat",
+      "label": "T&E cable 1.5 mm²",
+      "sku": "cable.te.1_5",
+      "group": "Materials",
+      "quantity": "cable_15",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 50,
+          "unit": "m"
+        },
+        {
+          "size": 100,
+          "unit": "m"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination"
+    },
+    {
+      "id": "cable_heavy_mat",
+      "label": "Heavy cable 6–16 mm²",
+      "sku": "cable.te.heavy",
+      "group": "Materials",
+      "quantity": "cable_heavy",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 25,
+          "unit": "m"
+        },
+        {
+          "size": 50,
+          "unit": "m"
+        }
+      ]
+    },
+    {
+      "id": "swa_mat",
+      "label": "SWA cable",
+      "sku": "cable.swa",
+      "group": "Materials",
+      "quantity": "cable_swa",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.12,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m"
+        }
+      ],
+      "notes": "+12% — terminations eat length"
+    },
+    {
+      "id": "swa_glands",
+      "label": "SWA glands and shrouds",
+      "sku": "cable.swa.gland",
+      "group": "Materials",
+      "quantity": "2",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "cable_swa > 0",
+      "notes": "Two per run, always"
+    },
+    {
+      "id": "back_boxes",
+      "label": "Back boxes",
+      "sku": "accessory.backbox",
+      "group": "Materials",
+      "quantity": "points_chased + points_surface + points_drylined",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ]
+    },
+    {
+      "id": "accessories",
+      "label": "Accessories",
+      "sku": "accessory.wiring",
+      "group": "Materials",
+      "quantity": "point_count",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0.03,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ]
+    },
+    {
+      "id": "consumer_unit_mat",
+      "label": "Consumer unit — 18th Edition, metal, SPD",
+      "sku": "board.consumer_unit",
+      "group": "Materials",
+      "quantity": "1",
+      "consumption": {
+        "expr": "1",
+        "unit": "each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "cu_replacement",
+      "excludeFromMarginBase": true
+    },
+    {
+      "id": "rcbos",
+      "label": "RCBOs",
+      "sku": "board.rcbo",
+      "group": "Materials",
+      "quantity": "test_circuits + 2",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "cu_replacement",
+      "notes": "One per circuit plus two spare ways — quote spare capacity or you'll be back"
+    },
+    {
+      "id": "earth_rod_mat",
+      "label": "Earth rod, clamp and pit",
+      "sku": "earthing.rod_kit",
+      "group": "Materials",
+      "quantity": "1",
+      "consumption": {
+        "expr": "1",
+        "unit": "each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "needs_earth_rod"
+    },
+    {
+      "id": "bonding_cable",
+      "label": "Bonding conductors and clamps",
+      "sku": "earthing.bonding",
+      "group": "Materials",
+      "quantity": "bonding_units",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "cu_replacement"
+    },
+    {
+      "id": "ev_unit",
+      "label": "EV charge point",
+      "sku": "ev.charger",
+      "group": "Materials",
+      "quantity": "1",
+      "consumption": {
+        "expr": "1",
+        "unit": "each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "job_type == 'ev_charger'",
+      "excludeFromMarginBase": true
+    },
+    {
+      "id": "sundries",
+      "label": "Sundries — fixings, sleeving, ferrules, labels, glands",
+      "group": "Materials",
+      "pricing": {
+        "type": "greater_of",
+        "percentOfMaterials": 0.06,
+        "perDayPence": 1500
+      },
+      "stage": "post_programme"
+    }
+  ],
+  "modifiers": [
+    {
+      "id": "pre_1966",
+      "when": "property_age == 'pre_1966'",
+      "factor": 1.35,
+      "scope": [
+        "labour",
+        "routes"
+      ],
+      "explain": "Pre-1966 property — rubber or VIR cable, no CPC to lighting"
+    },
+    {
+      "id": "1966_1980",
+      "when": "property_age == '1966_1980'",
+      "factor": 1.15,
+      "scope": [
+        "labour",
+        "routes"
+      ],
+      "explain": "Older installation — no RCD protection"
+    },
+    {
+      "id": "occupied",
+      "when": "occupied",
+      "factor": 1.2,
+      "scope": [
+        "labour",
+        "routes"
+      ],
+      "explain": "Occupied property — working around furniture, staged power-downs"
+    },
+    {
+      "id": "walls_solid",
+      "when": "wall_construction == 'solid'",
+      "factor": 1.4,
+      "scope": [
+        "chasing"
+      ],
+      "explain": "Solid masonry — hard chasing"
+    },
+    {
+      "id": "walls_lath",
+      "when": "wall_construction == 'lath'",
+      "factor": 1.25,
+      "scope": [
+        "chasing",
+        "routes"
+      ],
+      "explain": "Lath and plaster — fragile, awkward routes"
+    },
+    {
+      "id": "walls_concrete",
+      "when": "wall_construction == 'concrete'",
+      "factor": 1.9,
+      "scope": [
+        "chasing",
+        "routes"
+      ],
+      "explain": "Concrete construction — surface routes usually needed"
+    },
+    {
+      "id": "floor_concrete",
+      "when": "floor_access == 'concrete'",
+      "factor": 1.9,
+      "scope": [
+        "routes"
+      ],
+      "explain": "Concrete floors — no under-floor routes"
+    },
+    {
+      "id": "floor_laminate",
+      "when": "floor_access == 'laminate'",
+      "factor": 1.4,
+      "scope": [
+        "routes"
+      ],
+      "explain": "Laminate or engineered floor to lift and relay"
+    },
+    {
+      "id": "loft_boarded",
+      "when": "loft_access == 'boarded'",
+      "factor": 1.25,
+      "scope": [
+        "routes"
+      ],
+      "explain": "Boarded or insulated loft"
+    },
+    {
+      "id": "loft_restricted",
+      "when": "loft_access == 'restricted'",
+      "factor": 1.4,
+      "scope": [
+        "routes"
+      ],
+      "explain": "Restricted loft access"
+    },
+    {
+      "id": "commercial_testing",
+      "when": "property_type == 'commercial' || property_type == 'hmo'",
+      "factor": 1.15,
+      "scope": [
+        "testing"
+      ],
+      "explain": "Commercial or HMO — heavier testing and documentation"
+    },
+    {
+      "id": "upper_floor",
+      "when": "floor_level > 2",
+      "factor": 1.1,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Upper floor — material handling"
+    }
+  ],
+  "extras": [
+    {
+      "id": "building_control_fee",
+      "label": "Building control notification",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.building_control.electrical"
+      },
+      "when": "needs_building_control",
+      "group": "Testing and certification",
+      "excludeFromMarginBase": true,
+      "note": "The orElse route when the user is not a registered competent person"
+    },
+    {
+      "id": "part_p_self_cert",
+      "label": "Part P self-certification",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.part_p.self"
+      },
+      "when": "is_notifiable && part_p_route == 'self_certify'",
+      "group": "Testing and certification"
+    },
+    {
+      "id": "eic_cert",
+      "label": "Electrical Installation Certificate",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.eic"
+      },
+      "when": "job_type != 'eicr' && job_type != 'fault_finding'",
+      "group": "Testing and certification"
+    },
+    {
+      "id": "eicr_cert",
+      "label": "EICR report",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.eicr"
+      },
+      "when": "job_type == 'eicr'",
+      "group": "Testing and certification"
+    },
+    {
+      "id": "dno_fee",
+      "label": "DNO notification or application",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.dno"
+      },
+      "when": "dno_application",
+      "group": "Testing and certification",
+      "excludeFromMarginBase": true
+    },
+    {
+      "id": "load_management_unit",
+      "label": "Load management device",
+      "pricing": {
+        "type": "fixed",
+        "sku": "ev.load_management"
+      },
+      "when": "load_management",
+      "group": "Circuits",
+      "excludeFromMarginBase": true
+    }
+  ],
+  "risk": {
+    "surveyConfidence": {
+      "visited": 0,
+      "photos": 0.1,
+      "described": 0.2
+    },
+    "unknownConditions": [
+      {
+        "when": "property_age == 'pre_1966'",
+        "add": 0.18,
+        "explain": "Pre-1966 — cable condition unknown until you open up"
+      },
+      {
+        "when": "cable_unknown",
+        "add": 0.15,
+        "explain": "Existing cable type not established"
+      },
+      {
+        "when": "earthing == 'unknown'",
+        "add": 0.12,
+        "explain": "Earthing arrangement not established"
+      },
+      {
+        "when": "!as_built_available",
+        "add": 0.1,
+        "explain": "No as-built information — routes are guesswork"
+      },
+      {
+        "when": "bonding == 'unknown'",
+        "add": 0.08,
+        "explain": "Bonding not checked — remedials likely"
+      },
+      {
+        "when": "occupied",
+        "add": 0.08,
+        "explain": "Occupied property — access to rooms is not guaranteed"
+      }
+    ],
+    "cap": 0.35,
+    "priceVolatility": {
+      "low": 0,
+      "medium": 0.03,
+      "high": 0.06
+    }
+  },
+  "defaults": {
+    "contingencyStance": "balanced"
+  },
+  "validation": [
+    {
+      "level": "error",
+      "when": "is_notifiable && sub_region == 'england_wales' && !settings.registrations.part_p_scheme && part_p_route == 'self_certify'",
+      "message": "You're not registered with a Part P scheme, so you can't self-certify. Switch to building control notification — the fee is added to the quote."
+    },
+    {
+      "level": "error",
+      "when": "point_count == 0 && new_circuit_count == 0 && !cu_replacement && job_type != 'eicr' && job_type != 'fault_finding'",
+      "message": "Nothing to price — add points, circuits or a board change."
+    },
+    {
+      "level": "warning",
+      "when": "cu_replacement && bonding == 'unknown'",
+      "message": "Board change with bonding unchecked. Bonding upgrades are the most commonly missed cost on a CU change."
+    },
+    {
+      "level": "warning",
+      "when": "job_type == 'ev_charger' && earthing == 'tncs' && !ev_open_device && !needs_earth_rod",
+      "message": "EV on PME with no O-PEN device and no earth rod priced. One of the two is required."
+    },
+    {
+      "level": "warning",
+      "when": "load_check_missing",
+      "message": "You're adding load without a main fuse rating. Check maximum demand before you commit to this."
+    },
+    {
+      "level": "warning",
+      "when": "is_rewire && point_count > 0 && (price_per_point < 5500 || price_per_point > 11000)",
+      "message": "Rewire is pricing outside the usual £55–110 per point. Check the point count and the spec."
+    },
+    {
+      "level": "warning",
+      "when": "!making_good_selected && chasing_metres > 0",
+      "message": "You're chasing walls but making good isn't priced. It will print as an exclusion."
+    },
+    {
+      "level": "warning",
+      "when": "cable_type == 'rubber' && !is_rewire",
+      "message": "Rubber or VIR cable found and this isn't a rewire. Adding to an installation like that is a rewire conversation, not a repair."
+    },
+    {
+      "level": "warning",
+      "when": "modifier_cap_hit",
+      "message": "This job hit the difficulty cap. Worth a proper survey before you send it."
+    },
+    {
+      "level": "warning",
+      "when": "effective_hourly_pence < settings.labour_cost_pence",
+      "message": "You're charging less per hour than the work costs you."
+    }
+  ],
+  "presentation": {
+    "groups": [
+      "Consumer unit and supply",
+      "First fix",
+      "Second fix",
+      "Circuits",
+      "Testing and certification",
+      "Materials",
+      "Extras"
+    ],
+    "exclusions": [
+      "Making good — plastering, filling or redecoration — unless stated above",
+      "Remedial work arising from defects found during inspection and testing",
+      "Removal or disturbance of asbestos-containing materials",
+      "Builder's work, lifting of fitted floor coverings, or removal of fitted furniture",
+      "Supply upgrades or works carried out by the DNO",
+      "Repair of concealed cabling, pipework or structure damaged during routing"
+    ],
+    "assumptions": [
+      "Reasonable access to all rooms, the consumer unit and cable routes",
+      "The existing installation is as described and free of undeclared defects",
+      "Power may be interrupted during working hours",
+      "Fitted floor coverings are lifted and relaid by others unless stated",
+      "The property is free of asbestos in the areas being worked on"
+    ],
+    "validityDays": 30,
+    "printRegistrations": [
+      "part_p_scheme",
+      "inspection_testing"
+    ]
+  }
+}

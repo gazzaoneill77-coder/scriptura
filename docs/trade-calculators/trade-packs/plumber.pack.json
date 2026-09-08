@@ -1,0 +1,2289 @@
+{
+  "id": "plumber",
+  "specVersion": 2,
+  "packVersion": "1.0.0-draft",
+  "name": "The Plumber's Pricing Calculator",
+  "region": "GB",
+  "units": "metric",
+  "jobTypes": [
+    {
+      "id": "callout_repair",
+      "label": "Callout or repair",
+      "icon": "wrench",
+      "asks": [
+        "context",
+        "access",
+        "repair"
+      ],
+      "minimum": "callout"
+    },
+    {
+      "id": "bathroom_install",
+      "label": "Bathroom installation",
+      "icon": "bath",
+      "asks": [
+        "context",
+        "access",
+        "fixtures",
+        "pipework",
+        "making_good"
+      ],
+      "minimum": "day",
+      "visits": 2
+    },
+    {
+      "id": "boiler",
+      "label": "Boiler swap or install",
+      "icon": "flame",
+      "asks": [
+        "context",
+        "access",
+        "boiler",
+        "certification"
+      ],
+      "minimum": "day",
+      "requires": [
+        "registrations.gas_safe"
+      ],
+      "requiresMessage": "Boiler work is Gas Safe registered only. Add your Gas Safe number in Settings, or quote this as a subcontracted job."
+    },
+    {
+      "id": "radiator_work",
+      "label": "Radiators",
+      "icon": "radiator",
+      "asks": [
+        "context",
+        "access",
+        "radiators",
+        "pipework"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "kitchen_plumbing",
+      "label": "Kitchen plumbing",
+      "icon": "sink",
+      "asks": [
+        "context",
+        "access",
+        "fixtures",
+        "pipework"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "pipework",
+      "label": "Pipework or re-pipe",
+      "icon": "pipe",
+      "asks": [
+        "context",
+        "access",
+        "pipework"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "unvented_cylinder",
+      "label": "Unvented cylinder",
+      "icon": "cylinder",
+      "asks": [
+        "context",
+        "access",
+        "cylinder",
+        "certification"
+      ],
+      "minimum": "day",
+      "requires": [
+        "registrations.g3"
+      ],
+      "requiresMessage": "Unvented cylinders require a G3 qualification. Add your G3 number in Settings."
+    },
+    {
+      "id": "emergency",
+      "label": "Emergency",
+      "icon": "alert",
+      "asks": [
+        "context",
+        "access",
+        "repair"
+      ],
+      "minimum": "callout",
+      "defaults": {
+        "urgency": "emergency"
+      }
+    },
+    {
+      "id": "landlord_check",
+      "label": "Landlord safety check",
+      "icon": "shield",
+      "asks": [
+        "context",
+        "certification"
+      ],
+      "minimum": "callout",
+      "requires": [
+        "registrations.gas_safe"
+      ],
+      "requiresMessage": "A Landlord Gas Safety Record can only be issued by a Gas Safe registered engineer."
+    }
+  ],
+  "questions": [
+    {
+      "id": "urgency",
+      "label": "How soon?",
+      "type": "enum",
+      "control": "cards",
+      "group": "context",
+      "default": "booked_in",
+      "options": [
+        {
+          "value": "booked_in",
+          "label": "Booked in",
+          "sub": "Normal lead time"
+        },
+        {
+          "value": "next_day",
+          "label": "Next day"
+        },
+        {
+          "value": "same_day",
+          "label": "Same day"
+        },
+        {
+          "value": "emergency",
+          "label": "Emergency",
+          "sub": "Drop everything"
+        }
+      ]
+    },
+    {
+      "id": "time_of_day",
+      "label": "When are you working?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "normal",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal hours"
+        },
+        {
+          "value": "evening",
+          "label": "Evening"
+        },
+        {
+          "value": "weekend",
+          "label": "Weekend"
+        },
+        {
+          "value": "bank_holiday",
+          "label": "Bank holiday"
+        }
+      ]
+    },
+    {
+      "id": "property_type",
+      "label": "What kind of property?",
+      "type": "enum",
+      "control": "cards",
+      "group": "context",
+      "default": "house",
+      "options": [
+        {
+          "value": "flat",
+          "label": "Flat"
+        },
+        {
+          "value": "house",
+          "label": "House"
+        },
+        {
+          "value": "hmo",
+          "label": "HMO"
+        },
+        {
+          "value": "commercial",
+          "label": "Commercial"
+        }
+      ]
+    },
+    {
+      "id": "property_age",
+      "label": "Roughly how old is it?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "1960_2000",
+      "help": "The biggest single driver of plumbing surprises.",
+      "options": [
+        {
+          "value": "pre_1960",
+          "label": "Pre-1960",
+          "sub": "Lead or imperial pipe possible"
+        },
+        {
+          "value": "1960_2000",
+          "label": "1960–2000"
+        },
+        {
+          "value": "post_2000",
+          "label": "Post-2000"
+        }
+      ]
+    },
+    {
+      "id": "system_type",
+      "label": "What system is in there?",
+      "type": "enum",
+      "control": "cards",
+      "group": "context",
+      "default": "combi",
+      "options": [
+        {
+          "value": "combi",
+          "label": "Combi"
+        },
+        {
+          "value": "system",
+          "label": "System + cylinder"
+        },
+        {
+          "value": "gravity",
+          "label": "Gravity / vented",
+          "sub": "Tank in the loft"
+        },
+        {
+          "value": "unvented",
+          "label": "Unvented"
+        },
+        {
+          "value": "unknown",
+          "label": "Not sure yet"
+        }
+      ]
+    },
+    {
+      "id": "asbestos_risk",
+      "label": "Any asbestos suspected?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "context",
+      "default": false,
+      "help": "Artex, old flue runs, boiler bases in pre-2000 properties."
+    },
+    {
+      "id": "stopcock",
+      "label": "Stopcock — found and working?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "working",
+      "options": [
+        {
+          "value": "working",
+          "label": "Yes"
+        },
+        {
+          "value": "seized",
+          "label": "Seized"
+        },
+        {
+          "value": "not_found",
+          "label": "Can't find it"
+        }
+      ]
+    },
+    {
+      "id": "isolation_possible",
+      "label": "Can you isolate without draining the system?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "context",
+      "default": true
+    },
+    {
+      "id": "surveyed",
+      "label": "Have you seen the job?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "visited",
+      "options": [
+        {
+          "value": "visited",
+          "label": "Been there"
+        },
+        {
+          "value": "photos",
+          "label": "Photos only"
+        },
+        {
+          "value": "phone",
+          "label": "Described on the phone"
+        }
+      ]
+    },
+    {
+      "id": "parking",
+      "label": "Parking",
+      "type": "enum",
+      "control": "segmented",
+      "group": "context",
+      "default": "outside",
+      "options": [
+        {
+          "value": "outside",
+          "label": "Outside"
+        },
+        {
+          "value": "under_50m",
+          "label": "Under 50 m"
+        },
+        {
+          "value": "restricted",
+          "label": "Restricted",
+          "sub": "Permit needed"
+        },
+        {
+          "value": "congestion",
+          "label": "Congestion / ULEZ zone"
+        }
+      ]
+    },
+    {
+      "id": "floor_level",
+      "label": "Which floor?",
+      "type": "count",
+      "control": "stepper",
+      "group": "context",
+      "default": 0,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "id": "pipework_access",
+      "label": "How do you get at the pipework?",
+      "type": "enum",
+      "control": "cards",
+      "group": "access",
+      "default": "floorboards",
+      "affects": [
+        "pipe_run",
+        "fixture_pipework"
+      ],
+      "options": [
+        {
+          "value": "exposed",
+          "label": "Exposed",
+          "sub": "Straight at it"
+        },
+        {
+          "value": "boxed",
+          "label": "Boxed in"
+        },
+        {
+          "value": "carpet",
+          "label": "Under carpet"
+        },
+        {
+          "value": "floorboards",
+          "label": "Under floorboards"
+        },
+        {
+          "value": "laminate",
+          "label": "Under laminate or engineered",
+          "sub": "Has to come up carefully"
+        },
+        {
+          "value": "concrete",
+          "label": "Concrete floor",
+          "sub": "Chasing or re-routing"
+        },
+        {
+          "value": "loft",
+          "label": "Loft or crawl space"
+        }
+      ]
+    },
+    {
+      "id": "existing_pipe",
+      "label": "What's the existing pipe?",
+      "type": "enum",
+      "control": "cards",
+      "group": "access",
+      "default": "copper",
+      "options": [
+        {
+          "value": "copper",
+          "label": "Copper"
+        },
+        {
+          "value": "plastic",
+          "label": "Plastic"
+        },
+        {
+          "value": "imperial",
+          "label": "Imperial copper",
+          "sub": "Needs adaptors"
+        },
+        {
+          "value": "lead",
+          "label": "Lead",
+          "sub": "Replace back to the main"
+        },
+        {
+          "value": "galvanised",
+          "label": "Galvanised steel"
+        },
+        {
+          "value": "unknown",
+          "label": "Won't know until I open up"
+        }
+      ]
+    },
+    {
+      "id": "chasing_metres",
+      "label": "Wall chasing needed",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "access",
+      "default": 0,
+      "min": 0,
+      "max": 30,
+      "step": 0.5
+    },
+    {
+      "id": "joists_crossed",
+      "label": "Joists to drill",
+      "type": "count",
+      "control": "stepper",
+      "group": "access",
+      "default": 0
+    },
+    {
+      "id": "fixtures",
+      "label": "Fixtures",
+      "type": "repeater",
+      "control": "repeater",
+      "group": "fixtures",
+      "minItems": 0,
+      "duplicateLabel": "Add another",
+      "fields": [
+        {
+          "id": "fixture_type",
+          "label": "Fixture",
+          "type": "enum",
+          "control": "chips",
+          "default": "basin",
+          "options": [
+            {
+              "value": "basin",
+              "label": "Basin"
+            },
+            {
+              "value": "wc_close_coupled",
+              "label": "WC — close coupled"
+            },
+            {
+              "value": "wc_concealed",
+              "label": "WC — concealed cistern"
+            },
+            {
+              "value": "bath",
+              "label": "Bath"
+            },
+            {
+              "value": "shower_mixer",
+              "label": "Shower over bath"
+            },
+            {
+              "value": "shower_enclosure",
+              "label": "Shower enclosure + tray"
+            },
+            {
+              "value": "kitchen_sink",
+              "label": "Kitchen sink"
+            },
+            {
+              "value": "utility_sink",
+              "label": "Utility sink"
+            },
+            {
+              "value": "outside_tap",
+              "label": "Outside tap"
+            },
+            {
+              "value": "tap_only",
+              "label": "Taps only"
+            },
+            {
+              "value": "appliance",
+              "label": "Appliance connection"
+            }
+          ]
+        },
+        {
+          "id": "count",
+          "label": "How many",
+          "type": "count",
+          "control": "stepper",
+          "default": 1
+        },
+        {
+          "id": "supply",
+          "label": "Who supplies it?",
+          "type": "enum",
+          "control": "segmented",
+          "default": "plumber",
+          "options": [
+            {
+              "value": "plumber",
+              "label": "I do"
+            },
+            {
+              "value": "client",
+              "label": "Client does"
+            }
+          ]
+        },
+        {
+          "id": "position",
+          "label": "Position",
+          "type": "enum",
+          "control": "segmented",
+          "default": "same",
+          "options": [
+            {
+              "value": "same",
+              "label": "Same spot"
+            },
+            {
+              "value": "moved_lt1",
+              "label": "Moved under 1 m"
+            },
+            {
+              "value": "moved_gt1",
+              "label": "Moved over 1 m"
+            },
+            {
+              "value": "new",
+              "label": "Brand new position"
+            }
+          ]
+        },
+        {
+          "id": "seized",
+          "label": "Seized or awkward?",
+          "type": "boolean",
+          "control": "toggle",
+          "default": false
+        }
+      ]
+    },
+    {
+      "id": "rad_swap",
+      "label": "Radiator swaps (like for like)",
+      "type": "count",
+      "control": "stepper",
+      "group": "radiators",
+      "default": 0
+    },
+    {
+      "id": "rad_new_existing",
+      "label": "New radiators on existing pipework",
+      "type": "count",
+      "control": "stepper",
+      "group": "radiators",
+      "default": 0
+    },
+    {
+      "id": "rad_new_pipework",
+      "label": "New radiators + new pipework",
+      "type": "count",
+      "control": "stepper",
+      "group": "radiators",
+      "default": 0
+    },
+    {
+      "id": "trv_count",
+      "label": "TRVs and valves",
+      "type": "count",
+      "control": "stepper",
+      "group": "radiators",
+      "default": 0
+    },
+    {
+      "id": "pipe_runs",
+      "label": "Pipe runs",
+      "type": "repeater",
+      "control": "repeater",
+      "group": "pipework",
+      "minItems": 0,
+      "fields": [
+        {
+          "id": "length",
+          "label": "Length",
+          "type": "number",
+          "unit": "m",
+          "control": "slider",
+          "default": 5,
+          "min": 0.5,
+          "max": 60,
+          "step": 0.5
+        },
+        {
+          "id": "material",
+          "label": "Material",
+          "type": "enum",
+          "control": "segmented",
+          "default": "copper",
+          "options": [
+            {
+              "value": "copper",
+              "label": "Copper"
+            },
+            {
+              "value": "pushfit",
+              "label": "Push-fit"
+            },
+            {
+              "value": "pex",
+              "label": "PEX"
+            },
+            {
+              "value": "mlcp",
+              "label": "MLCP"
+            }
+          ]
+        },
+        {
+          "id": "diameter",
+          "label": "Diameter",
+          "type": "enum",
+          "control": "segmented",
+          "default": "15",
+          "options": [
+            {
+              "value": "15",
+              "label": "15 mm"
+            },
+            {
+              "value": "22",
+              "label": "22 mm"
+            },
+            {
+              "value": "28",
+              "label": "28 mm"
+            }
+          ]
+        },
+        {
+          "id": "bends",
+          "label": "Bends",
+          "type": "count",
+          "control": "stepper",
+          "default": 0
+        },
+        {
+          "id": "tees",
+          "label": "Tees",
+          "type": "count",
+          "control": "stepper",
+          "default": 0
+        }
+      ]
+    },
+    {
+      "id": "boiler_work",
+      "label": "Boiler",
+      "type": "enum",
+      "control": "cards",
+      "group": "boiler",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "like_for_like",
+          "label": "Combi swap, like for like"
+        },
+        {
+          "value": "conversion",
+          "label": "System to combi conversion"
+        },
+        {
+          "value": "relocate",
+          "label": "Relocate"
+        },
+        {
+          "value": "new_install",
+          "label": "New installation"
+        }
+      ]
+    },
+    {
+      "id": "boiler_supply",
+      "label": "Who supplies the boiler?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "boiler",
+      "default": "plumber",
+      "appliesWhen": "boiler_work != 'none'",
+      "options": [
+        {
+          "value": "plumber",
+          "label": "I do"
+        },
+        {
+          "value": "client",
+          "label": "Client does"
+        }
+      ]
+    },
+    {
+      "id": "powerflush",
+      "label": "Powerflush",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "boiler",
+      "default": false
+    },
+    {
+      "id": "powerflush_rads",
+      "label": "Radiators to flush",
+      "type": "count",
+      "control": "stepper",
+      "group": "boiler",
+      "default": 8,
+      "appliesWhen": "powerflush"
+    },
+    {
+      "id": "cylinder_work",
+      "label": "Cylinder",
+      "type": "enum",
+      "control": "cards",
+      "group": "cylinder",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "vented_swap",
+          "label": "Vented swap"
+        },
+        {
+          "value": "unvented_install",
+          "label": "Unvented install"
+        },
+        {
+          "value": "remove",
+          "label": "Remove"
+        }
+      ]
+    },
+    {
+      "id": "leak_detection",
+      "label": "Leak with no visible source?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "repair",
+      "default": false
+    },
+    {
+      "id": "repair_hours_estimate",
+      "label": "How long do you reckon?",
+      "type": "number",
+      "unit": "hr",
+      "control": "slider",
+      "group": "repair",
+      "default": 1,
+      "min": 0.5,
+      "max": 8,
+      "step": 0.5,
+      "help": "Your own read of the job. The minimum callout still applies."
+    },
+    {
+      "id": "making_good",
+      "label": "Making good",
+      "type": "multi_enum",
+      "control": "chips",
+      "group": "making_good",
+      "default": [],
+      "help": "Anything not ticked here prints as an exclusion. This is where plumbing jobs go wrong.",
+      "options": [
+        {
+          "value": "plastering",
+          "label": "Plastering"
+        },
+        {
+          "value": "tiling",
+          "label": "Tiling"
+        },
+        {
+          "value": "boxing",
+          "label": "Boxing in"
+        },
+        {
+          "value": "decorating",
+          "label": "Decorating"
+        }
+      ]
+    },
+    {
+      "id": "waste_items",
+      "label": "Old items to take away",
+      "type": "multi_enum",
+      "control": "chips",
+      "group": "making_good",
+      "default": [],
+      "options": [
+        {
+          "value": "bath",
+          "label": "Bath"
+        },
+        {
+          "value": "wc",
+          "label": "WC and basin"
+        },
+        {
+          "value": "cylinder",
+          "label": "Cylinder"
+        },
+        {
+          "value": "boiler",
+          "label": "Boiler"
+        },
+        {
+          "value": "radiators",
+          "label": "Radiators"
+        }
+      ]
+    },
+    {
+      "id": "part_p_route",
+      "label": "Electrical work",
+      "type": "enum",
+      "control": "cards",
+      "group": "certification",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None needed"
+        },
+        {
+          "value": "subcontract",
+          "label": "Subcontract to an electrician"
+        },
+        {
+          "value": "self_certify",
+          "label": "I self-certify (Part P)"
+        }
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "basin_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'basin', f.count, 0))"
+    },
+    {
+      "id": "wc_cc_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'wc_close_coupled', f.count, 0))"
+    },
+    {
+      "id": "wc_conc_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'wc_concealed', f.count, 0))"
+    },
+    {
+      "id": "bath_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'bath', f.count, 0))"
+    },
+    {
+      "id": "shower_mixer_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'shower_mixer', f.count, 0))"
+    },
+    {
+      "id": "shower_encl_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'shower_enclosure', f.count, 0))"
+    },
+    {
+      "id": "sink_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'kitchen_sink' || f.fixture_type == 'utility_sink', f.count, 0))"
+    },
+    {
+      "id": "outside_tap_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'outside_tap', f.count, 0))"
+    },
+    {
+      "id": "appliance_count",
+      "expr": "sum(fixtures, if(f.fixture_type == 'appliance', f.count, 0))"
+    },
+    {
+      "id": "tap_count_easy",
+      "expr": "sum(fixtures, if(f.fixture_type == 'tap_only' && !f.seized, f.count, 0))"
+    },
+    {
+      "id": "tap_count_seized",
+      "expr": "sum(fixtures, if(f.fixture_type == 'tap_only' && f.seized, f.count, 0))"
+    },
+    {
+      "id": "fixture_count",
+      "expr": "sum(fixtures, f.count)"
+    },
+    {
+      "id": "fixtures_client_supplied",
+      "expr": "sum(fixtures, if(f.supply == 'client', f.count, 0))"
+    },
+    {
+      "id": "fixture_move_units",
+      "expr": "sum(fixtures, f.count * if(f.position == 'same', 0, if(f.position == 'moved_lt1', 1, if(f.position == 'moved_gt1', 2, 3))))",
+      "note": "Repositioning weight. Nested if() stands in for a lookup table — see spec v2 note on match()."
+    },
+    {
+      "id": "pipe_length_copper",
+      "expr": "sum(pipe_runs, if(p.material == 'copper', p.length, 0))"
+    },
+    {
+      "id": "pipe_length_plastic",
+      "expr": "sum(pipe_runs, if(p.material != 'copper', p.length, 0))"
+    },
+    {
+      "id": "pipe_length_total",
+      "expr": "pipe_length_copper + pipe_length_plastic"
+    },
+    {
+      "id": "pipe_15mm",
+      "expr": "sum(pipe_runs, if(p.diameter == '15', p.length, 0))"
+    },
+    {
+      "id": "pipe_22mm",
+      "expr": "sum(pipe_runs, if(p.diameter == '22', p.length, 0))"
+    },
+    {
+      "id": "pipe_28mm",
+      "expr": "sum(pipe_runs, if(p.diameter == '28', p.length, 0))"
+    },
+    {
+      "id": "fittings_declared",
+      "expr": "sum(pipe_runs, p.bends + p.tees)"
+    },
+    {
+      "id": "fittings_estimated",
+      "expr": "ceil(pipe_length_total * 0.85)"
+    },
+    {
+      "id": "fittings_count",
+      "expr": "max(fittings_declared, if(fittings_declared == 0, fittings_estimated, fittings_declared))",
+      "note": "Fall back to an estimate when the user hasn't counted bends and tees."
+    },
+    {
+      "id": "rad_total",
+      "expr": "rad_swap + rad_new_existing + rad_new_pipework"
+    },
+    {
+      "id": "is_gas_job",
+      "expr": "boiler_work != 'none' || job_type == 'landlord_check'"
+    },
+    {
+      "id": "needs_drain_down",
+      "expr": "!isolation_possible || rad_new_pipework > 0 || boiler_work != 'none'"
+    },
+    {
+      "id": "stopcock_remedial_units",
+      "expr": "if(stopcock == 'working', 0, 1)"
+    },
+    {
+      "id": "heavy_lift_units",
+      "expr": "bath_count + if(cylinder_work != 'none', 1, 0) + if(boiler_work != 'none', 1, 0)"
+    },
+    {
+      "id": "visits",
+      "expr": "if(job_type == 'bathroom_install', 2, 1)"
+    },
+    {
+      "id": "extra_visits",
+      "expr": "visits - 1"
+    },
+    {
+      "id": "unheated_pipe_length",
+      "expr": "if(pipework_access == 'loft', pipe_length_total, pipe_length_total * 0.25)"
+    },
+    {
+      "id": "making_good_selected",
+      "expr": "count(making_good) > 0"
+    },
+    {
+      "id": "waste_item_count",
+      "expr": "count(waste_items)"
+    },
+    {
+      "id": "pipe_material_unknown",
+      "expr": "existing_pipe == 'unknown' || existing_pipe == 'lead' || existing_pipe == 'galvanised' || existing_pipe == 'imperial'"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "callout_diagnostic",
+      "label": "Callout and diagnosis",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "callout"
+      ],
+      "quantity": "repair_hours_estimate",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.0,
+        "high": 1.0,
+        "unit": "hr/hr"
+      },
+      "minHours": 1.0,
+      "appliesWhen": "job_type == 'callout_repair' || job_type == 'emergency'",
+      "source": "trade norm — 1 hr minimum then 30-minute increments"
+    },
+    {
+      "id": "leak_detection",
+      "label": "Leak detection",
+      "group": "First fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 1.0,
+        "typical": 2.0,
+        "high": 4.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "leak_detection",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "strip_out",
+      "label": "Strip out existing",
+      "group": "Strip out and disposal",
+      "tags": [
+        "labour",
+        "handling"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 3.0,
+        "typical": 5.0,
+        "high": 8.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "job_type == 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "first_fix",
+      "label": "First fix pipework",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 6.0,
+        "typical": 9.0,
+        "high": 14.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "job_type == 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "second_fix",
+      "label": "Second fix",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 5.0,
+        "typical": 8.0,
+        "high": 12.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "job_type == 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_basin",
+      "label": "Basin — supply and fit",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "basin_count",
+      "rate": {
+        "low": 1.8,
+        "typical": 2.5,
+        "high": 4.0,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "job_type != 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_wc_cc",
+      "label": "WC — close coupled",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "wc_cc_count",
+      "rate": {
+        "low": 1.5,
+        "typical": 2.2,
+        "high": 3.5,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "job_type != 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_wc_concealed",
+      "label": "WC — concealed cistern",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "wc_conc_count",
+      "rate": {
+        "low": 3.0,
+        "typical": 4.5,
+        "high": 6.5,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "job_type != 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_bath",
+      "label": "Bath — supply and fit",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour",
+        "handling"
+      ],
+      "quantity": "bath_count",
+      "rate": {
+        "low": 3.0,
+        "typical": 4.5,
+        "high": 7.0,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "job_type != 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_shower_mixer",
+      "label": "Shower over bath",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "shower_mixer_count",
+      "rate": {
+        "low": 1.5,
+        "typical": 2.5,
+        "high": 4.0,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "job_type != 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_shower_enclosure",
+      "label": "Shower enclosure, tray and waste",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "shower_encl_count",
+      "rate": {
+        "low": 5.0,
+        "typical": 7.5,
+        "high": 12.0,
+        "unit": "hr/each"
+      },
+      "appliesWhen": "job_type != 'bathroom_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_sink",
+      "label": "Sink — supply and fit",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "sink_count",
+      "rate": {
+        "low": 1.5,
+        "typical": 2.2,
+        "high": 3.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_tap_easy",
+      "label": "Tap replacement",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "tap_count_easy",
+      "rate": {
+        "low": 0.6,
+        "typical": 1.0,
+        "high": 1.8,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_tap_seized",
+      "label": "Tap replacement — seized or awkward",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "tap_count_seized",
+      "rate": {
+        "low": 1.2,
+        "typical": 2.0,
+        "high": 3.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_outside_tap",
+      "label": "Outside tap",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "outside_tap_count",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.6,
+        "high": 2.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fit_appliance",
+      "label": "Appliance connection",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "appliance_count",
+      "rate": {
+        "low": 0.4,
+        "typical": 0.75,
+        "high": 1.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fixture_repositioning",
+      "label": "Moving fixture positions",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "fixture_move_units",
+      "rate": {
+        "low": 0.8,
+        "typical": 1.2,
+        "high": 2.0,
+        "unit": "hr/unit"
+      },
+      "source": "derived from position multipliers in 04-plumber.md"
+    },
+    {
+      "id": "rad_swap_task",
+      "label": "Radiator swap, like for like",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "rad_swap",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.6,
+        "high": 2.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "rad_new_existing_task",
+      "label": "New radiator on existing pipework",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "rad_new_existing",
+      "rate": {
+        "low": 1.5,
+        "typical": 2.2,
+        "high": 3.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "rad_new_pipework_task",
+      "label": "New radiator with new pipework",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "rad_new_pipework",
+      "rate": {
+        "low": 2.5,
+        "typical": 4.0,
+        "high": 6.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "trv_task",
+      "label": "TRVs and valves",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "trv_count",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.5,
+        "high": 0.9,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "pipe_run_copper",
+      "label": "Copper pipework",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "pipe_length_copper",
+      "rate": {
+        "low": 0.2,
+        "typical": 0.3,
+        "high": 0.45,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "pipe_run_plastic",
+      "label": "Plastic pipework",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "pipe_length_plastic",
+      "rate": {
+        "low": 0.12,
+        "typical": 0.2,
+        "high": 0.3,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fittings_labour",
+      "label": "Joints and fittings",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "fittings_count",
+      "rate": {
+        "low": 0.1,
+        "typical": 0.18,
+        "high": 0.3,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "chasing",
+      "label": "Chasing walls",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "chasing_metres",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "joist_drilling",
+      "label": "Drilling joists",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "pipework"
+      ],
+      "quantity": "joists_crossed",
+      "rate": {
+        "low": 0.1,
+        "typical": 0.15,
+        "high": 0.25,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "boiler_like_for_like",
+      "label": "Combi boiler swap, like for like",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "gas"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 8.0,
+        "typical": 11.0,
+        "high": 16.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "boiler_work == 'like_for_like'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "boiler_conversion",
+      "label": "System to combi conversion",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "gas"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 14.0,
+        "typical": 20.0,
+        "high": 30.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "boiler_work == 'conversion' || boiler_work == 'new_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "boiler_relocate",
+      "label": "Relocate boiler",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "gas"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 10.0,
+        "typical": 15.0,
+        "high": 22.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "boiler_work == 'relocate'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "unvented_install",
+      "label": "Unvented cylinder installation",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "g3"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 7.0,
+        "typical": 10.0,
+        "high": 15.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "cylinder_work == 'unvented_install'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "cylinder_vented_swap",
+      "label": "Vented cylinder swap",
+      "group": "First fix",
+      "tags": [
+        "labour",
+        "handling"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 3.0,
+        "typical": 4.5,
+        "high": 7.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "cylinder_work == 'vented_swap'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "powerflush_task",
+      "label": "Powerflush",
+      "group": "First fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "powerflush_rads",
+      "rate": {
+        "low": 0.5,
+        "typical": 0.75,
+        "high": 1.2,
+        "unit": "hr/radiator"
+      },
+      "minHours": 4.0,
+      "appliesWhen": "powerflush",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "drain_refill",
+      "label": "Drain down, refill and rebalance",
+      "group": "First fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.75,
+        "high": 3.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "needs_drain_down",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "stopcock_remedial",
+      "label": "Stopcock — free off or replace",
+      "group": "First fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "stopcock_remedial_units",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.5,
+        "high": 3.0,
+        "unit": "hr"
+      },
+      "source": "04-plumber.md — flat allowance modelled as a task"
+    },
+    {
+      "id": "heavy_lift",
+      "label": "Two-person handling",
+      "group": "Strip out and disposal",
+      "tags": [
+        "labour",
+        "handling"
+      ],
+      "quantity": "heavy_lift_units",
+      "rate": {
+        "low": 0.5,
+        "typical": 1.0,
+        "high": 1.75,
+        "unit": "hr/item"
+      },
+      "source": "second pair of hands for baths, cylinders and boilers"
+    },
+    {
+      "id": "additional_visit",
+      "label": "Return visit set-up",
+      "group": "First fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "extra_visits",
+      "rate": {
+        "low": 0.4,
+        "typical": 0.5,
+        "high": 0.8,
+        "unit": "hr/visit"
+      },
+      "source": "first fix / second fix split"
+    },
+    {
+      "id": "making_good_plastering",
+      "label": "Making good — plastering",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "chasing_metres",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/m"
+      },
+      "appliesWhen": "making_good contains 'plastering'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "making_good_boxing",
+      "label": "Making good — boxing in",
+      "group": "Fixtures and second fix",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "1",
+      "rate": {
+        "low": 1.5,
+        "typical": 2.5,
+        "high": 4.0,
+        "unit": "hr"
+      },
+      "appliesWhen": "making_good contains 'boxing'",
+      "source": "practitioner review 2026-02"
+    }
+  ],
+  "materials": [
+    {
+      "id": "copper_pipe_15",
+      "label": "Copper pipe 15 mm",
+      "sku": "pipe.copper.15mm",
+      "group": "Materials",
+      "quantity": "pipe_15mm",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 2,
+          "unit": "m"
+        },
+        {
+          "size": 3,
+          "unit": "m"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination",
+      "notes": "+10% length buffer is the standard trade allowance — never quote the exact run"
+    },
+    {
+      "id": "copper_pipe_22",
+      "label": "Copper pipe 22 mm",
+      "sku": "pipe.copper.22mm",
+      "group": "Materials",
+      "quantity": "pipe_22mm",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 2,
+          "unit": "m"
+        },
+        {
+          "size": 3,
+          "unit": "m"
+        }
+      ]
+    },
+    {
+      "id": "copper_pipe_28",
+      "label": "Copper pipe 28 mm",
+      "sku": "pipe.copper.28mm",
+      "group": "Materials",
+      "quantity": "pipe_28mm",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 3,
+          "unit": "m"
+        }
+      ]
+    },
+    {
+      "id": "fittings",
+      "label": "Fittings",
+      "sku": "fitting.compression.mixed",
+      "group": "Materials",
+      "quantity": "fittings_count",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0.15,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "notes": "+15% count buffer — you never do a run with the exact fitting count"
+    },
+    {
+      "id": "isolation_valves",
+      "label": "Isolation valves",
+      "sku": "valve.isolation.15mm",
+      "group": "Materials",
+      "quantity": "max(fixture_count, 2)",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "notes": "One per fixture supply, minimum two per job"
+    },
+    {
+      "id": "pipe_clips",
+      "label": "Pipe clips",
+      "sku": "clip.pipe.15mm",
+      "group": "Materials",
+      "quantity": "pipe_length_total",
+      "consumption": {
+        "expr": "1 / 1.2",
+        "unit": "each/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "notes": "1 per 1.2 m horizontal (15 mm copper)"
+    },
+    {
+      "id": "insulation",
+      "label": "Pipe insulation",
+      "sku": "insulation.pipe.15mm",
+      "group": "Materials",
+      "quantity": "unheated_pipe_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m"
+        },
+        {
+          "size": 2,
+          "unit": "m"
+        }
+      ],
+      "notes": "Water Regs requirement in unheated space — not optional"
+    },
+    {
+      "id": "lead_adaptors",
+      "label": "Lead / galvanised adaptors",
+      "sku": "fitting.adaptor.transition",
+      "group": "Materials",
+      "quantity": "2",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "existing_pipe == 'lead' || existing_pipe == 'galvanised' || existing_pipe == 'imperial'",
+      "notes": "Mandatory when transitioning from legacy pipe"
+    },
+    {
+      "id": "boiler_unit",
+      "label": "Boiler",
+      "sku": "appliance.boiler.combi",
+      "group": "Materials",
+      "quantity": "1",
+      "consumption": {
+        "expr": "1",
+        "unit": "each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "boiler_work != 'none' && boiler_supply == 'plumber'",
+      "excludeFromMarginBase": true,
+      "notes": "High-value appliance — cost-plus-markup, never inside the labour margin base"
+    },
+    {
+      "id": "cylinder_unit",
+      "label": "Cylinder",
+      "sku": "appliance.cylinder.unvented",
+      "group": "Materials",
+      "quantity": "1",
+      "consumption": {
+        "expr": "1",
+        "unit": "each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "cylinder_work == 'unvented_install' || cylinder_work == 'vented_swap'",
+      "excludeFromMarginBase": true
+    },
+    {
+      "id": "sundries",
+      "label": "Sundries — solder, flux, PTFE, jointing compound, sealant",
+      "group": "Materials",
+      "pricing": {
+        "type": "greater_of",
+        "percentOfMaterials": 0.08,
+        "perDayPence": 1800
+      },
+      "stage": "post_programme"
+    }
+  ],
+  "modifiers": [
+    {
+      "id": "emergency",
+      "when": "urgency == 'emergency'",
+      "factor": 1.75,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Emergency callout — dropping other work"
+    },
+    {
+      "id": "same_day",
+      "when": "urgency == 'same_day'",
+      "factor": 1.35,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Same-day attendance"
+    },
+    {
+      "id": "next_day",
+      "when": "urgency == 'next_day'",
+      "factor": 1.15,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Next-day attendance"
+    },
+    {
+      "id": "evening",
+      "when": "time_of_day == 'evening'",
+      "factor": 1.5,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Out-of-hours working"
+    },
+    {
+      "id": "weekend",
+      "when": "time_of_day == 'weekend'",
+      "factor": 1.5,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Weekend working"
+    },
+    {
+      "id": "bank_holiday",
+      "when": "time_of_day == 'bank_holiday'",
+      "factor": 2.0,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Bank holiday working"
+    },
+    {
+      "id": "access_concrete",
+      "when": "pipework_access == 'concrete'",
+      "factor": 2.4,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Concrete floor — chasing or re-routing pipework"
+    },
+    {
+      "id": "access_laminate",
+      "when": "pipework_access == 'laminate'",
+      "factor": 1.9,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Laminate or engineered floor to lift and relay"
+    },
+    {
+      "id": "access_floorboards",
+      "when": "pipework_access == 'floorboards'",
+      "factor": 1.5,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Pipework under floorboards"
+    },
+    {
+      "id": "access_loft",
+      "when": "pipework_access == 'loft'",
+      "factor": 1.4,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Loft or crawl space — restricted working"
+    },
+    {
+      "id": "access_boxed",
+      "when": "pipework_access == 'boxed'",
+      "factor": 1.3,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Boxed-in pipework to open up"
+    },
+    {
+      "id": "access_carpet",
+      "when": "pipework_access == 'carpet'",
+      "factor": 1.2,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Carpet to lift and relay"
+    },
+    {
+      "id": "old_property",
+      "when": "property_age == 'pre_1960'",
+      "factor": 1.2,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Pre-1960 property — legacy pipework and fittings"
+    },
+    {
+      "id": "legacy_pipe",
+      "when": "existing_pipe == 'lead' || existing_pipe == 'galvanised'",
+      "factor": 1.35,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Lead or galvanised pipe — transition fittings and extra care"
+    },
+    {
+      "id": "imperial_pipe",
+      "when": "existing_pipe == 'imperial'",
+      "factor": 1.15,
+      "scope": [
+        "pipework"
+      ],
+      "explain": "Imperial copper — adaptors needed throughout"
+    },
+    {
+      "id": "upper_floor_no_lift",
+      "when": "floor_level > 2 && property_type == 'flat'",
+      "factor": 1.12,
+      "scope": [
+        "handling"
+      ],
+      "explain": "Upper floor — carrying materials up"
+    },
+    {
+      "id": "client_supplied_fixtures",
+      "when": "fixtures_client_supplied > 0",
+      "factor": 1.08,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Client-supplied fixtures — fit issues and missing parts"
+    }
+  ],
+  "extras": [
+    {
+      "id": "gas_notification",
+      "label": "Building Regulations notification (gas)",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.gas.notification"
+      },
+      "when": "is_gas_job",
+      "group": "Certification"
+    },
+    {
+      "id": "benchmark",
+      "label": "Benchmark commissioning",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.benchmark"
+      },
+      "when": "boiler_work != 'none'",
+      "group": "Certification"
+    },
+    {
+      "id": "landlord_cert",
+      "label": "Landlord Gas Safety Record",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.landlord.gas"
+      },
+      "when": "job_type == 'landlord_check'",
+      "group": "Certification"
+    },
+    {
+      "id": "g3_notification",
+      "label": "G3 unvented notification",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.g3.notification"
+      },
+      "when": "cylinder_work == 'unvented_install'",
+      "group": "Certification"
+    },
+    {
+      "id": "wras_notification",
+      "label": "Water Regs notification",
+      "pricing": {
+        "type": "fixed",
+        "sku": "cert.wras.notification"
+      },
+      "when": "cylinder_work == 'unvented_install'",
+      "group": "Certification"
+    },
+    {
+      "id": "electrician",
+      "label": "Electrician — Part P notifiable work",
+      "pricing": {
+        "type": "fixed",
+        "sku": "subcontract.electrician.day"
+      },
+      "when": "part_p_route == 'subcontract'",
+      "group": "Certification",
+      "excludeFromMarginBase": true
+    },
+    {
+      "id": "tip_fees",
+      "label": "Disposal of old items",
+      "pricing": {
+        "type": "banded",
+        "quantity": "waste_item_count",
+        "bands": [
+          {
+            "upTo": 1,
+            "sku": "disposal.single_item"
+          },
+          {
+            "upTo": 3,
+            "sku": "disposal.part_load"
+          },
+          {
+            "upTo": 99,
+            "sku": "disposal.full_load"
+          }
+        ]
+      },
+      "when": "waste_item_count > 0",
+      "group": "Extras"
+    },
+    {
+      "id": "congestion",
+      "label": "Congestion / ULEZ charge",
+      "pricing": {
+        "type": "fixed",
+        "sku": "travel.congestion",
+        "multiplier": "visits"
+      },
+      "when": "parking == 'congestion'",
+      "group": "Extras"
+    },
+    {
+      "id": "parking_permit",
+      "label": "Parking permit",
+      "pricing": {
+        "type": "fixed",
+        "sku": "travel.permit",
+        "multiplier": "visits"
+      },
+      "when": "parking == 'restricted'",
+      "group": "Extras"
+    }
+  ],
+  "risk": {
+    "surveyConfidence": {
+      "visited": 0,
+      "photos": 0.1,
+      "phone": 0.22
+    },
+    "unknownConditions": [
+      {
+        "when": "property_age == 'pre_1960'",
+        "add": 0.15,
+        "explain": "Pre-1960 property — what's behind the wall is anyone's guess"
+      },
+      {
+        "when": "pipe_material_unknown",
+        "add": 0.12,
+        "explain": "Existing pipe material unconfirmed"
+      },
+      {
+        "when": "pipework_access == 'boxed' || pipework_access == 'concrete'",
+        "add": 0.12,
+        "explain": "Pipework not visible until opened up"
+      },
+      {
+        "when": "system_type == 'unknown'",
+        "add": 0.1,
+        "explain": "System type unconfirmed"
+      },
+      {
+        "when": "fixtures_client_supplied > 0",
+        "add": 0.08,
+        "explain": "Client-supplied fixtures — no warranty recourse, parts may not fit"
+      }
+    ],
+    "cap": 0.35,
+    "priceVolatility": {
+      "low": 0,
+      "medium": 0.03,
+      "high": 0.06
+    }
+  },
+  "defaults": {
+    "contingencyStance": "balanced",
+    "minimumIncrementHours": 0.5
+  },
+  "validation": [
+    {
+      "level": "error",
+      "when": "asbestos_risk",
+      "message": "Asbestos suspected. This needs a survey before anyone opens anything up — don't quote it yet."
+    },
+    {
+      "level": "error",
+      "when": "is_gas_job && !settings.registrations.gas_safe",
+      "message": "Gas work requires Gas Safe registration. Add your number in Settings or quote this as subcontracted."
+    },
+    {
+      "level": "error",
+      "when": "cylinder_work == 'unvented_install' && !settings.registrations.g3",
+      "message": "Unvented cylinder work requires a G3 qualification."
+    },
+    {
+      "level": "error",
+      "when": "fixture_count == 0 && rad_total == 0 && pipe_length_total == 0 && boiler_work == 'none' && cylinder_work == 'none' && job_type != 'callout_repair' && job_type != 'emergency' && job_type != 'landlord_check'",
+      "message": "Nothing selected to price — add fixtures, radiators or pipework."
+    },
+    {
+      "level": "warning",
+      "when": "!making_good_selected && (chasing_metres > 0 || fixture_move_units > 0)",
+      "message": "You're chasing walls or moving fixtures but making good isn't priced. It will print as an exclusion — make sure the client reads it."
+    },
+    {
+      "level": "warning",
+      "when": "urgency == 'emergency' && time_of_day == 'normal' && achieved_margin < 0.30",
+      "message": "Emergency job at close to normal rates. Emergency work should carry its premium."
+    },
+    {
+      "level": "warning",
+      "when": "total_price_pence > 150000 && !has_staged_payments",
+      "message": "Over £1,500 with no staged payments. Take a deposit for materials at least."
+    },
+    {
+      "level": "warning",
+      "when": "pipe_length_total > 0 && isolation_valves_count == 0",
+      "message": "No isolation valves in the materials list. You'll want them."
+    },
+    {
+      "level": "warning",
+      "when": "modifier_cap_hit",
+      "message": "This job hit the difficulty cap. Worth opening something up before you commit to a price."
+    },
+    {
+      "level": "warning",
+      "when": "effective_hourly_pence < settings.labour_cost_pence",
+      "message": "You're charging less per hour than the work costs you. This job loses money."
+    }
+  ],
+  "presentation": {
+    "groups": [
+      "Strip out and disposal",
+      "First fix",
+      "Fixtures and second fix",
+      "Materials",
+      "Certification",
+      "Extras"
+    ],
+    "exclusions": [
+      "Making good — plastering, tiling, boxing in or decorating — unless stated above",
+      "Electrical work, including bonding and fused spurs, unless stated above",
+      "Any work arising from conditions found once floors, walls or panels are opened up",
+      "Removal or handling of asbestos-containing materials",
+      "Repair or replacement of pipework beyond the sections stated above",
+      "Builder's work, structural alterations and reinstatement of concealed finishes"
+    ],
+    "assumptions": [
+      "Mains water can be isolated at a working stopcock",
+      "Reasonable access to the work area and to pipework runs",
+      "Water and electricity available on site",
+      "Fixtures and appliances are on site before the fitting visit",
+      "The property is free of asbestos in the areas being worked on"
+    ],
+    "validityDays": 30,
+    "printRegistrations": [
+      "gas_safe",
+      "g3",
+      "part_p"
+    ]
+  }
+}
