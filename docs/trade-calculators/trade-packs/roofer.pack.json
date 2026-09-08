@@ -1,0 +1,1822 @@
+{
+  "id": "roofer",
+  "specVersion": 6,
+  "packVersion": "1.0.0-draft",
+  "name": "The Roofer's Pricing Calculator",
+  "region": "GB",
+  "units": "metric",
+  "jobTypes": [
+    {
+      "id": "re_roof",
+      "label": "Full re-roof",
+      "icon": "roof",
+      "asks": [
+        "geometry",
+        "covering",
+        "access",
+        "ancillaries"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "refelt_retile",
+      "label": "Re-felt and re-tile",
+      "icon": "roof",
+      "asks": [
+        "geometry",
+        "covering",
+        "access"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "flat_roof",
+      "label": "Flat roof",
+      "icon": "flat",
+      "asks": [
+        "flat",
+        "access"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "roof_repair",
+      "label": "Roof repair",
+      "icon": "wrench",
+      "asks": [
+        "geometry",
+        "access",
+        "repair"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "chimney",
+      "label": "Chimney work",
+      "icon": "chimney",
+      "asks": [
+        "access",
+        "ancillaries"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "gutter_fascia",
+      "label": "Guttering, fascia and soffit",
+      "icon": "gutter",
+      "asks": [
+        "access",
+        "ancillaries"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "rooflight",
+      "label": "Rooflight installation",
+      "icon": "window",
+      "asks": [
+        "geometry",
+        "access",
+        "ancillaries"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "leadwork",
+      "label": "Leadwork",
+      "icon": "lead",
+      "asks": [
+        "access",
+        "ancillaries"
+      ],
+      "minimum": "half_day"
+    }
+  ],
+  "questions": [
+    {
+      "id": "plan_area",
+      "label": "Roof area on plan",
+      "type": "number",
+      "unit": "m2",
+      "control": "dimension-pad",
+      "group": "geometry",
+      "default": 0,
+      "min": 0,
+      "max": 1000,
+      "help": "Measure the footprint. The pitch factor turns it into roof area."
+    },
+    {
+      "id": "pitch",
+      "label": "Pitch",
+      "type": "enum",
+      "control": "cards",
+      "group": "geometry",
+      "default": "35",
+      "options": [
+        {
+          "value": "15",
+          "label": "15°",
+          "sub": "×1.035"
+        },
+        {
+          "value": "22.5",
+          "label": "22.5°",
+          "sub": "×1.082"
+        },
+        {
+          "value": "30",
+          "label": "30°",
+          "sub": "×1.155"
+        },
+        {
+          "value": "35",
+          "label": "35°",
+          "sub": "×1.221"
+        },
+        {
+          "value": "40",
+          "label": "40°",
+          "sub": "×1.305"
+        },
+        {
+          "value": "45",
+          "label": "45°",
+          "sub": "×1.414"
+        }
+      ]
+    },
+    {
+      "id": "roof_shape",
+      "label": "Roof shape",
+      "type": "enum",
+      "control": "cards",
+      "group": "geometry",
+      "default": "gable",
+      "options": [
+        {
+          "value": "gable",
+          "label": "Gable"
+        },
+        {
+          "value": "hip",
+          "label": "Hipped"
+        },
+        {
+          "value": "complex",
+          "label": "Complex",
+          "sub": "Multiple hips and valleys"
+        }
+      ]
+    },
+    {
+      "id": "ridge_length",
+      "label": "Ridge",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "geometry",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 0.5
+    },
+    {
+      "id": "hip_length",
+      "label": "Hips",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "geometry",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 0.5
+    },
+    {
+      "id": "verge_length",
+      "label": "Verge",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "geometry",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 0.5
+    },
+    {
+      "id": "valley_length",
+      "label": "Valleys",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "geometry",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 0.5
+    },
+    {
+      "id": "flashing_length",
+      "label": "Lead flashing",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "geometry",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 0.5
+    },
+    {
+      "id": "storeys",
+      "label": "Storeys",
+      "type": "count",
+      "control": "stepper",
+      "group": "access",
+      "default": 2,
+      "min": 1,
+      "max": 5
+    },
+    {
+      "id": "new_covering",
+      "label": "New covering",
+      "type": "enum",
+      "control": "cards",
+      "group": "covering",
+      "default": "concrete",
+      "options": [
+        {
+          "value": "concrete",
+          "label": "Concrete interlocking"
+        },
+        {
+          "value": "clay_pantile",
+          "label": "Clay pantile"
+        },
+        {
+          "value": "plain_tile",
+          "label": "Plain tile"
+        },
+        {
+          "value": "slate",
+          "label": "Natural slate"
+        },
+        {
+          "value": "fibre_slate",
+          "label": "Fibre cement slate"
+        }
+      ]
+    },
+    {
+      "id": "existing_covering",
+      "label": "What's on it now?",
+      "type": "enum",
+      "control": "cards",
+      "group": "covering",
+      "default": "concrete",
+      "options": [
+        {
+          "value": "concrete",
+          "label": "Concrete tile"
+        },
+        {
+          "value": "clay_pantile",
+          "label": "Clay pantile"
+        },
+        {
+          "value": "plain_tile",
+          "label": "Plain tile"
+        },
+        {
+          "value": "slate",
+          "label": "Natural slate"
+        },
+        {
+          "value": "fibre_slate",
+          "label": "Fibre cement slate"
+        },
+        {
+          "value": "asbestos",
+          "label": "Asbestos cement",
+          "sub": "Stop — survey required"
+        },
+        {
+          "value": "unknown",
+          "label": "Not established"
+        }
+      ]
+    },
+    {
+      "id": "property_age",
+      "label": "Property age",
+      "type": "enum",
+      "control": "segmented",
+      "group": "covering",
+      "default": "post_2000",
+      "options": [
+        {
+          "value": "pre_2000",
+          "label": "Pre-2000",
+          "sub": "Asbestos screening"
+        },
+        {
+          "value": "post_2000",
+          "label": "Post-2000"
+        }
+      ]
+    },
+    {
+      "id": "batten_felt",
+      "label": "Battens and membrane",
+      "type": "enum",
+      "control": "segmented",
+      "group": "covering",
+      "default": "replace_both",
+      "options": [
+        {
+          "value": "replace_both",
+          "label": "Replace both"
+        },
+        {
+          "value": "felt_only",
+          "label": "Membrane only"
+        },
+        {
+          "value": "reuse",
+          "label": "Reuse existing"
+        }
+      ]
+    },
+    {
+      "id": "ridge_system",
+      "label": "Ridge system",
+      "type": "enum",
+      "control": "segmented",
+      "group": "covering",
+      "default": "dry",
+      "options": [
+        {
+          "value": "dry",
+          "label": "Dry ridge"
+        },
+        {
+          "value": "mortar",
+          "label": "Mortar bedded"
+        }
+      ]
+    },
+    {
+      "id": "verge_system",
+      "label": "Verge",
+      "type": "enum",
+      "control": "segmented",
+      "group": "covering",
+      "default": "dry",
+      "options": [
+        {
+          "value": "dry",
+          "label": "Dry verge"
+        },
+        {
+          "value": "mortar",
+          "label": "Mortar"
+        },
+        {
+          "value": "cloaked",
+          "label": "Cloaked"
+        }
+      ]
+    },
+    {
+      "id": "insulation",
+      "label": "Insulation",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "covering",
+      "default": false
+    },
+    {
+      "id": "timber_condition",
+      "label": "Roof timbers",
+      "type": "enum",
+      "control": "cards",
+      "group": "covering",
+      "default": "unknown",
+      "options": [
+        {
+          "value": "sound",
+          "label": "Sound"
+        },
+        {
+          "value": "some_replacement",
+          "label": "Some replacement expected"
+        },
+        {
+          "value": "unknown",
+          "label": "Won't know until it's off"
+        }
+      ]
+    },
+    {
+      "id": "timber_allowance",
+      "label": "Provisional sum for timber",
+      "type": "number",
+      "unit": "GBP",
+      "control": "slider",
+      "group": "covering",
+      "default": 250,
+      "min": 0,
+      "max": 3000,
+      "step": 50,
+      "appliesWhen": "timber_condition != 'sound'",
+      "help": "Shown to the client as an allowance, adjusted on inspection."
+    },
+    {
+      "id": "flat_area",
+      "label": "Flat roof area",
+      "type": "number",
+      "unit": "m2",
+      "control": "dimension-pad",
+      "group": "flat",
+      "default": 0,
+      "min": 0,
+      "max": 500
+    },
+    {
+      "id": "flat_system",
+      "label": "Flat roof system",
+      "type": "enum",
+      "control": "cards",
+      "group": "flat",
+      "default": "epdm",
+      "options": [
+        {
+          "value": "epdm",
+          "label": "EPDM"
+        },
+        {
+          "value": "grp",
+          "label": "GRP"
+        },
+        {
+          "value": "felt",
+          "label": "3-layer felt"
+        },
+        {
+          "value": "single_ply",
+          "label": "Single ply"
+        }
+      ]
+    },
+    {
+      "id": "flat_insulation",
+      "label": "Insulation and firrings",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "flat",
+      "default": true
+    },
+    {
+      "id": "flat_upstand_length",
+      "label": "Upstands and detail",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "flat",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 0.5
+    },
+    {
+      "id": "flat_deck_replace",
+      "label": "Replace deck?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "flat",
+      "default": false
+    },
+    {
+      "id": "chimney_reflash",
+      "label": "Chimneys to reflash",
+      "type": "count",
+      "control": "stepper",
+      "group": "ancillaries",
+      "default": 0
+    },
+    {
+      "id": "chimney_repoint",
+      "label": "Chimneys to repoint",
+      "type": "count",
+      "control": "stepper",
+      "group": "ancillaries",
+      "default": 0
+    },
+    {
+      "id": "rooflight_count",
+      "label": "Rooflights",
+      "type": "count",
+      "control": "stepper",
+      "group": "ancillaries",
+      "default": 0
+    },
+    {
+      "id": "gutter_length",
+      "label": "Guttering",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "ancillaries",
+      "default": 0,
+      "min": 0,
+      "max": 120,
+      "step": 1
+    },
+    {
+      "id": "fascia_length",
+      "label": "Fascia and soffit",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "ancillaries",
+      "default": 0,
+      "min": 0,
+      "max": 120,
+      "step": 1
+    },
+    {
+      "id": "scaffold",
+      "label": "Scaffold",
+      "type": "enum",
+      "control": "cards",
+      "group": "access",
+      "default": "standard",
+      "help": "Often the biggest single line on the quote.",
+      "options": [
+        {
+          "value": "none",
+          "label": "Not required"
+        },
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "chimney_lift",
+          "label": "Standard + chimney lift"
+        },
+        {
+          "value": "restricted",
+          "label": "Restricted / roadway licence"
+        }
+      ]
+    },
+    {
+      "id": "loading_access",
+      "label": "Access for loading out",
+      "type": "enum",
+      "control": "segmented",
+      "group": "access",
+      "default": "clear",
+      "options": [
+        {
+          "value": "clear",
+          "label": "Clear"
+        },
+        {
+          "value": "restricted",
+          "label": "Restricted"
+        },
+        {
+          "value": "highway",
+          "label": "Over a neighbour or highway"
+        }
+      ]
+    },
+    {
+      "id": "start_season",
+      "label": "When does it start?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "access",
+      "default": "spring",
+      "options": [
+        {
+          "value": "spring",
+          "label": "Spring"
+        },
+        {
+          "value": "summer",
+          "label": "Summer"
+        },
+        {
+          "value": "autumn",
+          "label": "Autumn"
+        },
+        {
+          "value": "winter",
+          "label": "Winter"
+        }
+      ]
+    },
+    {
+      "id": "fixed_completion_date",
+      "label": "Fixed completion date agreed?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "access",
+      "default": false
+    },
+    {
+      "id": "occupied",
+      "label": "Occupied?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "access",
+      "default": true
+    },
+    {
+      "id": "surveyed",
+      "label": "Have you seen the roof?",
+      "type": "enum",
+      "control": "cards",
+      "group": "access",
+      "default": "ground",
+      "options": [
+        {
+          "value": "been_up",
+          "label": "Been up on it"
+        },
+        {
+          "value": "ground",
+          "label": "Seen from the ground"
+        },
+        {
+          "value": "photos",
+          "label": "Photos only"
+        }
+      ]
+    },
+    {
+      "id": "repair_hours_estimate",
+      "label": "How long do you reckon?",
+      "type": "number",
+      "unit": "hr",
+      "control": "slider",
+      "group": "repair",
+      "default": 3,
+      "min": 0.5,
+      "max": 24,
+      "step": 0.5
+    }
+  ],
+  "derivations": [
+    {
+      "id": "pitch_factor",
+      "expr": "if(pitch == '45', 1.414, if(pitch == '40', 1.305, if(pitch == '35', 1.221, if(pitch == '30', 1.155, if(pitch == '22.5', 1.082, 1.035)))))",
+      "note": "Lookup table, not trigonometry — the DSL has no cos() and roofing practice uses tables"
+    },
+    {
+      "id": "roof_area",
+      "unit": "m2",
+      "expr": "plan_area * pitch_factor",
+      "clientFacing": true,
+      "note": "The client-facing quantity. Quoting plan area under-prices a 30-degree roof by 15%."
+    },
+    {
+      "id": "is_reroof",
+      "expr": "job_type == 're_roof' || job_type == 'refelt_retile'"
+    },
+    {
+      "id": "strip_area",
+      "expr": "if(is_reroof, roof_area, 0)"
+    },
+    {
+      "id": "batten_area",
+      "expr": "if(batten_felt == 'replace_both', roof_area, 0)"
+    },
+    {
+      "id": "membrane_area",
+      "expr": "if(batten_felt != 'reuse', roof_area, 0)"
+    },
+    {
+      "id": "covering_area",
+      "expr": "if(is_reroof, roof_area, 0)"
+    },
+    {
+      "id": "is_slate",
+      "expr": "new_covering == 'slate'"
+    },
+    {
+      "id": "tiles_per_m2",
+      "expr": "if(new_covering == 'plain_tile', 60, if(new_covering == 'clay_pantile', 16, if(is_slate, 22, 10)))"
+    },
+    {
+      "id": "tile_count",
+      "expr": "covering_area * tiles_per_m2"
+    },
+    {
+      "id": "batten_gauge_m",
+      "expr": "if(new_covering == 'plain_tile', 0.100, if(is_slate, 0.150, 0.345))"
+    },
+    {
+      "id": "batten_length",
+      "expr": "batten_area / batten_gauge_m"
+    },
+    {
+      "id": "covering_waste",
+      "expr": "if(is_slate, 0.10, 0.05)"
+    },
+    {
+      "id": "ridge_dry",
+      "expr": "if(ridge_system == 'dry', ridge_length, 0)"
+    },
+    {
+      "id": "ridge_mortar",
+      "expr": "if(ridge_system == 'mortar', ridge_length, 0)"
+    },
+    {
+      "id": "verge_dry",
+      "expr": "if(verge_system == 'dry', verge_length, 0)"
+    },
+    {
+      "id": "asbestos_suspected",
+      "expr": "existing_covering == 'asbestos' || (property_age == 'pre_2000' && existing_covering == 'unknown')"
+    },
+    {
+      "id": "flat_deck_area",
+      "expr": "if(flat_deck_replace, flat_area, 0)"
+    },
+    {
+      "id": "is_flat_job",
+      "expr": "job_type == 'flat_roof' || flat_area > 0"
+    },
+    {
+      "id": "disposal_tonnes",
+      "expr": "strip_area * if(existing_covering == 'slate', 0.030, if(existing_covering == 'plain_tile', 0.065, 0.050))",
+      "note": "Roof coverings are heavy — disposal is banded by weight, not volume"
+    },
+    {
+      "id": "scaffold_required",
+      "expr": "scaffold != 'none'"
+    },
+    {
+      "id": "programme_days",
+      "expr": "max(1, ceil(elapsed_days))",
+      "note": "Scaffold is hired against the programme, not against labour hours — see spec v5 crewSize"
+    },
+    {
+      "id": "scaffold_weeks",
+      "expr": "max(1, ceil(programme_days / 5))"
+    },
+    {
+      "id": "winter_working",
+      "expr": "start_season == 'winter'"
+    },
+    {
+      "id": "complex_roof",
+      "expr": "roof_shape == 'complex'"
+    },
+    {
+      "id": "timber_unknown",
+      "expr": "timber_condition == 'unknown'"
+    },
+    {
+      "id": "price_per_m2",
+      "expr": "if(roof_area > 0, total_price_pence / roof_area, 0)"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "repair_task",
+      "label": "Roof repair",
+      "group": "Covering",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "repair_hours_estimate",
+      "rate": {
+        "low": 1.0,
+        "typical": 1.0,
+        "high": 1.0,
+        "unit": "hr/hr"
+      },
+      "minHours": 2.0,
+      "appliesWhen": "job_type == 'roof_repair'",
+      "source": "trade norm — scaffold and set-up mean a half-day minimum"
+    },
+    {
+      "id": "strip_covering",
+      "label": "Strip existing covering",
+      "group": "Strip out and disposal",
+      "tags": [
+        "labour",
+        "roofing",
+        "handling"
+      ],
+      "quantity": "strip_area",
+      "rate": {
+        "low": 0.14,
+        "typical": 0.2,
+        "high": 0.32,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "batten_task",
+      "label": "Battens",
+      "group": "Structure and membrane",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "batten_area",
+      "rate": {
+        "low": 0.1,
+        "typical": 0.14,
+        "high": 0.22,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "membrane_task",
+      "label": "Underlay membrane",
+      "group": "Structure and membrane",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "membrane_area",
+      "rate": {
+        "low": 0.08,
+        "typical": 0.11,
+        "high": 0.18,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "insulation_task",
+      "label": "Insulation",
+      "group": "Structure and membrane",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "roof_area",
+      "rate": {
+        "low": 0.14,
+        "typical": 0.2,
+        "high": 0.32,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "insulation",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_concrete",
+      "label": "Lay concrete interlocking tiles",
+      "group": "Covering",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "covering_area",
+      "rate": {
+        "low": 0.2,
+        "typical": 0.28,
+        "high": 0.42,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "new_covering == 'concrete'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_pantile",
+      "label": "Lay clay pantiles",
+      "group": "Covering",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "covering_area",
+      "rate": {
+        "low": 0.26,
+        "typical": 0.35,
+        "high": 0.52,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "new_covering == 'clay_pantile'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_plain",
+      "label": "Lay plain tiles",
+      "group": "Covering",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "covering_area",
+      "rate": {
+        "low": 0.38,
+        "typical": 0.5,
+        "high": 0.72,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "new_covering == 'plain_tile'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_slate",
+      "label": "Lay natural slate",
+      "group": "Covering",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "covering_area",
+      "rate": {
+        "low": 0.42,
+        "typical": 0.55,
+        "high": 0.85,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "is_slate",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_fibre_slate",
+      "label": "Lay fibre cement slate",
+      "group": "Covering",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "covering_area",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.4,
+        "high": 0.6,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "new_covering == 'fibre_slate'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "ridge_dry_task",
+      "label": "Dry ridge system",
+      "group": "Ridge, verge and detail",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "ridge_dry",
+      "rate": {
+        "low": 0.26,
+        "typical": 0.35,
+        "high": 0.52,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "ridge_mortar_task",
+      "label": "Mortar bedded ridge",
+      "group": "Ridge, verge and detail",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "ridge_mortar",
+      "rate": {
+        "low": 0.34,
+        "typical": 0.45,
+        "high": 0.68,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02 — different system, separate task"
+    },
+    {
+      "id": "verge_task",
+      "label": "Verge",
+      "group": "Ridge, verge and detail",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "verge_length",
+      "rate": {
+        "low": 0.18,
+        "typical": 0.25,
+        "high": 0.4,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "hip_task",
+      "label": "Hips",
+      "group": "Ridge, verge and detail",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "hip_length",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.4,
+        "high": 0.6,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "valley_task",
+      "label": "Valleys",
+      "group": "Ridge, verge and detail",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "valley_length",
+      "rate": {
+        "low": 0.45,
+        "typical": 0.6,
+        "high": 0.95,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "flashing_task",
+      "label": "Lead flashing",
+      "group": "Ridge, verge and detail",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "flashing_length",
+      "rate": {
+        "low": 0.4,
+        "typical": 0.55,
+        "high": 0.85,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "chimney_reflash_task",
+      "label": "Chimney — reflash",
+      "group": "Ancillaries",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "chimney_reflash",
+      "rate": {
+        "low": 3.0,
+        "typical": 4.0,
+        "high": 6.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "chimney_repoint_task",
+      "label": "Chimney — repoint",
+      "group": "Ancillaries",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "chimney_repoint",
+      "rate": {
+        "low": 4.5,
+        "typical": 6.0,
+        "high": 9.0,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "rooflight_task",
+      "label": "Rooflight into existing roof",
+      "group": "Ancillaries",
+      "tags": [
+        "labour",
+        "roofing"
+      ],
+      "quantity": "rooflight_count",
+      "rate": {
+        "low": 6.0,
+        "typical": 8.0,
+        "high": 12.0,
+        "unit": "hr/each"
+      },
+      "crewSize": 2,
+      "source": "practitioner review 2026-02 — two-person handling"
+    },
+    {
+      "id": "gutter_task",
+      "label": "Guttering",
+      "group": "Ancillaries",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "gutter_length",
+      "rate": {
+        "low": 0.22,
+        "typical": 0.3,
+        "high": 0.45,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fascia_task",
+      "label": "Fascia and soffit",
+      "group": "Ancillaries",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "fascia_length",
+      "rate": {
+        "low": 0.42,
+        "typical": 0.55,
+        "high": 0.8,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "flat_deck_task",
+      "label": "Replace flat roof deck",
+      "group": "Structure and membrane",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "flat_deck_area",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.42,
+        "high": 0.65,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "flat_insulation_task",
+      "label": "Flat roof insulation and firrings",
+      "group": "Structure and membrane",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "flat_area",
+      "rate": {
+        "low": 0.2,
+        "typical": 0.28,
+        "high": 0.45,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "flat_insulation",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "flat_epdm",
+      "label": "EPDM membrane",
+      "group": "Covering",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "flat_area",
+      "rate": {
+        "low": 0.42,
+        "typical": 0.55,
+        "high": 0.8,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "flat_system == 'epdm'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "flat_grp",
+      "label": "GRP roofing",
+      "group": "Covering",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "flat_area",
+      "rate": {
+        "low": 0.55,
+        "typical": 0.75,
+        "high": 1.1,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "flat_system == 'grp'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "flat_felt",
+      "label": "3-layer felt",
+      "group": "Covering",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "flat_area",
+      "rate": {
+        "low": 0.48,
+        "typical": 0.65,
+        "high": 0.95,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "flat_system == 'felt' || flat_system == 'single_ply'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "flat_upstands",
+      "label": "Upstands and detail",
+      "group": "Ridge, verge and detail",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "flat_upstand_length",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.42,
+        "high": 0.65,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "loading_out",
+      "label": "Loading out and set-up",
+      "group": "Access and scaffold",
+      "tags": [
+        "labour",
+        "handling"
+      ],
+      "quantity": "programme_days",
+      "rate": {
+        "low": 0.6,
+        "typical": 0.9,
+        "high": 1.3,
+        "unit": "hr/day"
+      },
+      "source": "practitioner review 2026-02",
+      "stage": "post_programme"
+    }
+  ],
+  "materials": [
+    {
+      "id": "tiles",
+      "label": "Roof covering",
+      "sku": "roof.covering.{new_covering}",
+      "group": "Materials",
+      "quantity": "tile_count",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0.05,
+      "wastePctRef": "covering_waste",
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "singleBatch": true,
+      "notes": "Order in one batch — colour varies between production runs"
+    },
+    {
+      "id": "battens",
+      "label": "Battens",
+      "sku": "roof.batten",
+      "group": "Materials",
+      "quantity": "batten_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 3.6,
+          "unit": "m"
+        },
+        {
+          "size": 4.8,
+          "unit": "m"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination"
+    },
+    {
+      "id": "membrane",
+      "label": "Underlay membrane",
+      "sku": "roof.membrane",
+      "group": "Materials",
+      "quantity": "membrane_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.15,
+      "purchaseUnits": [
+        {
+          "size": 50,
+          "unit": "m2"
+        }
+      ],
+      "notes": "+15% for laps"
+    },
+    {
+      "id": "fixings",
+      "label": "Nails, clips and disc rivets",
+      "sku": "roof.fixings",
+      "group": "Materials",
+      "quantity": "covering_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m2"
+        }
+      ]
+    },
+    {
+      "id": "ridge_kit",
+      "label": "Dry ridge kit",
+      "sku": "roof.dry_ridge",
+      "group": "Materials",
+      "quantity": "ridge_dry + hip_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m"
+        }
+      ],
+      "appliesWhen": "ridge_system == 'dry'"
+    },
+    {
+      "id": "verge_kit",
+      "label": "Dry verge kit",
+      "sku": "roof.dry_verge",
+      "group": "Materials",
+      "quantity": "verge_dry",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m"
+        }
+      ],
+      "appliesWhen": "verge_system == 'dry'"
+    },
+    {
+      "id": "lead",
+      "label": "Lead",
+      "sku": "roof.lead",
+      "group": "Materials",
+      "quantity": "flashing_length + valley_length",
+      "consumption": {
+        "expr": "9",
+        "unit": "kg/m"
+      },
+      "wastePct": 0.08,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "kg"
+        }
+      ],
+      "volatility": "high",
+      "notes": "Priced by weight and genuinely volatile — carries the price-volatility buffer"
+    },
+    {
+      "id": "mortar",
+      "label": "Mortar",
+      "sku": "roof.mortar",
+      "group": "Materials",
+      "quantity": "ridge_mortar + verge_length",
+      "consumption": {
+        "expr": "0.6",
+        "unit": "bag/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "bag"
+        }
+      ],
+      "appliesWhen": "ridge_system == 'mortar' || verge_system == 'mortar'"
+    },
+    {
+      "id": "flat_membrane",
+      "label": "Flat roof membrane",
+      "sku": "roof.flat.{flat_system}",
+      "group": "Materials",
+      "quantity": "flat_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m2"
+        }
+      ],
+      "appliesWhen": "is_flat_job"
+    },
+    {
+      "id": "flat_insulation_mat",
+      "label": "Flat roof insulation",
+      "sku": "roof.insulation",
+      "group": "Materials",
+      "quantity": "flat_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.08,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m2"
+        }
+      ],
+      "appliesWhen": "flat_insulation && is_flat_job"
+    },
+    {
+      "id": "gutter_mat",
+      "label": "Guttering and fittings",
+      "sku": "roof.gutter",
+      "group": "Materials",
+      "quantity": "gutter_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 2,
+          "unit": "m"
+        },
+        {
+          "size": 4,
+          "unit": "m"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination"
+    },
+    {
+      "id": "fascia_mat",
+      "label": "Fascia and soffit board",
+      "sku": "roof.fascia",
+      "group": "Materials",
+      "quantity": "fascia_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 5,
+          "unit": "m"
+        }
+      ]
+    },
+    {
+      "id": "sundries",
+      "label": "Sundries — sealant, blades, fixings, sheeting",
+      "group": "Materials",
+      "pricing": {
+        "type": "greater_of",
+        "percentOfMaterials": 0.05,
+        "perDayPence": 2500
+      },
+      "stage": "post_programme"
+    }
+  ],
+  "modifiers": [
+    {
+      "id": "steep_pitch",
+      "when": "pitch == '45'",
+      "factor": 1.25,
+      "scope": [
+        "roofing"
+      ],
+      "explain": "Steep pitch — roped access and slower working"
+    },
+    {
+      "id": "complex",
+      "when": "complex_roof",
+      "factor": 1.25,
+      "scope": [
+        "roofing"
+      ],
+      "explain": "Complex roof — multiple hips and valleys to set out"
+    },
+    {
+      "id": "hipped",
+      "when": "roof_shape == 'hip'",
+      "factor": 1.15,
+      "scope": [
+        "roofing"
+      ],
+      "explain": "Hipped roof — more cutting and detail"
+    },
+    {
+      "id": "three_storey",
+      "when": "storeys > 2",
+      "factor": 1.2,
+      "scope": [
+        "roofing",
+        "handling"
+      ],
+      "explain": "Three storeys or more — handling and access"
+    },
+    {
+      "id": "slate_care",
+      "when": "is_slate",
+      "factor": 1.3,
+      "scope": [
+        "roofing"
+      ],
+      "explain": "Natural slate — sorting, holing and breakage"
+    },
+    {
+      "id": "winter",
+      "when": "winter_working",
+      "factor": 1.2,
+      "scope": [
+        "roofing",
+        "labour",
+        "handling"
+      ],
+      "explain": "Winter working — short days and lost weather"
+    },
+    {
+      "id": "restricted_loading",
+      "when": "loading_access != 'clear'",
+      "factor": 1.25,
+      "scope": [
+        "handling"
+      ],
+      "explain": "Restricted access for loading out"
+    },
+    {
+      "id": "occupied",
+      "when": "occupied",
+      "factor": 1.05,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Occupied property — protection and noise management"
+    }
+  ],
+  "extras": [
+    {
+      "id": "scaffold_standard",
+      "label": "Scaffold hire",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.scaffold.week",
+        "days": "scaffold_weeks",
+        "deliverySku": "hire.scaffold.erect"
+      },
+      "when": "scaffold == 'standard'",
+      "group": "Access and scaffold",
+      "excludeFromMarginBase": true,
+      "note": "Hired against the programme, not against labour hours",
+      "stage": "post_programme"
+    },
+    {
+      "id": "scaffold_chimney",
+      "label": "Scaffold hire with chimney lift",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.scaffold.chimney.week",
+        "days": "scaffold_weeks",
+        "deliverySku": "hire.scaffold.erect.chimney"
+      },
+      "when": "scaffold == 'chimney_lift'",
+      "group": "Access and scaffold",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "scaffold_restricted",
+      "label": "Scaffold — restricted access and licence",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.scaffold.restricted.week",
+        "days": "scaffold_weeks",
+        "deliverySku": "hire.scaffold.erect.restricted"
+      },
+      "when": "scaffold == 'restricted'",
+      "group": "Access and scaffold",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "highway_licence",
+      "label": "Highway or pavement licence",
+      "pricing": {
+        "type": "fixed",
+        "sku": "permit.highway"
+      },
+      "when": "loading_access == 'highway' || scaffold == 'restricted'",
+      "group": "Access and scaffold",
+      "excludeFromMarginBase": true
+    },
+    {
+      "id": "disposal",
+      "label": "Disposal of stripped covering",
+      "pricing": {
+        "type": "banded",
+        "quantity": "disposal_tonnes",
+        "bands": [
+          {
+            "upTo": 2,
+            "sku": "disposal.skip.4yd"
+          },
+          {
+            "upTo": 4,
+            "sku": "disposal.skip.6yd"
+          },
+          {
+            "upTo": 6,
+            "sku": "disposal.skip.8yd"
+          },
+          {
+            "upTo": 9999,
+            "sku": "disposal.skip.8yd",
+            "multiple": true
+          }
+        ]
+      },
+      "when": "disposal_tonnes > 0",
+      "group": "Strip out and disposal",
+      "note": "Banded by WEIGHT — roof coverings fill a skip's capacity long before its volume"
+    },
+    {
+      "id": "timber_provisional",
+      "label": "Allowance for timber replacement",
+      "pricing": {
+        "type": "provisional_sum",
+        "amountRef": "timber_allowance"
+      },
+      "when": "timber_condition != 'sound'",
+      "group": "Structure and membrane"
+    }
+  ],
+  "risk": {
+    "surveyConfidence": {
+      "been_up": 0,
+      "ground": 0.15,
+      "photos": 0.25
+    },
+    "unknownConditions": [
+      {
+        "when": "timber_unknown",
+        "add": 0.2,
+        "explain": "Timber condition unknown until the covering is off"
+      },
+      {
+        "when": "existing_covering == 'unknown'",
+        "add": 0.15,
+        "explain": "Existing covering not identified"
+      },
+      {
+        "when": "property_age == 'pre_2000'",
+        "add": 0.1,
+        "explain": "Pre-2000 property — unknown build-up"
+      },
+      {
+        "when": "complex_roof",
+        "add": 0.1,
+        "explain": "Complex roof — detail always takes longer than it measures"
+      }
+    ],
+    "cap": 0.4,
+    "programmeOnly": [
+      {
+        "when": "winter_working && !fixed_completion_date",
+        "addDays": 0.15,
+        "explain": "Winter — allow float for lost weather days in the programme, not the price"
+      },
+      {
+        "when": "start_season == 'autumn' && !fixed_completion_date",
+        "addDays": 0.08,
+        "explain": "Autumn — some weather loss likely"
+      }
+    ],
+    "priceVolatility": {
+      "low": 0,
+      "medium": 0.03,
+      "high": 0.06
+    }
+  },
+  "defaults": {
+    "contingencyStance": "balanced"
+  },
+  "validation": [
+    {
+      "level": "error",
+      "when": "asbestos_suspected",
+      "message": "Asbestos cement suspected. This needs a survey and a licensed route before anyone strips anything — don't quote it yet."
+    },
+    {
+      "level": "error",
+      "when": "plan_area == 0 && flat_area == 0 && gutter_length == 0 && fascia_length == 0 && chimney_reflash == 0 && chimney_repoint == 0 && job_type != 'roof_repair'",
+      "message": "Nothing measured yet — add a roof area or an ancillary item."
+    },
+    {
+      "level": "warning",
+      "when": "storeys > 1 && !scaffold_required",
+      "message": "Above single storey with no scaffold priced. Scaffold is usually the biggest line on the job — don't absorb it."
+    },
+    {
+      "level": "warning",
+      "when": "is_reroof && ridge_system == 'mortar'",
+      "message": "Mortar-only ridge on a re-roof. Dry ridge is the current standard and mortar-only may not meet BS 5534."
+    },
+    {
+      "level": "warning",
+      "when": "timber_unknown && timber_allowance == 0",
+      "message": "Timber condition unknown with no allowance. Put a provisional sum on the quote rather than absorbing it."
+    },
+    {
+      "level": "warning",
+      "when": "winter_working && fixed_completion_date",
+      "message": "Fixed completion date over winter. Weather risk is yours now — price it rather than leaving it in the programme."
+    },
+    {
+      "level": "warning",
+      "when": "price_per_m2 < 6000 && is_reroof",
+      "message": "Under £60/m² of roof area on a re-roof. Check the pitch factor has been applied and scaffold is included."
+    },
+    {
+      "level": "warning",
+      "when": "modifier_cap_hit",
+      "message": "This job hit the difficulty cap. Get up on it before you send a price."
+    },
+    {
+      "level": "warning",
+      "when": "effective_hourly_pence < settings.labour_cost_pence",
+      "message": "You're charging less per hour than the work costs you."
+    }
+  ],
+  "presentation": {
+    "groups": [
+      "Access and scaffold",
+      "Strip out and disposal",
+      "Structure and membrane",
+      "Covering",
+      "Ridge, verge and detail",
+      "Ancillaries",
+      "Materials"
+    ],
+    "exclusions": [
+      "Removal or disturbance of asbestos-containing materials",
+      "Replacement of structural roof timbers beyond any allowance stated above",
+      "Internal decoration, plasterwork or ceiling repairs",
+      "Electrical, aerial or satellite disconnection and reconnection",
+      "Works to party walls or structures requiring a neighbour's consent",
+      "Delays or additional costs arising from adverse weather"
+    ],
+    "assumptions": [
+      "Scaffold can be erected on the customer's own land unless a licence is priced above",
+      "Roof timbers are sound except where an allowance is stated",
+      "Access to the property and to the loft space during working hours",
+      "The property is free of asbestos in the areas being worked on",
+      "Programme is in working days and excludes weather delays"
+    ],
+    "validityDays": 30,
+    "programmeCaveat": "Programme excludes weather delays. Roofing stops in high wind, driving rain, ice and snow."
+  }
+}

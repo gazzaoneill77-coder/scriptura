@@ -670,3 +670,122 @@ pipeline proper has been stable across five trades, while the *output* model nee
 extensions. If a sixth trade forces a third change, the honest read is that quote outputs
 were under-designed from the start, and the cheapest fix is to model programme as a
 first-class output alongside price rather than continuing to bolt on flags.
+
+---
+
+## Spec v5 → v6: the Roofer found a bug I shipped in v1
+
+Sixth trade. New quantity model — **pitched area derived from a plan area the roofer
+measures from the ground**, via a lookup table rather than trigonometry, because the DSL
+has no `cos()` and roofing practice uses tables anyway. A 100 m² footprint at 30° is
+115.5 m² of roof; quoting the plan area under-prices the job by 15% before anything else.
+
+That part went in without incident. Then the validator rejected the pack, and chasing the
+rejection turned up **a circular dependency that has been in the spec since the Decorator,
+and in every pack since.**
+
+### 1. The programme cycle (STRUCTURAL — and a defect, not an enhancement)
+
+Roofing scaffold is hired **against the programme**, not against labour hours. So the pack
+prices scaffold from `programme_days`. Reasonable — and it exposed this:
+
+```
+loading_out.quantity  →  programme_days  →  elapsed_days  →  total_hours  →  loading_out.hours
+```
+
+The task's own hours feed the total that defines its own quantity. **A cycle.** And the
+moment I looked for it elsewhere, it was everywhere:
+
+| Pack | Item | Depends on |
+| --- | --- | --- |
+| Landscaper | `site_setup` task, 6 × plant hire extras | `hire_days`, `hire_calendar_days` |
+| Tiler | `setup` task | `estimated_days_raw` |
+| Roofer | `loading_out` task, 3 × scaffold extras | `programme_days`, `scaffold_weeks` |
+| **All six** | `sundries` material | `perDayPence` |
+
+The v1 Decorator shipped it: sundries at `max(12% of materials, £25/day)`, where "day" comes
+from a total that sundries contribute to. It slipped through five reviews because the
+validator's cycle detection only looked at derivation-to-derivation references and treated
+`total_hours` as an opaque engine value — so the cycle ran *through* the engine context,
+where nothing was watching.
+
+**Resolution — two-phase evaluation, declared in the pack:**
+
+```jsonc
+{ "id": "loading_out", "quantity": "programme_days", "stage": "post_programme" }
+```
+
+- **Phase A** (`stage` absent, the default): every task whose quantity comes from the
+  measured job. Programme is derived from phase-A hours.
+- **Phase B** (`stage: "post_programme"`): tasks, materials and extras priced against the
+  programme. Their cost is added; their hours **do not** re-trigger a programme recompute.
+
+It converges in one extra pass rather than iterating to a fixed point. The residual
+distortion is real and worth stating plainly: **setup and loading hours slightly extend the
+true programme, and phase B does not see that.** On a five-day roof, loading-out is ~4.5
+hours — about 0.6 of a day, under a fifth of a scaffold week. Rounding `scaffold_weeks` up
+absorbs it. Iterating to convergence would be more correct and less predictable, and for a
+quoting tool predictable wins. The limitation is documented rather than hidden.
+
+**The validator now enforces it**, and the enforcement is tested negatively — removing a
+`stage` marker makes the check fire:
+
+```
+ERROR  tasks loading_out: priced against the programme but no stage:"post_programme"
+       — circular dependency
+```
+
+All six packs carry the markers and validate clean.
+
+### 2. What this says about the exercise
+
+I predicted at v5 that a third structural change would mean quote outputs were
+under-designed. A third change did arrive — but not as new capability. It arrived as a
+**latent defect in the capability already shipped**, which is worse, and the prediction
+would have missed it.
+
+Three observations worth carrying forward:
+
+- **The cycle was invisible while `total_hours` was opaque.** Any value the engine injects
+  into the evaluation context is an edge in the dependency graph, and a validator that
+  cannot see those edges cannot see the cycles through them.
+- **It surfaced from a naming accident.** The Roofer used `elapsed_days` where earlier packs
+  used `total_hours`; had I reused the established name, the pack would have validated clean
+  and shipped the bug a seventh time. Getting caught by a typo is not a process.
+- **Five clean reviews are not evidence of correctness.** They were evidence that the
+  validator and I shared a blind spot.
+
+The honest conclusion is not that the pack architecture is sound because six trades fit it.
+It is that **six trades fit it and one class of defect went undetected for five of them**,
+and the fix was to make the tool see something I could not.
+
+### 3. `pricing.type: "provisional_sum"` (NEW, small)
+
+Roof timber condition is unknowable until the covering is off. That is not a risk buffer to
+bury in the price — it is an explicit, client-visible allowance:
+
+```jsonc
+{ "id": "timber_provisional", "label": "Allowance for timber replacement",
+  "pricing": { "type": "provisional_sum", "amountRef": "timber_allowance" } }
+```
+
+Printed on the estimate as *"allowance, adjusted on inspection"*. A client who sees the
+allowance accepts the adjustment; a client who does not, disputes it. This generalises to
+any trade that opens something up before it knows what is inside.
+
+### Running total after six trades
+
+| Finding type | Count |
+| --- | --- |
+| Vocabulary additions | 11 |
+| Structural changes | 3 (one of them a latent defect from v1) |
+| Design corrections to an earlier finding | 1 |
+| Documentation gaps | 2 |
+| Idioms recorded, no change needed | 2 |
+| Earlier findings that generalised untouched | 3 |
+
+**Recommendation before trade seven:** stop adding trades and build the engine. Six packs
+is enough surface to know the vocabulary, and the last finding was a defect rather than a
+gap — which is the point at which more packs stop teaching and start accumulating the same
+mistake. Golden fixtures and the practitioner review of the rate tables are now the
+critical path, and neither has started.

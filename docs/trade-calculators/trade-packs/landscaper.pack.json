@@ -5,798 +5,2502 @@
   "name": "The Landscaper's Pricing Calculator",
   "region": "GB",
   "units": "metric",
-
   "jobTypes": [
-    { "id": "patio", "label": "Patio", "icon": "paving",
-      "asks": ["site", "paving", "groundwork"], "minimum": "day" },
-    { "id": "driveway", "label": "Driveway", "icon": "car",
-      "asks": ["site", "paving", "groundwork"], "minimum": "day",
-      "defaults": { "sub_base_depth": "150" } },
-    { "id": "turfing", "label": "Turfing", "icon": "grass",
-      "asks": ["site", "turf", "groundwork"], "minimum": "half_day" },
-    { "id": "fencing", "label": "Fencing", "icon": "fence",
-      "asks": ["site", "fencing"], "minimum": "half_day" },
-    { "id": "decking", "label": "Decking", "icon": "deck",
-      "asks": ["site", "decking", "groundwork"], "minimum": "day" },
-    { "id": "clearance", "label": "Garden clearance", "icon": "broom",
-      "asks": ["site", "clearance"], "minimum": "half_day" },
-    { "id": "planting", "label": "Planting scheme", "icon": "plant",
-      "asks": ["site", "planting"], "minimum": "half_day" },
-    { "id": "retaining", "label": "Retaining wall or sleepers", "icon": "wall",
-      "asks": ["site", "retaining", "groundwork"], "minimum": "day" },
-    { "id": "artificial_grass", "label": "Artificial grass", "icon": "grass",
-      "asks": ["site", "turf", "groundwork"], "minimum": "day" },
-    { "id": "full_redesign", "label": "Full garden redesign", "icon": "garden",
-      "asks": ["site", "paving", "turf", "fencing", "planting", "groundwork"], "minimum": "day" }
+    {
+      "id": "patio",
+      "label": "Patio",
+      "icon": "paving",
+      "asks": [
+        "site",
+        "paving",
+        "groundwork"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "driveway",
+      "label": "Driveway",
+      "icon": "car",
+      "asks": [
+        "site",
+        "paving",
+        "groundwork"
+      ],
+      "minimum": "day",
+      "defaults": {
+        "sub_base_depth": "150"
+      }
+    },
+    {
+      "id": "turfing",
+      "label": "Turfing",
+      "icon": "grass",
+      "asks": [
+        "site",
+        "turf",
+        "groundwork"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "fencing",
+      "label": "Fencing",
+      "icon": "fence",
+      "asks": [
+        "site",
+        "fencing"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "decking",
+      "label": "Decking",
+      "icon": "deck",
+      "asks": [
+        "site",
+        "decking",
+        "groundwork"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "clearance",
+      "label": "Garden clearance",
+      "icon": "broom",
+      "asks": [
+        "site",
+        "clearance"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "planting",
+      "label": "Planting scheme",
+      "icon": "plant",
+      "asks": [
+        "site",
+        "planting"
+      ],
+      "minimum": "half_day"
+    },
+    {
+      "id": "retaining",
+      "label": "Retaining wall or sleepers",
+      "icon": "wall",
+      "asks": [
+        "site",
+        "retaining",
+        "groundwork"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "artificial_grass",
+      "label": "Artificial grass",
+      "icon": "grass",
+      "asks": [
+        "site",
+        "turf",
+        "groundwork"
+      ],
+      "minimum": "day"
+    },
+    {
+      "id": "full_redesign",
+      "label": "Full garden redesign",
+      "icon": "garden",
+      "asks": [
+        "site",
+        "paving",
+        "turf",
+        "fencing",
+        "planting",
+        "groundwork"
+      ],
+      "minimum": "day"
+    }
   ],
-
   "questions": [
-    { "id": "site_access", "label": "How do you get to the work area?", "type": "enum",
-      "control": "cards", "group": "site", "default": "barrow", "order": 2,
+    {
+      "id": "site_access",
+      "label": "How do you get to the work area?",
+      "type": "enum",
+      "control": "cards",
+      "group": "site",
+      "default": "barrow",
+      "order": 2,
       "help": "Ask this before you measure anything. It moves the price more than the area does.",
-      "affects": ["excavation", "materials_handling", "disposal"],
+      "affects": [
+        "excavation",
+        "materials_handling",
+        "disposal"
+      ],
       "options": [
-        { "value": "machine", "label": "Machine access", "sub": "Digger can get in" },
-        { "value": "barrow", "label": "Side gate, 1 m or wider", "sub": "Barrow only" },
-        { "value": "narrow_gate", "label": "Side gate under 1 m", "sub": "Tight barrow run" },
-        { "value": "through_house", "label": "Through the house only", "sub": "Everything by hand, sheeted" },
-        { "value": "alley", "label": "Rear alley or shared access" }
-      ] },
-
-    { "id": "access_distance", "label": "Distance from parking to the work area",
-      "type": "number", "unit": "m", "control": "slider", "group": "site",
-      "default": 15, "min": 0, "max": 100, "step": 5 },
-
-    { "id": "ground_conditions", "label": "What's the ground like?", "type": "enum",
-      "control": "cards", "group": "site", "default": "topsoil",
+        {
+          "value": "machine",
+          "label": "Machine access",
+          "sub": "Digger can get in"
+        },
+        {
+          "value": "barrow",
+          "label": "Side gate, 1 m or wider",
+          "sub": "Barrow only"
+        },
+        {
+          "value": "narrow_gate",
+          "label": "Side gate under 1 m",
+          "sub": "Tight barrow run"
+        },
+        {
+          "value": "through_house",
+          "label": "Through the house only",
+          "sub": "Everything by hand, sheeted"
+        },
+        {
+          "value": "alley",
+          "label": "Rear alley or shared access"
+        }
+      ]
+    },
+    {
+      "id": "access_distance",
+      "label": "Distance from parking to the work area",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "site",
+      "default": 15,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "id": "ground_conditions",
+      "label": "What's the ground like?",
+      "type": "enum",
+      "control": "cards",
+      "group": "site",
+      "default": "topsoil",
       "options": [
-        { "value": "topsoil", "label": "Topsoil or loam" },
-        { "value": "clay", "label": "Heavy clay", "sub": "Hard going, heavy to cart" },
-        { "value": "sandy", "label": "Sandy", "sub": "Digs easily" },
-        { "value": "rubble", "label": "Rubble or made ground" },
-        { "value": "roots", "label": "Tree roots" },
-        { "value": "rock", "label": "Rock" }
-      ] },
-
-    { "id": "levels", "label": "Levels", "type": "enum", "control": "cards",
-      "group": "site", "default": "flat",
+        {
+          "value": "topsoil",
+          "label": "Topsoil or loam"
+        },
+        {
+          "value": "clay",
+          "label": "Heavy clay",
+          "sub": "Hard going, heavy to cart"
+        },
+        {
+          "value": "sandy",
+          "label": "Sandy",
+          "sub": "Digs easily"
+        },
+        {
+          "value": "rubble",
+          "label": "Rubble or made ground"
+        },
+        {
+          "value": "roots",
+          "label": "Tree roots"
+        },
+        {
+          "value": "rock",
+          "label": "Rock"
+        }
+      ]
+    },
+    {
+      "id": "levels",
+      "label": "Levels",
+      "type": "enum",
+      "control": "cards",
+      "group": "site",
+      "default": "flat",
       "options": [
-        { "value": "flat", "label": "Flat" },
-        { "value": "slight_fall", "label": "Slight fall" },
-        { "value": "slope", "label": "Significant slope" },
-        { "value": "terracing", "label": "Needs terracing", "sub": "Retaining structures" }
-      ] },
-
-    { "id": "existing_surface", "label": "What's there now?", "type": "multi_enum",
-      "control": "chips", "group": "site", "default": ["turf"],
+        {
+          "value": "flat",
+          "label": "Flat"
+        },
+        {
+          "value": "slight_fall",
+          "label": "Slight fall"
+        },
+        {
+          "value": "slope",
+          "label": "Significant slope"
+        },
+        {
+          "value": "terracing",
+          "label": "Needs terracing",
+          "sub": "Retaining structures"
+        }
+      ]
+    },
+    {
+      "id": "existing_surface",
+      "label": "What's there now?",
+      "type": "multi_enum",
+      "control": "chips",
+      "group": "site",
+      "default": [
+        "turf"
+      ],
       "options": [
-        { "value": "turf", "label": "Turf" },
-        { "value": "soil", "label": "Bare soil" },
-        { "value": "slabs", "label": "Slabs" },
-        { "value": "concrete", "label": "Concrete" },
-        { "value": "tarmac", "label": "Tarmac" },
-        { "value": "decking", "label": "Old decking" },
-        { "value": "shed_base", "label": "Shed base" }
-      ] },
-
-    { "id": "services_known", "label": "Do you know where the buried services run?",
-      "type": "enum", "control": "cards", "group": "site", "default": "unknown",
+        {
+          "value": "turf",
+          "label": "Turf"
+        },
+        {
+          "value": "soil",
+          "label": "Bare soil"
+        },
+        {
+          "value": "slabs",
+          "label": "Slabs"
+        },
+        {
+          "value": "concrete",
+          "label": "Concrete"
+        },
+        {
+          "value": "tarmac",
+          "label": "Tarmac"
+        },
+        {
+          "value": "decking",
+          "label": "Old decking"
+        },
+        {
+          "value": "shed_base",
+          "label": "Shed base"
+        }
+      ]
+    },
+    {
+      "id": "services_known",
+      "label": "Do you know where the buried services run?",
+      "type": "enum",
+      "control": "cards",
+      "group": "site",
+      "default": "unknown",
       "help": "Gas, water, electric, drainage. Digging blind is how people get hurt.",
       "options": [
-        { "value": "known", "label": "Yes, located" },
-        { "value": "none_present", "label": "None in the dig area" },
-        { "value": "unknown", "label": "Not established yet" }
-      ] },
-
-    { "id": "water_power_on_site", "label": "Water and power on site?", "type": "boolean",
-      "control": "toggle", "group": "site", "default": true },
-
-    { "id": "start_month", "label": "Roughly when does it start?", "type": "enum",
-      "control": "segmented", "group": "site", "default": "spring",
+        {
+          "value": "known",
+          "label": "Yes, located"
+        },
+        {
+          "value": "none_present",
+          "label": "None in the dig area"
+        },
+        {
+          "value": "unknown",
+          "label": "Not established yet"
+        }
+      ]
+    },
+    {
+      "id": "water_power_on_site",
+      "label": "Water and power on site?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "site",
+      "default": true
+    },
+    {
+      "id": "start_month",
+      "label": "Roughly when does it start?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "site",
+      "default": "spring",
       "options": [
-        { "value": "spring", "label": "Spring" },
-        { "value": "summer", "label": "Summer" },
-        { "value": "autumn", "label": "Autumn" },
-        { "value": "winter", "label": "Winter", "sub": "Nov–Feb" }
-      ] },
-
-    { "id": "fixed_completion_date", "label": "Fixed completion date agreed?",
-      "type": "boolean", "control": "toggle", "group": "site", "default": false,
-      "help": "If you've promised a date, weather risk becomes your risk, not the programme's." },
-
-    { "id": "surveyed", "label": "Have you seen the site?", "type": "enum",
-      "control": "segmented", "group": "site", "default": "visited",
+        {
+          "value": "spring",
+          "label": "Spring"
+        },
+        {
+          "value": "summer",
+          "label": "Summer"
+        },
+        {
+          "value": "autumn",
+          "label": "Autumn"
+        },
+        {
+          "value": "winter",
+          "label": "Winter",
+          "sub": "Nov–Feb"
+        }
+      ]
+    },
+    {
+      "id": "fixed_completion_date",
+      "label": "Fixed completion date agreed?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "site",
+      "default": false,
+      "help": "If you've promised a date, weather risk becomes your risk, not the programme's."
+    },
+    {
+      "id": "surveyed",
+      "label": "Have you seen the site?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "site",
+      "default": "visited",
       "options": [
-        { "value": "visited", "label": "Been there" },
-        { "value": "photos", "label": "Photos only" },
-        { "value": "plan", "label": "Plan or description only" }
-      ] },
-
-    { "id": "paving_area", "label": "Paving area", "type": "number", "unit": "m2",
-      "control": "dimension-pad", "group": "paving", "default": 0, "min": 0, "max": 500 },
-
-    { "id": "paving_type", "label": "Paving", "type": "enum", "control": "cards",
-      "group": "paving", "default": "indian_sandstone",
+        {
+          "value": "visited",
+          "label": "Been there"
+        },
+        {
+          "value": "photos",
+          "label": "Photos only"
+        },
+        {
+          "value": "plan",
+          "label": "Plan or description only"
+        }
+      ]
+    },
+    {
+      "id": "paving_area",
+      "label": "Paving area",
+      "type": "number",
+      "unit": "m2",
+      "control": "dimension-pad",
+      "group": "paving",
+      "default": 0,
+      "min": 0,
+      "max": 500
+    },
+    {
+      "id": "paving_type",
+      "label": "Paving",
+      "type": "enum",
+      "control": "cards",
+      "group": "paving",
+      "default": "indian_sandstone",
       "options": [
-        { "value": "indian_sandstone", "label": "Indian sandstone" },
-        { "value": "porcelain", "label": "Porcelain", "sub": "Full bed + primer" },
-        { "value": "concrete", "label": "Concrete slabs" },
-        { "value": "block_paver", "label": "Block paving" },
-        { "value": "setts", "label": "Setts" },
-        { "value": "resin", "label": "Resin bound" }
-      ] },
-
-    { "id": "laying_pattern", "label": "Pattern", "type": "enum", "control": "segmented",
-      "group": "paving", "default": "stack",
+        {
+          "value": "indian_sandstone",
+          "label": "Indian sandstone"
+        },
+        {
+          "value": "porcelain",
+          "label": "Porcelain",
+          "sub": "Full bed + primer"
+        },
+        {
+          "value": "concrete",
+          "label": "Concrete slabs"
+        },
+        {
+          "value": "block_paver",
+          "label": "Block paving"
+        },
+        {
+          "value": "setts",
+          "label": "Setts"
+        },
+        {
+          "value": "resin",
+          "label": "Resin bound"
+        }
+      ]
+    },
+    {
+      "id": "laying_pattern",
+      "label": "Pattern",
+      "type": "enum",
+      "control": "segmented",
+      "group": "paving",
+      "default": "stack",
       "options": [
-        { "value": "stack", "label": "Stack or stretcher", "sub": "+5% cuts" },
-        { "value": "random", "label": "Random", "sub": "+10% cuts" },
-        { "value": "circle", "label": "Circle feature", "sub": "+12% cuts" },
-        { "value": "herringbone", "label": "Herringbone or 45°", "sub": "+15% cuts" }
-      ] },
-
-    { "id": "sub_base_depth", "label": "Sub-base depth", "type": "enum",
-      "control": "segmented", "group": "paving", "default": "100",
+        {
+          "value": "stack",
+          "label": "Stack or stretcher",
+          "sub": "+5% cuts"
+        },
+        {
+          "value": "random",
+          "label": "Random",
+          "sub": "+10% cuts"
+        },
+        {
+          "value": "circle",
+          "label": "Circle feature",
+          "sub": "+12% cuts"
+        },
+        {
+          "value": "herringbone",
+          "label": "Herringbone or 45°",
+          "sub": "+15% cuts"
+        }
+      ]
+    },
+    {
+      "id": "sub_base_depth",
+      "label": "Sub-base depth",
+      "type": "enum",
+      "control": "segmented",
+      "group": "paving",
+      "default": "100",
       "options": [
-        { "value": "100", "label": "100 mm", "sub": "Pedestrian" },
-        { "value": "150", "label": "150 mm", "sub": "Vehicular" }
-      ] },
-
-    { "id": "bedding", "label": "Bedding", "type": "enum", "control": "segmented",
-      "group": "paving", "default": "sand_cement",
+        {
+          "value": "100",
+          "label": "100 mm",
+          "sub": "Pedestrian"
+        },
+        {
+          "value": "150",
+          "label": "150 mm",
+          "sub": "Vehicular"
+        }
+      ]
+    },
+    {
+      "id": "bedding",
+      "label": "Bedding",
+      "type": "enum",
+      "control": "segmented",
+      "group": "paving",
+      "default": "sand_cement",
       "options": [
-        { "value": "sand_cement", "label": "Sand and cement, 40 mm" },
-        { "value": "full_mortar", "label": "Full mortar bed", "sub": "Porcelain" }
-      ] },
-
-    { "id": "jointing", "label": "Jointing", "type": "enum", "control": "segmented",
-      "group": "paving", "default": "kiln_sand",
+        {
+          "value": "sand_cement",
+          "label": "Sand and cement, 40 mm"
+        },
+        {
+          "value": "full_mortar",
+          "label": "Full mortar bed",
+          "sub": "Porcelain"
+        }
+      ]
+    },
+    {
+      "id": "jointing",
+      "label": "Jointing",
+      "type": "enum",
+      "control": "segmented",
+      "group": "paving",
+      "default": "kiln_sand",
       "options": [
-        { "value": "kiln_sand", "label": "Kiln-dried sand" },
-        { "value": "resin", "label": "Brush-in resin" },
-        { "value": "pointed_mortar", "label": "Pointed mortar" }
-      ] },
-
-    { "id": "edging_length", "label": "Edging", "type": "number", "unit": "m",
-      "control": "slider", "group": "paving", "default": 0, "min": 0, "max": 200, "step": 1 },
-
-    { "id": "drainage_length", "label": "Drainage channel", "type": "number", "unit": "m",
-      "control": "slider", "group": "paving", "default": 0, "min": 0, "max": 100, "step": 1 },
-
-    { "id": "turf_area", "label": "Turf area", "type": "number", "unit": "m2",
-      "control": "dimension-pad", "group": "turf", "default": 0, "min": 0, "max": 2000 },
-
-    { "id": "topsoil_depth", "label": "Topsoil to import", "type": "enum",
-      "control": "segmented", "group": "turf", "default": "0",
+        {
+          "value": "kiln_sand",
+          "label": "Kiln-dried sand"
+        },
+        {
+          "value": "resin",
+          "label": "Brush-in resin"
+        },
+        {
+          "value": "pointed_mortar",
+          "label": "Pointed mortar"
+        }
+      ]
+    },
+    {
+      "id": "edging_length",
+      "label": "Edging",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "paving",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 1
+    },
+    {
+      "id": "drainage_length",
+      "label": "Drainage channel",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "paving",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "id": "turf_area",
+      "label": "Turf area",
+      "type": "number",
+      "unit": "m2",
+      "control": "dimension-pad",
+      "group": "turf",
+      "default": 0,
+      "min": 0,
+      "max": 2000
+    },
+    {
+      "id": "topsoil_depth",
+      "label": "Topsoil to import",
+      "type": "enum",
+      "control": "segmented",
+      "group": "turf",
+      "default": "0",
       "options": [
-        { "value": "0", "label": "None" },
-        { "value": "50", "label": "50 mm" },
-        { "value": "100", "label": "100 mm" },
-        { "value": "150", "label": "150 mm" }
-      ] },
-
-    { "id": "rotavate", "label": "Rotavate and level?", "type": "boolean",
-      "control": "toggle", "group": "turf", "default": true },
-
-    { "id": "fence_length", "label": "Fence run", "type": "number", "unit": "m",
-      "control": "slider", "group": "fencing", "default": 0, "min": 0, "max": 300, "step": 1 },
-
-    { "id": "fence_height", "label": "Height", "type": "enum", "control": "segmented",
-      "group": "fencing", "default": "1.8",
+        {
+          "value": "0",
+          "label": "None"
+        },
+        {
+          "value": "50",
+          "label": "50 mm"
+        },
+        {
+          "value": "100",
+          "label": "100 mm"
+        },
+        {
+          "value": "150",
+          "label": "150 mm"
+        }
+      ]
+    },
+    {
+      "id": "rotavate",
+      "label": "Rotavate and level?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "turf",
+      "default": true
+    },
+    {
+      "id": "fence_length",
+      "label": "Fence run",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "fencing",
+      "default": 0,
+      "min": 0,
+      "max": 300,
+      "step": 1
+    },
+    {
+      "id": "fence_height",
+      "label": "Height",
+      "type": "enum",
+      "control": "segmented",
+      "group": "fencing",
+      "default": "1.8",
       "options": [
-        { "value": "0.9", "label": "0.9 m" }, { "value": "1.2", "label": "1.2 m" },
-        { "value": "1.5", "label": "1.5 m" }, { "value": "1.8", "label": "1.8 m" },
-        { "value": "2.0", "label": "2.0 m" }
-      ] },
-
-    { "id": "fence_panel_type", "label": "Panel", "type": "enum", "control": "cards",
-      "group": "fencing", "default": "waney_lap",
+        {
+          "value": "0.9",
+          "label": "0.9 m"
+        },
+        {
+          "value": "1.2",
+          "label": "1.2 m"
+        },
+        {
+          "value": "1.5",
+          "label": "1.5 m"
+        },
+        {
+          "value": "1.8",
+          "label": "1.8 m"
+        },
+        {
+          "value": "2.0",
+          "label": "2.0 m"
+        }
+      ]
+    },
+    {
+      "id": "fence_panel_type",
+      "label": "Panel",
+      "type": "enum",
+      "control": "cards",
+      "group": "fencing",
+      "default": "waney_lap",
       "options": [
-        { "value": "waney_lap", "label": "Waney lap" },
-        { "value": "featheredge", "label": "Featheredge" },
-        { "value": "closeboard", "label": "Closeboard" },
-        { "value": "slatted", "label": "Slatted" }
-      ] },
-
-    { "id": "post_type", "label": "Posts", "type": "enum", "control": "segmented",
-      "group": "fencing", "default": "concrete",
+        {
+          "value": "waney_lap",
+          "label": "Waney lap"
+        },
+        {
+          "value": "featheredge",
+          "label": "Featheredge"
+        },
+        {
+          "value": "closeboard",
+          "label": "Closeboard"
+        },
+        {
+          "value": "slatted",
+          "label": "Slatted"
+        }
+      ]
+    },
+    {
+      "id": "post_type",
+      "label": "Posts",
+      "type": "enum",
+      "control": "segmented",
+      "group": "fencing",
+      "default": "concrete",
       "options": [
-        { "value": "concrete", "label": "Concrete" },
-        { "value": "timber", "label": "Timber" },
-        { "value": "metal", "label": "Metal" }
-      ] },
-
-    { "id": "gravel_boards", "label": "Gravel boards?", "type": "boolean",
-      "control": "toggle", "group": "fencing", "default": true },
-
-    { "id": "gate_count", "label": "Gates", "type": "count", "control": "stepper",
-      "group": "fencing", "default": 0 },
-
-    { "id": "fence_removal", "label": "Remove existing fence?", "type": "boolean",
-      "control": "toggle", "group": "fencing", "default": true },
-
-    { "id": "post_ground", "label": "Post holes — what are you digging into?",
-      "type": "enum", "control": "segmented", "group": "fencing", "default": "soft",
+        {
+          "value": "concrete",
+          "label": "Concrete"
+        },
+        {
+          "value": "timber",
+          "label": "Timber"
+        },
+        {
+          "value": "metal",
+          "label": "Metal"
+        }
+      ]
+    },
+    {
+      "id": "gravel_boards",
+      "label": "Gravel boards?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "fencing",
+      "default": true
+    },
+    {
+      "id": "gate_count",
+      "label": "Gates",
+      "type": "count",
+      "control": "stepper",
+      "group": "fencing",
+      "default": 0
+    },
+    {
+      "id": "fence_removal",
+      "label": "Remove existing fence?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "fencing",
+      "default": true
+    },
+    {
+      "id": "post_ground",
+      "label": "Post holes — what are you digging into?",
+      "type": "enum",
+      "control": "segmented",
+      "group": "fencing",
+      "default": "soft",
       "options": [
-        { "value": "soft", "label": "Soft ground" },
-        { "value": "hard", "label": "Hard or rubble" },
-        { "value": "concrete", "label": "Concrete to break out" }
-      ] },
-
-    { "id": "decking_area", "label": "Decking area", "type": "number", "unit": "m2",
-      "control": "dimension-pad", "group": "decking", "default": 0, "min": 0, "max": 300 },
-
-    { "id": "decking_height", "label": "Height above ground", "type": "enum",
-      "control": "segmented", "group": "decking", "default": "ground",
+        {
+          "value": "soft",
+          "label": "Soft ground"
+        },
+        {
+          "value": "hard",
+          "label": "Hard or rubble"
+        },
+        {
+          "value": "concrete",
+          "label": "Concrete to break out"
+        }
+      ]
+    },
+    {
+      "id": "decking_area",
+      "label": "Decking area",
+      "type": "number",
+      "unit": "m2",
+      "control": "dimension-pad",
+      "group": "decking",
+      "default": 0,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "id": "decking_height",
+      "label": "Height above ground",
+      "type": "enum",
+      "control": "segmented",
+      "group": "decking",
+      "default": "ground",
       "options": [
-        { "value": "ground", "label": "Ground level" },
-        { "value": "raised", "label": "Raised", "sub": "Posts and framing" }
-      ] },
-
-    { "id": "decking_board", "label": "Board", "type": "enum", "control": "cards",
-      "group": "decking", "default": "softwood",
+        {
+          "value": "ground",
+          "label": "Ground level"
+        },
+        {
+          "value": "raised",
+          "label": "Raised",
+          "sub": "Posts and framing"
+        }
+      ]
+    },
+    {
+      "id": "decking_board",
+      "label": "Board",
+      "type": "enum",
+      "control": "cards",
+      "group": "decking",
+      "default": "softwood",
       "options": [
-        { "value": "softwood", "label": "Softwood" },
-        { "value": "hardwood", "label": "Hardwood" },
-        { "value": "composite", "label": "Composite" }
-      ] },
-
-    { "id": "balustrade_length", "label": "Balustrade", "type": "number", "unit": "m",
-      "control": "slider", "group": "decking", "default": 0, "min": 0, "max": 60, "step": 1 },
-
-    { "id": "steps_count", "label": "Steps", "type": "count", "control": "stepper",
-      "group": "decking", "default": 0 },
-
-    { "id": "planting_area", "label": "Bed area", "type": "number", "unit": "m2",
-      "control": "dimension-pad", "group": "planting", "default": 0, "min": 0, "max": 500 },
-
-    { "id": "plants", "label": "Plants", "type": "repeater", "control": "repeater",
-      "group": "planting", "minItems": 0,
+        {
+          "value": "softwood",
+          "label": "Softwood"
+        },
+        {
+          "value": "hardwood",
+          "label": "Hardwood"
+        },
+        {
+          "value": "composite",
+          "label": "Composite"
+        }
+      ]
+    },
+    {
+      "id": "balustrade_length",
+      "label": "Balustrade",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "decking",
+      "default": 0,
+      "min": 0,
+      "max": 60,
+      "step": 1
+    },
+    {
+      "id": "steps_count",
+      "label": "Steps",
+      "type": "count",
+      "control": "stepper",
+      "group": "decking",
+      "default": 0
+    },
+    {
+      "id": "planting_area",
+      "label": "Bed area",
+      "type": "number",
+      "unit": "m2",
+      "control": "dimension-pad",
+      "group": "planting",
+      "default": 0,
+      "min": 0,
+      "max": 500
+    },
+    {
+      "id": "plants",
+      "label": "Plants",
+      "type": "repeater",
+      "control": "repeater",
+      "group": "planting",
+      "minItems": 0,
       "fields": [
-        { "id": "size", "label": "Size", "type": "enum", "control": "chips", "default": "3l",
+        {
+          "id": "size",
+          "label": "Size",
+          "type": "enum",
+          "control": "chips",
+          "default": "3l",
           "options": [
-            { "value": "9cm", "label": "9 cm" }, { "value": "2l", "label": "2 L" },
-            { "value": "3l", "label": "3 L" }, { "value": "5l", "label": "5 L" },
-            { "value": "10l", "label": "10 L" }, { "value": "specimen", "label": "Specimen" }
-          ] },
-        { "id": "count", "label": "How many", "type": "count", "control": "stepper", "default": 1 }
-      ] },
-
-    { "id": "mulch_depth", "label": "Mulch depth", "type": "number", "unit": "mm",
-      "control": "slider", "group": "planting", "default": 50, "min": 0, "max": 100, "step": 25 },
-
-    { "id": "membrane", "label": "Weed membrane?", "type": "boolean", "control": "toggle",
-      "group": "planting", "default": true },
-
-    { "id": "retaining_length", "label": "Retaining wall length", "type": "number", "unit": "m",
-      "control": "slider", "group": "retaining", "default": 0, "min": 0, "max": 100, "step": 0.5 },
-
-    { "id": "retaining_height", "label": "Retaining wall height", "type": "number", "unit": "m",
-      "control": "slider", "group": "retaining", "default": 0.6, "min": 0, "max": 2.5, "step": 0.1 },
-
-    { "id": "retaining_type", "label": "Construction", "type": "enum", "control": "cards",
-      "group": "retaining", "default": "sleepers",
+            {
+              "value": "9cm",
+              "label": "9 cm"
+            },
+            {
+              "value": "2l",
+              "label": "2 L"
+            },
+            {
+              "value": "3l",
+              "label": "3 L"
+            },
+            {
+              "value": "5l",
+              "label": "5 L"
+            },
+            {
+              "value": "10l",
+              "label": "10 L"
+            },
+            {
+              "value": "specimen",
+              "label": "Specimen"
+            }
+          ]
+        },
+        {
+          "id": "count",
+          "label": "How many",
+          "type": "count",
+          "control": "stepper",
+          "default": 1
+        }
+      ]
+    },
+    {
+      "id": "mulch_depth",
+      "label": "Mulch depth",
+      "type": "number",
+      "unit": "mm",
+      "control": "slider",
+      "group": "planting",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 25
+    },
+    {
+      "id": "membrane",
+      "label": "Weed membrane?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "planting",
+      "default": true
+    },
+    {
+      "id": "retaining_length",
+      "label": "Retaining wall length",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "retaining",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 0.5
+    },
+    {
+      "id": "retaining_height",
+      "label": "Retaining wall height",
+      "type": "number",
+      "unit": "m",
+      "control": "slider",
+      "group": "retaining",
+      "default": 0.6,
+      "min": 0,
+      "max": 2.5,
+      "step": 0.1
+    },
+    {
+      "id": "retaining_type",
+      "label": "Construction",
+      "type": "enum",
+      "control": "cards",
+      "group": "retaining",
+      "default": "sleepers",
       "options": [
-        { "value": "sleepers", "label": "Sleepers" },
-        { "value": "block_render", "label": "Block and render" },
-        { "value": "brick", "label": "Brick" },
-        { "value": "gabion", "label": "Gabion" }
-      ] },
-
-    { "id": "clearance_area", "label": "Area to clear", "type": "number", "unit": "m2",
-      "control": "dimension-pad", "group": "clearance", "default": 0, "min": 0, "max": 2000 },
-
-    { "id": "excavation_depth", "label": "Dig depth", "type": "number", "unit": "mm",
-      "control": "slider", "group": "groundwork", "default": 150, "min": 0, "max": 600, "step": 25 },
-
-    { "id": "spoil_route", "label": "Where does the muck go?", "type": "enum",
-      "control": "cards", "group": "groundwork", "default": "skip",
+        {
+          "value": "sleepers",
+          "label": "Sleepers"
+        },
+        {
+          "value": "block_render",
+          "label": "Block and render"
+        },
+        {
+          "value": "brick",
+          "label": "Brick"
+        },
+        {
+          "value": "gabion",
+          "label": "Gabion"
+        }
+      ]
+    },
+    {
+      "id": "clearance_area",
+      "label": "Area to clear",
+      "type": "number",
+      "unit": "m2",
+      "control": "dimension-pad",
+      "group": "clearance",
+      "default": 0,
+      "min": 0,
+      "max": 2000
+    },
+    {
+      "id": "excavation_depth",
+      "label": "Dig depth",
+      "type": "number",
+      "unit": "mm",
+      "control": "slider",
+      "group": "groundwork",
+      "default": 150,
+      "min": 0,
+      "max": 600,
+      "step": 25
+    },
+    {
+      "id": "spoil_route",
+      "label": "Where does the muck go?",
+      "type": "enum",
+      "control": "cards",
+      "group": "groundwork",
+      "default": "skip",
       "options": [
-        { "value": "skip", "label": "Skip" },
-        { "value": "grab", "label": "Grab lorry" },
-        { "value": "muckaway", "label": "Muck-away lorry" },
-        { "value": "retain", "label": "Keep on site", "sub": "Level or bund" }
-      ] },
-
-    { "id": "spoil_class", "label": "Waste type", "type": "enum", "control": "segmented",
-      "group": "groundwork", "default": "inert",
+        {
+          "value": "skip",
+          "label": "Skip"
+        },
+        {
+          "value": "grab",
+          "label": "Grab lorry"
+        },
+        {
+          "value": "muckaway",
+          "label": "Muck-away lorry"
+        },
+        {
+          "value": "retain",
+          "label": "Keep on site",
+          "sub": "Level or bund"
+        }
+      ]
+    },
+    {
+      "id": "spoil_class",
+      "label": "Waste type",
+      "type": "enum",
+      "control": "segmented",
+      "group": "groundwork",
+      "default": "inert",
       "options": [
-        { "value": "inert", "label": "Inert" },
-        { "value": "mixed", "label": "Mixed" },
-        { "value": "contaminated", "label": "Contaminated", "sub": "Costs multiples" }
-      ] },
-
-    { "id": "plant_hire", "label": "Plant needed", "type": "multi_enum", "control": "chips",
-      "group": "groundwork", "default": [],
+        {
+          "value": "inert",
+          "label": "Inert"
+        },
+        {
+          "value": "mixed",
+          "label": "Mixed"
+        },
+        {
+          "value": "contaminated",
+          "label": "Contaminated",
+          "sub": "Costs multiples"
+        }
+      ]
+    },
+    {
+      "id": "plant_hire",
+      "label": "Plant needed",
+      "type": "multi_enum",
+      "control": "chips",
+      "group": "groundwork",
+      "default": [],
       "options": [
-        { "value": "digger", "label": "Mini digger" },
-        { "value": "dumper", "label": "Dumper" },
-        { "value": "compactor", "label": "Plate compactor" },
-        { "value": "turf_cutter", "label": "Turf cutter" },
-        { "value": "breaker", "label": "Breaker" },
-        { "value": "generator", "label": "Generator" }
-      ] },
-
-    { "id": "hire_spans_weekend", "label": "Does the hire span a weekend?", "type": "boolean",
-      "control": "toggle", "group": "groundwork", "default": false,
-      "help": "Hire is charged in calendar days. A Friday start costs you the weekend." }
+        {
+          "value": "digger",
+          "label": "Mini digger"
+        },
+        {
+          "value": "dumper",
+          "label": "Dumper"
+        },
+        {
+          "value": "compactor",
+          "label": "Plate compactor"
+        },
+        {
+          "value": "turf_cutter",
+          "label": "Turf cutter"
+        },
+        {
+          "value": "breaker",
+          "label": "Breaker"
+        },
+        {
+          "value": "generator",
+          "label": "Generator"
+        }
+      ]
+    },
+    {
+      "id": "hire_spans_weekend",
+      "label": "Does the hire span a weekend?",
+      "type": "boolean",
+      "control": "toggle",
+      "group": "groundwork",
+      "default": false,
+      "help": "Hire is charged in calendar days. A Friday start costs you the weekend."
+    }
   ],
-
   "derivations": [
-    { "id": "machine_access", "expr": "site_access == 'machine'" },
-    { "id": "hard_surface_removal", "expr": "existing_surface contains 'concrete' || existing_surface contains 'tarmac' || existing_surface contains 'slabs'" },
-
-    { "id": "groundwork_area", "expr": "paving_area + decking_area + turf_area" },
-    { "id": "excavation_volume", "unit": "m3",
-      "expr": "groundwork_area * (excavation_depth / 1000)" },
-    { "id": "spoil_volume_bulked", "unit": "m3",
+    {
+      "id": "machine_access",
+      "expr": "site_access == 'machine'"
+    },
+    {
+      "id": "hard_surface_removal",
+      "expr": "existing_surface contains 'concrete' || existing_surface contains 'tarmac' || existing_surface contains 'slabs'"
+    },
+    {
+      "id": "groundwork_area",
+      "expr": "paving_area + decking_area + turf_area"
+    },
+    {
+      "id": "excavation_volume",
+      "unit": "m3",
+      "expr": "groundwork_area * (excavation_depth / 1000)"
+    },
+    {
+      "id": "spoil_volume_bulked",
+      "unit": "m3",
       "expr": "excavation_volume * 1.30",
-      "note": "Bulking factor — spoil swells when dug. Skip and grab sizing uses this, not the dug volume." },
-    { "id": "spoil_tonnes", "expr": "spoil_volume_bulked * if(ground_conditions == 'clay', 2.0, 1.8)" },
-    { "id": "excavation_volume_machine", "expr": "if(machine_access, excavation_volume, 0)" },
-    { "id": "excavation_volume_hand", "expr": "if(machine_access, 0, excavation_volume)" },
-
-    { "id": "sub_base_depth_m", "expr": "if(sub_base_depth == '150', 0.15, 0.10)" },
-    { "id": "sub_base_layers", "expr": "ceil(sub_base_depth_m / 0.10)" },
-    { "id": "mot_tonnes", "expr": "paving_area * sub_base_depth_m * 2.1",
-      "note": "MOT Type 1 at 2.1 t/m3 compacted" },
-    { "id": "bedding_volume", "expr": "paving_area * if(bedding == 'full_mortar', 0.045, 0.040)" },
-    { "id": "cement_bags", "expr": "ceil(bedding_volume / 0.15)" },
-
-    { "id": "cut_waste_pct",
-      "expr": "if(laying_pattern == 'herringbone', 0.15, if(laying_pattern == 'circle', 0.12, if(laying_pattern == 'random', 0.10, 0.05)))" },
-    { "id": "complex_pattern", "expr": "laying_pattern != 'stack'" },
-    { "id": "paving_cut_area", "expr": "if(complex_pattern, paving_area, 0)" },
-
-    { "id": "topsoil_depth_m", "expr": "if(topsoil_depth == '150', 0.15, if(topsoil_depth == '100', 0.10, if(topsoil_depth == '50', 0.05, 0)))" },
-    { "id": "topsoil_volume", "expr": "turf_area * topsoil_depth_m * 1.10" },
-
-    { "id": "fence_height_m", "expr": "if(fence_height == '2.0', 2.0, if(fence_height == '1.8', 1.8, if(fence_height == '1.5', 1.5, if(fence_height == '1.2', 1.2, 0.9))))" },
-    { "id": "panel_count", "expr": "ceil(fence_length / 1.83)" },
-    { "id": "post_count", "expr": "if(fence_length > 0, panel_count + 1, 0)",
-      "note": "Posts = panels + 1. The most common fencing material error." },
-    { "id": "postcrete_bags", "expr": "post_count * if(fence_height_m >= 1.8, 3, 2)" },
-    { "id": "post_hole_depth", "expr": "max(fence_height_m / 3, 0.6)" },
-    { "id": "post_holes_soft", "expr": "if(post_ground == 'soft', post_count, 0)" },
-    { "id": "post_holes_hard", "expr": "if(post_ground == 'soft', 0, post_count)" },
-
-    { "id": "decking_joist_length", "expr": "decking_area / 0.4 * 1.10",
-      "note": "Joists at 400 mm centres, +10% waste" },
-    { "id": "decking_board_length", "expr": "decking_area / 0.145 * 1.10" },
-
-    { "id": "plant_count", "expr": "sum(plants, p.count)" },
-    { "id": "plant_units_weighted",
-      "expr": "sum(plants, p.count * if(p.size == 'specimen', 6, if(p.size == '10l', 3, if(p.size == '5l', 2, if(p.size == '3l', 1, 0.6)))))" },
-    { "id": "mulch_volume", "expr": "planting_area * (mulch_depth / 1000) * 1.10" },
-
-    { "id": "retaining_area", "expr": "retaining_length * retaining_height" },
-    { "id": "retaining_over_600", "expr": "retaining_height > 0.6" },
-
-    { "id": "total_area", "expr": "paving_area + turf_area + decking_area + planting_area + clearance_area" },
-    { "id": "small_job", "expr": "total_area > 0 && total_area < 15" },
-    { "id": "large_job", "expr": "total_area > 150" },
-    { "id": "barrow_volume", "expr": "if(machine_access, 0, spoil_volume_bulked + mot_tonnes / 2.1 + topsoil_volume)" },
-    { "id": "barrow_distance_units", "expr": "barrow_volume * (access_distance / 10)" },
-
-    { "id": "driveway_permeability_flag", "expr": "job_type == 'driveway' && paving_area > 5 && jointing != 'resin'" },
-    { "id": "services_unresolved", "expr": "services_known == 'unknown' && excavation_volume > 0" },
-    { "id": "hire_days", "expr": "max(1, ceil(total_hours / 7.5))" },
-    { "id": "hire_calendar_days", "expr": "hire_days + if(hire_spans_weekend, 2, 0)",
-      "note": "Plant hire is charged in calendar days including weekends" },
-    { "id": "winter_working", "expr": "start_month == 'winter'" }
+      "note": "Bulking factor — spoil swells when dug. Skip and grab sizing uses this, not the dug volume."
+    },
+    {
+      "id": "spoil_tonnes",
+      "expr": "spoil_volume_bulked * if(ground_conditions == 'clay', 2.0, 1.8)"
+    },
+    {
+      "id": "excavation_volume_machine",
+      "expr": "if(machine_access, excavation_volume, 0)"
+    },
+    {
+      "id": "excavation_volume_hand",
+      "expr": "if(machine_access, 0, excavation_volume)"
+    },
+    {
+      "id": "sub_base_depth_m",
+      "expr": "if(sub_base_depth == '150', 0.15, 0.10)"
+    },
+    {
+      "id": "sub_base_layers",
+      "expr": "ceil(sub_base_depth_m / 0.10)"
+    },
+    {
+      "id": "mot_tonnes",
+      "expr": "paving_area * sub_base_depth_m * 2.1",
+      "note": "MOT Type 1 at 2.1 t/m3 compacted"
+    },
+    {
+      "id": "bedding_volume",
+      "expr": "paving_area * if(bedding == 'full_mortar', 0.045, 0.040)"
+    },
+    {
+      "id": "cement_bags",
+      "expr": "ceil(bedding_volume / 0.15)"
+    },
+    {
+      "id": "cut_waste_pct",
+      "expr": "if(laying_pattern == 'herringbone', 0.15, if(laying_pattern == 'circle', 0.12, if(laying_pattern == 'random', 0.10, 0.05)))"
+    },
+    {
+      "id": "complex_pattern",
+      "expr": "laying_pattern != 'stack'"
+    },
+    {
+      "id": "paving_cut_area",
+      "expr": "if(complex_pattern, paving_area, 0)"
+    },
+    {
+      "id": "topsoil_depth_m",
+      "expr": "if(topsoil_depth == '150', 0.15, if(topsoil_depth == '100', 0.10, if(topsoil_depth == '50', 0.05, 0)))"
+    },
+    {
+      "id": "topsoil_volume",
+      "expr": "turf_area * topsoil_depth_m * 1.10"
+    },
+    {
+      "id": "fence_height_m",
+      "expr": "if(fence_height == '2.0', 2.0, if(fence_height == '1.8', 1.8, if(fence_height == '1.5', 1.5, if(fence_height == '1.2', 1.2, 0.9))))"
+    },
+    {
+      "id": "panel_count",
+      "expr": "ceil(fence_length / 1.83)"
+    },
+    {
+      "id": "post_count",
+      "expr": "if(fence_length > 0, panel_count + 1, 0)",
+      "note": "Posts = panels + 1. The most common fencing material error."
+    },
+    {
+      "id": "postcrete_bags",
+      "expr": "post_count * if(fence_height_m >= 1.8, 3, 2)"
+    },
+    {
+      "id": "post_hole_depth",
+      "expr": "max(fence_height_m / 3, 0.6)"
+    },
+    {
+      "id": "post_holes_soft",
+      "expr": "if(post_ground == 'soft', post_count, 0)"
+    },
+    {
+      "id": "post_holes_hard",
+      "expr": "if(post_ground == 'soft', 0, post_count)"
+    },
+    {
+      "id": "decking_joist_length",
+      "expr": "decking_area / 0.4 * 1.10",
+      "note": "Joists at 400 mm centres, +10% waste"
+    },
+    {
+      "id": "decking_board_length",
+      "expr": "decking_area / 0.145 * 1.10"
+    },
+    {
+      "id": "plant_count",
+      "expr": "sum(plants, p.count)"
+    },
+    {
+      "id": "plant_units_weighted",
+      "expr": "sum(plants, p.count * if(p.size == 'specimen', 6, if(p.size == '10l', 3, if(p.size == '5l', 2, if(p.size == '3l', 1, 0.6)))))"
+    },
+    {
+      "id": "mulch_volume",
+      "expr": "planting_area * (mulch_depth / 1000) * 1.10"
+    },
+    {
+      "id": "retaining_area",
+      "expr": "retaining_length * retaining_height"
+    },
+    {
+      "id": "retaining_over_600",
+      "expr": "retaining_height > 0.6"
+    },
+    {
+      "id": "total_area",
+      "expr": "paving_area + turf_area + decking_area + planting_area + clearance_area"
+    },
+    {
+      "id": "small_job",
+      "expr": "total_area > 0 && total_area < 15"
+    },
+    {
+      "id": "large_job",
+      "expr": "total_area > 150"
+    },
+    {
+      "id": "barrow_volume",
+      "expr": "if(machine_access, 0, spoil_volume_bulked + mot_tonnes / 2.1 + topsoil_volume)"
+    },
+    {
+      "id": "barrow_distance_units",
+      "expr": "barrow_volume * (access_distance / 10)"
+    },
+    {
+      "id": "driveway_permeability_flag",
+      "expr": "job_type == 'driveway' && paving_area > 5 && jointing != 'resin'"
+    },
+    {
+      "id": "services_unresolved",
+      "expr": "services_known == 'unknown' && excavation_volume > 0"
+    },
+    {
+      "id": "hire_days",
+      "expr": "max(1, ceil(total_hours / 7.5))"
+    },
+    {
+      "id": "hire_calendar_days",
+      "expr": "hire_days + if(hire_spans_weekend, 2, 0)",
+      "note": "Plant hire is charged in calendar days including weekends"
+    },
+    {
+      "id": "winter_working",
+      "expr": "start_month == 'winter'"
+    }
   ],
-
   "tasks": [
-    { "id": "turf_lift", "label": "Lift and dispose of existing turf",
-      "group": "Site clearance", "tags": ["labour", "excavation"], "quantity": "groundwork_area",
-      "rate": { "low": 0.06, "typical": 0.10, "high": 0.16, "unit": "hr/m2" },
-      "appliesWhen": "existing_surface contains 'turf'", "source": "practitioner review 2026-02" },
-
-    { "id": "break_out", "label": "Break out existing hard surface",
-      "group": "Site clearance", "tags": ["labour", "excavation"], "quantity": "groundwork_area",
-      "rate": { "low": 0.30, "typical": 0.50, "high": 0.85, "unit": "hr/m2" },
-      "appliesWhen": "hard_surface_removal", "source": "practitioner review 2026-02" },
-
-    { "id": "clearance_general", "label": "General garden clearance",
-      "group": "Site clearance", "tags": ["labour"], "quantity": "clearance_area",
-      "rate": { "low": 0.08, "typical": 0.15, "high": 0.30, "unit": "hr/m2" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "fence_strip", "label": "Remove existing fence",
-      "group": "Site clearance", "tags": ["labour"], "quantity": "fence_length",
-      "rate": { "low": 0.15, "typical": 0.25, "high": 0.45, "unit": "hr/m" },
-      "appliesWhen": "fence_removal", "source": "practitioner review 2026-02" },
-
-    { "id": "excavate_machine", "label": "Excavate to formation — machine",
-      "group": "Excavation and disposal", "tags": ["labour", "excavation"],
+    {
+      "id": "turf_lift",
+      "label": "Lift and dispose of existing turf",
+      "group": "Site clearance",
+      "tags": [
+        "labour",
+        "excavation"
+      ],
+      "quantity": "groundwork_area",
+      "rate": {
+        "low": 0.06,
+        "typical": 0.1,
+        "high": 0.16,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "existing_surface contains 'turf'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "break_out",
+      "label": "Break out existing hard surface",
+      "group": "Site clearance",
+      "tags": [
+        "labour",
+        "excavation"
+      ],
+      "quantity": "groundwork_area",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.5,
+        "high": 0.85,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "hard_surface_removal",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "clearance_general",
+      "label": "General garden clearance",
+      "group": "Site clearance",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "clearance_area",
+      "rate": {
+        "low": 0.08,
+        "typical": 0.15,
+        "high": 0.3,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "fence_strip",
+      "label": "Remove existing fence",
+      "group": "Site clearance",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "fence_length",
+      "rate": {
+        "low": 0.15,
+        "typical": 0.25,
+        "high": 0.45,
+        "unit": "hr/m"
+      },
+      "appliesWhen": "fence_removal",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "excavate_machine",
+      "label": "Excavate to formation — machine",
+      "group": "Excavation and disposal",
+      "tags": [
+        "labour",
+        "excavation"
+      ],
       "quantity": "excavation_volume_machine",
-      "rate": { "low": 0.35, "typical": 0.55, "high": 0.90, "unit": "hr/m3" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "excavate_hand", "label": "Excavate to formation — by hand",
-      "group": "Excavation and disposal", "tags": ["labour", "excavation"],
+      "rate": {
+        "low": 0.35,
+        "typical": 0.55,
+        "high": 0.9,
+        "unit": "hr/m3"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "excavate_hand",
+      "label": "Excavate to formation — by hand",
+      "group": "Excavation and disposal",
+      "tags": [
+        "labour",
+        "excavation"
+      ],
       "quantity": "excavation_volume_hand",
-      "rate": { "low": 1.80, "typical": 2.60, "high": 3.80, "unit": "hr/m3" },
-      "source": "practitioner review 2026-02 — ~4.5x the machine rate, modelled as a separate task rather than a multiplier" },
-
-    { "id": "barrow_run", "label": "Barrowing materials and spoil",
-      "group": "Excavation and disposal", "tags": ["labour", "handling"],
+      "rate": {
+        "low": 1.8,
+        "typical": 2.6,
+        "high": 3.8,
+        "unit": "hr/m3"
+      },
+      "source": "practitioner review 2026-02 — ~4.5x the machine rate, modelled as a separate task rather than a multiplier"
+    },
+    {
+      "id": "barrow_run",
+      "label": "Barrowing materials and spoil",
+      "group": "Excavation and disposal",
+      "tags": [
+        "labour",
+        "handling"
+      ],
       "quantity": "barrow_distance_units",
-      "rate": { "low": 0.15, "typical": 0.25, "high": 0.40, "unit": "hr/unit" },
-      "source": "per m3 per 10 m of barrow run" },
-
-    { "id": "sub_base_lay", "label": "Lay and compact sub-base",
-      "group": "Sub-base", "tags": ["labour"], "quantity": "paving_area",
-      "rate": { "low": 0.12, "typical": 0.18, "high": 0.28, "unit": "hr/m2" },
-      "multiplierRef": "sub_base_layers", "source": "practitioner review 2026-02" },
-
-    { "id": "lay_paving_slabs", "label": "Lay paving on mortar bed",
-      "group": "Paving", "tags": ["labour"], "quantity": "paving_area",
-      "rate": { "low": 0.60, "typical": 0.85, "high": 1.30, "unit": "hr/m2" },
+      "rate": {
+        "low": 0.15,
+        "typical": 0.25,
+        "high": 0.4,
+        "unit": "hr/unit"
+      },
+      "source": "per m3 per 10 m of barrow run"
+    },
+    {
+      "id": "sub_base_lay",
+      "label": "Lay and compact sub-base",
+      "group": "Sub-base",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "paving_area",
+      "rate": {
+        "low": 0.12,
+        "typical": 0.18,
+        "high": 0.28,
+        "unit": "hr/m2"
+      },
+      "multiplierRef": "sub_base_layers",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_paving_slabs",
+      "label": "Lay paving on mortar bed",
+      "group": "Paving",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "paving_area",
+      "rate": {
+        "low": 0.6,
+        "typical": 0.85,
+        "high": 1.3,
+        "unit": "hr/m2"
+      },
       "appliesWhen": "paving_type != 'porcelain' && paving_type != 'block_paver'",
-      "source": "practitioner review 2026-02" },
-
-    { "id": "lay_paving_porcelain", "label": "Lay porcelain — full bed and primer",
-      "group": "Paving", "tags": ["labour"], "quantity": "paving_area",
-      "rate": { "low": 0.85, "typical": 1.15, "high": 1.60, "unit": "hr/m2" },
-      "appliesWhen": "paving_type == 'porcelain'", "source": "practitioner review 2026-02" },
-
-    { "id": "lay_block_paving", "label": "Lay block paving",
-      "group": "Paving", "tags": ["labour"], "quantity": "paving_area",
-      "rate": { "low": 0.45, "typical": 0.65, "high": 1.00, "unit": "hr/m2" },
-      "appliesWhen": "paving_type == 'block_paver'", "source": "practitioner review 2026-02" },
-
-    { "id": "cutting_allowance", "label": "Cutting to pattern",
-      "group": "Paving", "tags": ["labour"], "quantity": "paving_cut_area",
-      "rate": { "low": 0.08, "typical": 0.15, "high": 0.25, "unit": "hr/m2" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "jointing_brush", "label": "Jointing — brush in",
-      "group": "Paving", "tags": ["labour"], "quantity": "paving_area",
-      "rate": { "low": 0.08, "typical": 0.12, "high": 0.20, "unit": "hr/m2" },
-      "appliesWhen": "jointing != 'pointed_mortar'", "source": "practitioner review 2026-02" },
-
-    { "id": "jointing_pointed", "label": "Jointing — pointed mortar",
-      "group": "Paving", "tags": ["labour"], "quantity": "paving_area",
-      "rate": { "low": 0.25, "typical": 0.40, "high": 0.60, "unit": "hr/m2" },
-      "appliesWhen": "jointing == 'pointed_mortar'", "source": "practitioner review 2026-02" },
-
-    { "id": "edging_lay", "label": "Edging — haunched",
-      "group": "Edging", "tags": ["labour"], "quantity": "edging_length",
-      "rate": { "low": 0.20, "typical": 0.30, "high": 0.45, "unit": "hr/m" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "drainage_lay", "label": "Drainage channel",
-      "group": "Edging", "tags": ["labour"], "quantity": "drainage_length",
-      "rate": { "low": 0.30, "typical": 0.45, "high": 0.70, "unit": "hr/m" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "turf_prep", "label": "Ground preparation — rotavate, rake and level",
-      "group": "Turfing", "tags": ["labour"], "quantity": "turf_area",
-      "rate": { "low": 0.10, "typical": 0.15, "high": 0.25, "unit": "hr/m2" },
-      "appliesWhen": "rotavate", "source": "practitioner review 2026-02" },
-
-    { "id": "turf_lay", "label": "Lay turf",
-      "group": "Turfing", "tags": ["labour"], "quantity": "turf_area",
-      "rate": { "low": 0.05, "typical": 0.08, "high": 0.12, "unit": "hr/m2" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "post_hole_soft", "label": "Dig post holes — soft ground",
-      "group": "Fencing", "tags": ["labour", "excavation"], "quantity": "post_holes_soft",
-      "rate": { "low": 0.30, "typical": 0.45, "high": 0.70, "unit": "hr/each" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "post_hole_hard", "label": "Dig post holes — hard or rubble",
-      "group": "Fencing", "tags": ["labour", "excavation"], "quantity": "post_holes_hard",
-      "rate": { "low": 0.60, "typical": 1.00, "high": 1.60, "unit": "hr/each" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "post_set", "label": "Set posts and concrete",
-      "group": "Fencing", "tags": ["labour"], "quantity": "post_count",
-      "rate": { "low": 0.25, "typical": 0.35, "high": 0.50, "unit": "hr/each" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "panel_fit", "label": "Fit panels and gravel boards",
-      "group": "Fencing", "tags": ["labour"], "quantity": "panel_count",
-      "rate": { "low": 0.30, "typical": 0.45, "high": 0.70, "unit": "hr/each" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "gate_hang", "label": "Hang gate",
-      "group": "Fencing", "tags": ["labour"], "quantity": "gate_count",
-      "rate": { "low": 0.75, "typical": 1.20, "high": 2.00, "unit": "hr/each" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "decking_substructure", "label": "Decking substructure",
-      "group": "Decking", "tags": ["labour"], "quantity": "decking_area",
-      "rate": { "low": 0.45, "typical": 0.70, "high": 1.10, "unit": "hr/m2" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "decking_boards", "label": "Lay decking boards",
-      "group": "Decking", "tags": ["labour"], "quantity": "decking_area",
-      "rate": { "low": 0.30, "typical": 0.45, "high": 0.70, "unit": "hr/m2" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "decking_balustrade", "label": "Balustrade",
-      "group": "Decking", "tags": ["labour"], "quantity": "balustrade_length",
-      "rate": { "low": 0.40, "typical": 0.65, "high": 1.00, "unit": "hr/m" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "decking_steps", "label": "Steps",
-      "group": "Decking", "tags": ["labour"], "quantity": "steps_count",
-      "rate": { "low": 0.80, "typical": 1.30, "high": 2.20, "unit": "hr/each" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "planting_task", "label": "Planting",
-      "group": "Planting", "tags": ["labour"], "quantity": "plant_units_weighted",
-      "rate": { "low": 0.10, "typical": 0.15, "high": 0.25, "unit": "hr/unit" },
-      "source": "practitioner review 2026-02 — weighted by pot size" },
-
-    { "id": "mulch_spread", "label": "Spread mulch",
-      "group": "Planting", "tags": ["labour"], "quantity": "planting_area",
-      "rate": { "low": 0.04, "typical": 0.06, "high": 0.10, "unit": "hr/m2" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "membrane_lay", "label": "Lay weed membrane",
-      "group": "Planting", "tags": ["labour"], "quantity": "planting_area",
-      "rate": { "low": 0.03, "typical": 0.05, "high": 0.08, "unit": "hr/m2" },
-      "appliesWhen": "membrane", "source": "practitioner review 2026-02" },
-
-    { "id": "retaining_build", "label": "Retaining structure",
-      "group": "Retaining", "tags": ["labour"], "quantity": "retaining_area",
-      "rate": { "low": 1.20, "typical": 1.90, "high": 3.00, "unit": "hr/m2" },
-      "source": "practitioner review 2026-02" },
-
-    { "id": "site_setup", "label": "Site set-up, protection and clean-down",
-      "group": "Site clearance", "tags": ["labour"], "quantity": "hire_days",
-      "rate": { "low": 0.60, "typical": 0.90, "high": 1.30, "unit": "hr/day" },
-      "source": "practitioner review 2026-02" }
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_paving_porcelain",
+      "label": "Lay porcelain — full bed and primer",
+      "group": "Paving",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "paving_area",
+      "rate": {
+        "low": 0.85,
+        "typical": 1.15,
+        "high": 1.6,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "paving_type == 'porcelain'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "lay_block_paving",
+      "label": "Lay block paving",
+      "group": "Paving",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "paving_area",
+      "rate": {
+        "low": 0.45,
+        "typical": 0.65,
+        "high": 1.0,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "paving_type == 'block_paver'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "cutting_allowance",
+      "label": "Cutting to pattern",
+      "group": "Paving",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "paving_cut_area",
+      "rate": {
+        "low": 0.08,
+        "typical": 0.15,
+        "high": 0.25,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "jointing_brush",
+      "label": "Jointing — brush in",
+      "group": "Paving",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "paving_area",
+      "rate": {
+        "low": 0.08,
+        "typical": 0.12,
+        "high": 0.2,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "jointing != 'pointed_mortar'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "jointing_pointed",
+      "label": "Jointing — pointed mortar",
+      "group": "Paving",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "paving_area",
+      "rate": {
+        "low": 0.25,
+        "typical": 0.4,
+        "high": 0.6,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "jointing == 'pointed_mortar'",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "edging_lay",
+      "label": "Edging — haunched",
+      "group": "Edging",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "edging_length",
+      "rate": {
+        "low": 0.2,
+        "typical": 0.3,
+        "high": 0.45,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "drainage_lay",
+      "label": "Drainage channel",
+      "group": "Edging",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "drainage_length",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "turf_prep",
+      "label": "Ground preparation — rotavate, rake and level",
+      "group": "Turfing",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "turf_area",
+      "rate": {
+        "low": 0.1,
+        "typical": 0.15,
+        "high": 0.25,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "rotavate",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "turf_lay",
+      "label": "Lay turf",
+      "group": "Turfing",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "turf_area",
+      "rate": {
+        "low": 0.05,
+        "typical": 0.08,
+        "high": 0.12,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "post_hole_soft",
+      "label": "Dig post holes — soft ground",
+      "group": "Fencing",
+      "tags": [
+        "labour",
+        "excavation"
+      ],
+      "quantity": "post_holes_soft",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "post_hole_hard",
+      "label": "Dig post holes — hard or rubble",
+      "group": "Fencing",
+      "tags": [
+        "labour",
+        "excavation"
+      ],
+      "quantity": "post_holes_hard",
+      "rate": {
+        "low": 0.6,
+        "typical": 1.0,
+        "high": 1.6,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "post_set",
+      "label": "Set posts and concrete",
+      "group": "Fencing",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "post_count",
+      "rate": {
+        "low": 0.25,
+        "typical": 0.35,
+        "high": 0.5,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "panel_fit",
+      "label": "Fit panels and gravel boards",
+      "group": "Fencing",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "panel_count",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "gate_hang",
+      "label": "Hang gate",
+      "group": "Fencing",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "gate_count",
+      "rate": {
+        "low": 0.75,
+        "typical": 1.2,
+        "high": 2.0,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "decking_substructure",
+      "label": "Decking substructure",
+      "group": "Decking",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "decking_area",
+      "rate": {
+        "low": 0.45,
+        "typical": 0.7,
+        "high": 1.1,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "decking_boards",
+      "label": "Lay decking boards",
+      "group": "Decking",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "decking_area",
+      "rate": {
+        "low": 0.3,
+        "typical": 0.45,
+        "high": 0.7,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "decking_balustrade",
+      "label": "Balustrade",
+      "group": "Decking",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "balustrade_length",
+      "rate": {
+        "low": 0.4,
+        "typical": 0.65,
+        "high": 1.0,
+        "unit": "hr/m"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "decking_steps",
+      "label": "Steps",
+      "group": "Decking",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "steps_count",
+      "rate": {
+        "low": 0.8,
+        "typical": 1.3,
+        "high": 2.2,
+        "unit": "hr/each"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "planting_task",
+      "label": "Planting",
+      "group": "Planting",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "plant_units_weighted",
+      "rate": {
+        "low": 0.1,
+        "typical": 0.15,
+        "high": 0.25,
+        "unit": "hr/unit"
+      },
+      "source": "practitioner review 2026-02 — weighted by pot size"
+    },
+    {
+      "id": "mulch_spread",
+      "label": "Spread mulch",
+      "group": "Planting",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "planting_area",
+      "rate": {
+        "low": 0.04,
+        "typical": 0.06,
+        "high": 0.1,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "membrane_lay",
+      "label": "Lay weed membrane",
+      "group": "Planting",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "planting_area",
+      "rate": {
+        "low": 0.03,
+        "typical": 0.05,
+        "high": 0.08,
+        "unit": "hr/m2"
+      },
+      "appliesWhen": "membrane",
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "retaining_build",
+      "label": "Retaining structure",
+      "group": "Retaining",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "retaining_area",
+      "rate": {
+        "low": 1.2,
+        "typical": 1.9,
+        "high": 3.0,
+        "unit": "hr/m2"
+      },
+      "source": "practitioner review 2026-02"
+    },
+    {
+      "id": "site_setup",
+      "label": "Site set-up, protection and clean-down",
+      "group": "Site clearance",
+      "tags": [
+        "labour"
+      ],
+      "quantity": "hire_days",
+      "rate": {
+        "low": 0.6,
+        "typical": 0.9,
+        "high": 1.3,
+        "unit": "hr/day"
+      },
+      "source": "practitioner review 2026-02",
+      "stage": "post_programme"
+    }
   ],
-
   "materials": [
-    { "id": "mot_type1", "label": "MOT Type 1", "sku": "aggregate.mot1",
-      "group": "Materials", "quantity": "mot_tonnes",
-      "consumption": { "expr": "1", "unit": "t/t" }, "wastePct": 0.05,
-      "purchaseUnits": [ { "size": 0.85, "unit": "t" }, { "size": 20, "unit": "t" } ],
-      "roundingStrategy": "cheapest_combination",
-      "notes": "Bulk bag ~0.85 t or loose tipped by the lorry load" },
-
-    { "id": "sharp_sand", "label": "Sharp sand", "sku": "aggregate.sharp_sand",
-      "group": "Materials", "quantity": "bedding_volume",
-      "consumption": { "expr": "1.65", "unit": "t/m3" }, "wastePct": 0.10,
-      "purchaseUnits": [ { "size": 0.85, "unit": "t" } ] },
-
-    { "id": "cement", "label": "Cement", "sku": "aggregate.cement.25kg",
-      "group": "Materials", "quantity": "cement_bags",
-      "consumption": { "expr": "1", "unit": "bag/bag" }, "wastePct": 0.05,
-      "purchaseUnits": [ { "size": 1, "unit": "bag" } ] },
-
-    { "id": "paving_units", "label": "Paving", "sku": "paving.{paving_type}",
-      "group": "Materials", "quantity": "paving_area",
-      "consumption": { "expr": "1", "unit": "m2/m2" },
-      "wastePct": 0.05, "wastePctRef": "cut_waste_pct",
-      "purchaseUnits": [ { "size": 1, "unit": "m2" } ],
-      "notes": "Cut waste varies by pattern — stack 5%, random 10%, circle 12%, herringbone 15%" },
-
-    { "id": "jointing_compound", "label": "Jointing compound", "sku": "paving.jointing.{jointing}",
-      "group": "Materials", "quantity": "paving_area",
-      "consumption": { "expr": "1", "unit": "m2/m2" }, "wastePct": 0.08,
-      "purchaseUnits": [ { "size": 1, "unit": "m2" } ] },
-
-    { "id": "edging_units", "label": "Edging", "sku": "paving.edging",
-      "group": "Materials", "quantity": "edging_length",
-      "consumption": { "expr": "1", "unit": "m/m" }, "wastePct": 0.05,
-      "purchaseUnits": [ { "size": 1, "unit": "m" } ] },
-
-    { "id": "turf_rolls", "label": "Turf", "sku": "soft.turf",
-      "group": "Materials", "quantity": "turf_area",
-      "consumption": { "expr": "1", "unit": "m2/m2" }, "wastePct": 0.05,
-      "purchaseUnits": [ { "size": 1, "unit": "m2" } ],
-      "notes": "Must be laid within 24 h of delivery — a scheduling constraint, not just a cost" },
-
-    { "id": "topsoil", "label": "Topsoil", "sku": "soft.topsoil",
-      "group": "Materials", "quantity": "topsoil_volume",
-      "consumption": { "expr": "1.5", "unit": "t/m3" }, "wastePct": 0.05,
-      "purchaseUnits": [ { "size": 0.85, "unit": "t" } ] },
-
-    { "id": "fence_panels", "label": "Fence panels", "sku": "fencing.panel.{fence_panel_type}",
-      "group": "Materials", "quantity": "panel_count",
-      "consumption": { "expr": "1", "unit": "each/each" }, "wastePct": 0,
-      "purchaseUnits": [ { "size": 1, "unit": "each" } ] },
-
-    { "id": "fence_posts", "label": "Fence posts", "sku": "fencing.post.{post_type}",
-      "group": "Materials", "quantity": "post_count",
-      "consumption": { "expr": "1", "unit": "each/each" }, "wastePct": 0,
-      "purchaseUnits": [ { "size": 1, "unit": "each" } ],
-      "notes": "Posts = panels + 1" },
-
-    { "id": "postcrete", "label": "Postcrete", "sku": "fencing.postcrete.20kg",
-      "group": "Materials", "quantity": "postcrete_bags",
-      "consumption": { "expr": "1", "unit": "bag/bag" }, "wastePct": 0.05,
-      "purchaseUnits": [ { "size": 1, "unit": "bag" } ],
-      "notes": "2 bags per post, 3 for 1.8 m+ or exposed sites" },
-
-    { "id": "gravel_board_units", "label": "Gravel boards", "sku": "fencing.gravel_board",
-      "group": "Materials", "quantity": "panel_count",
-      "consumption": { "expr": "1", "unit": "each/each" }, "wastePct": 0,
-      "purchaseUnits": [ { "size": 1, "unit": "each" } ],
-      "appliesWhen": "gravel_boards" },
-
-    { "id": "decking_joists", "label": "Decking joists", "sku": "decking.joist",
-      "group": "Materials", "quantity": "decking_joist_length",
-      "consumption": { "expr": "1", "unit": "m/m" }, "wastePct": 0,
-      "purchaseUnits": [ { "size": 3.6, "unit": "m" }, { "size": 4.8, "unit": "m" } ],
-      "roundingStrategy": "cheapest_combination" },
-
-    { "id": "decking_boards_mat", "label": "Decking boards", "sku": "decking.board.{decking_board}",
-      "group": "Materials", "quantity": "decking_board_length",
-      "consumption": { "expr": "1", "unit": "m/m" }, "wastePct": 0,
-      "purchaseUnits": [ { "size": 3.6, "unit": "m" }, { "size": 4.8, "unit": "m" } ],
-      "roundingStrategy": "cheapest_combination" },
-
-    { "id": "plants_mat", "label": "Plants", "sku": "soft.plants.mixed",
-      "group": "Materials", "quantity": "plant_count",
-      "consumption": { "expr": "1", "unit": "each/each" }, "wastePct": 0,
-      "purchaseUnits": [ { "size": 1, "unit": "each" } ],
-      "excludeFromMarginBase": true,
-      "notes": "Client often picks the plants — supply markup, not labour margin" },
-
-    { "id": "mulch", "label": "Mulch", "sku": "soft.mulch",
-      "group": "Materials", "quantity": "mulch_volume",
-      "consumption": { "expr": "1", "unit": "m3/m3" }, "wastePct": 0.05,
-      "purchaseUnits": [ { "size": 1, "unit": "m3" } ] },
-
-    { "id": "membrane_mat", "label": "Weed membrane", "sku": "soft.membrane",
-      "group": "Materials", "quantity": "planting_area",
-      "consumption": { "expr": "1", "unit": "m2/m2" }, "wastePct": 0.15,
-      "purchaseUnits": [ { "size": 1, "unit": "m2" } ],
-      "appliesWhen": "membrane", "notes": "+15% for overlaps" },
-
-    { "id": "sundries", "label": "Sundries — fixings, screws, line, pegs, blades, sealant",
+    {
+      "id": "mot_type1",
+      "label": "MOT Type 1",
+      "sku": "aggregate.mot1",
       "group": "Materials",
-      "pricing": { "type": "greater_of", "percentOfMaterials": 0.06, "perDayPence": 3000 } }
+      "quantity": "mot_tonnes",
+      "consumption": {
+        "expr": "1",
+        "unit": "t/t"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 0.85,
+          "unit": "t"
+        },
+        {
+          "size": 20,
+          "unit": "t"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination",
+      "notes": "Bulk bag ~0.85 t or loose tipped by the lorry load"
+    },
+    {
+      "id": "sharp_sand",
+      "label": "Sharp sand",
+      "sku": "aggregate.sharp_sand",
+      "group": "Materials",
+      "quantity": "bedding_volume",
+      "consumption": {
+        "expr": "1.65",
+        "unit": "t/m3"
+      },
+      "wastePct": 0.1,
+      "purchaseUnits": [
+        {
+          "size": 0.85,
+          "unit": "t"
+        }
+      ]
+    },
+    {
+      "id": "cement",
+      "label": "Cement",
+      "sku": "aggregate.cement.25kg",
+      "group": "Materials",
+      "quantity": "cement_bags",
+      "consumption": {
+        "expr": "1",
+        "unit": "bag/bag"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "bag"
+        }
+      ]
+    },
+    {
+      "id": "paving_units",
+      "label": "Paving",
+      "sku": "paving.{paving_type}",
+      "group": "Materials",
+      "quantity": "paving_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.05,
+      "wastePctRef": "cut_waste_pct",
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m2"
+        }
+      ],
+      "notes": "Cut waste varies by pattern — stack 5%, random 10%, circle 12%, herringbone 15%"
+    },
+    {
+      "id": "jointing_compound",
+      "label": "Jointing compound",
+      "sku": "paving.jointing.{jointing}",
+      "group": "Materials",
+      "quantity": "paving_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.08,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m2"
+        }
+      ]
+    },
+    {
+      "id": "edging_units",
+      "label": "Edging",
+      "sku": "paving.edging",
+      "group": "Materials",
+      "quantity": "edging_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m"
+        }
+      ]
+    },
+    {
+      "id": "turf_rolls",
+      "label": "Turf",
+      "sku": "soft.turf",
+      "group": "Materials",
+      "quantity": "turf_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m2"
+        }
+      ],
+      "notes": "Must be laid within 24 h of delivery — a scheduling constraint, not just a cost"
+    },
+    {
+      "id": "topsoil",
+      "label": "Topsoil",
+      "sku": "soft.topsoil",
+      "group": "Materials",
+      "quantity": "topsoil_volume",
+      "consumption": {
+        "expr": "1.5",
+        "unit": "t/m3"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 0.85,
+          "unit": "t"
+        }
+      ]
+    },
+    {
+      "id": "fence_panels",
+      "label": "Fence panels",
+      "sku": "fencing.panel.{fence_panel_type}",
+      "group": "Materials",
+      "quantity": "panel_count",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ]
+    },
+    {
+      "id": "fence_posts",
+      "label": "Fence posts",
+      "sku": "fencing.post.{post_type}",
+      "group": "Materials",
+      "quantity": "post_count",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "notes": "Posts = panels + 1"
+    },
+    {
+      "id": "postcrete",
+      "label": "Postcrete",
+      "sku": "fencing.postcrete.20kg",
+      "group": "Materials",
+      "quantity": "postcrete_bags",
+      "consumption": {
+        "expr": "1",
+        "unit": "bag/bag"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "bag"
+        }
+      ],
+      "notes": "2 bags per post, 3 for 1.8 m+ or exposed sites"
+    },
+    {
+      "id": "gravel_board_units",
+      "label": "Gravel boards",
+      "sku": "fencing.gravel_board",
+      "group": "Materials",
+      "quantity": "panel_count",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "appliesWhen": "gravel_boards"
+    },
+    {
+      "id": "decking_joists",
+      "label": "Decking joists",
+      "sku": "decking.joist",
+      "group": "Materials",
+      "quantity": "decking_joist_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 3.6,
+          "unit": "m"
+        },
+        {
+          "size": 4.8,
+          "unit": "m"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination"
+    },
+    {
+      "id": "decking_boards_mat",
+      "label": "Decking boards",
+      "sku": "decking.board.{decking_board}",
+      "group": "Materials",
+      "quantity": "decking_board_length",
+      "consumption": {
+        "expr": "1",
+        "unit": "m/m"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 3.6,
+          "unit": "m"
+        },
+        {
+          "size": 4.8,
+          "unit": "m"
+        }
+      ],
+      "roundingStrategy": "cheapest_combination"
+    },
+    {
+      "id": "plants_mat",
+      "label": "Plants",
+      "sku": "soft.plants.mixed",
+      "group": "Materials",
+      "quantity": "plant_count",
+      "consumption": {
+        "expr": "1",
+        "unit": "each/each"
+      },
+      "wastePct": 0,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "each"
+        }
+      ],
+      "excludeFromMarginBase": true,
+      "notes": "Client often picks the plants — supply markup, not labour margin"
+    },
+    {
+      "id": "mulch",
+      "label": "Mulch",
+      "sku": "soft.mulch",
+      "group": "Materials",
+      "quantity": "mulch_volume",
+      "consumption": {
+        "expr": "1",
+        "unit": "m3/m3"
+      },
+      "wastePct": 0.05,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m3"
+        }
+      ]
+    },
+    {
+      "id": "membrane_mat",
+      "label": "Weed membrane",
+      "sku": "soft.membrane",
+      "group": "Materials",
+      "quantity": "planting_area",
+      "consumption": {
+        "expr": "1",
+        "unit": "m2/m2"
+      },
+      "wastePct": 0.15,
+      "purchaseUnits": [
+        {
+          "size": 1,
+          "unit": "m2"
+        }
+      ],
+      "appliesWhen": "membrane",
+      "notes": "+15% for overlaps"
+    },
+    {
+      "id": "sundries",
+      "label": "Sundries — fixings, screws, line, pegs, blades, sealant",
+      "group": "Materials",
+      "pricing": {
+        "type": "greater_of",
+        "percentOfMaterials": 0.06,
+        "perDayPence": 3000
+      },
+      "stage": "post_programme"
+    }
   ],
-
   "modifiers": [
-    { "id": "access_barrow", "when": "site_access == 'barrow'", "factor": 1.35,
-      "scope": ["excavation", "handling"], "explain": "Barrow-only access" },
-    { "id": "access_narrow", "when": "site_access == 'narrow_gate'", "factor": 1.55,
-      "scope": ["excavation", "handling"], "explain": "Narrow side gate — restricted barrow run" },
-    { "id": "access_through_house", "when": "site_access == 'through_house'", "factor": 1.80,
-      "scope": ["excavation", "handling"], "explain": "No rear access — everything carried through the house" },
-    { "id": "access_alley", "when": "site_access == 'alley'", "factor": 1.65,
-      "scope": ["excavation", "handling"], "explain": "Rear alley access only" },
-
-    { "id": "ground_clay", "when": "ground_conditions == 'clay'", "factor": 1.20,
-      "scope": ["excavation"], "explain": "Heavy clay — hard digging and heavy to cart" },
-    { "id": "ground_rubble", "when": "ground_conditions == 'rubble'", "factor": 1.30,
-      "scope": ["excavation"], "explain": "Rubble or made ground" },
-    { "id": "ground_roots", "when": "ground_conditions == 'roots'", "factor": 1.35,
-      "scope": ["excavation"], "explain": "Tree roots through the dig area" },
-    { "id": "ground_rock", "when": "ground_conditions == 'rock'", "factor": 1.60,
-      "scope": ["excavation"], "explain": "Rock — breaking out required" },
-    { "id": "ground_sandy", "when": "ground_conditions == 'sandy'", "factor": 0.95,
-      "scope": ["excavation"], "explain": "Sandy ground — digs easily" },
-
-    { "id": "slope", "when": "levels == 'slope'", "factor": 1.30,
-      "scope": ["excavation", "labour"], "explain": "Significant slope — working across falls" },
-    { "id": "terracing", "when": "levels == 'terracing'", "factor": 1.75,
-      "scope": ["excavation", "labour"], "explain": "Terracing required" },
-
-    { "id": "winter", "when": "winter_working", "factor": 1.15,
-      "scope": ["labour", "excavation"], "explain": "Winter working — short days and wet ground" },
-    { "id": "small_job_setup", "when": "small_job", "factor": 1.25,
-      "scope": ["labour"], "explain": "Small job — set-up dominates" },
-    { "id": "large_job_scale", "when": "large_job", "factor": 0.90,
-      "scope": ["labour"], "explain": "Large area — economies of scale" },
-    { "id": "long_carry", "when": "access_distance > 30",
+    {
+      "id": "access_barrow",
+      "when": "site_access == 'barrow'",
+      "factor": 1.35,
+      "scope": [
+        "excavation",
+        "handling"
+      ],
+      "explain": "Barrow-only access"
+    },
+    {
+      "id": "access_narrow",
+      "when": "site_access == 'narrow_gate'",
+      "factor": 1.55,
+      "scope": [
+        "excavation",
+        "handling"
+      ],
+      "explain": "Narrow side gate — restricted barrow run"
+    },
+    {
+      "id": "access_through_house",
+      "when": "site_access == 'through_house'",
+      "factor": 1.8,
+      "scope": [
+        "excavation",
+        "handling"
+      ],
+      "explain": "No rear access — everything carried through the house"
+    },
+    {
+      "id": "access_alley",
+      "when": "site_access == 'alley'",
+      "factor": 1.65,
+      "scope": [
+        "excavation",
+        "handling"
+      ],
+      "explain": "Rear alley access only"
+    },
+    {
+      "id": "ground_clay",
+      "when": "ground_conditions == 'clay'",
+      "factor": 1.2,
+      "scope": [
+        "excavation"
+      ],
+      "explain": "Heavy clay — hard digging and heavy to cart"
+    },
+    {
+      "id": "ground_rubble",
+      "when": "ground_conditions == 'rubble'",
+      "factor": 1.3,
+      "scope": [
+        "excavation"
+      ],
+      "explain": "Rubble or made ground"
+    },
+    {
+      "id": "ground_roots",
+      "when": "ground_conditions == 'roots'",
+      "factor": 1.35,
+      "scope": [
+        "excavation"
+      ],
+      "explain": "Tree roots through the dig area"
+    },
+    {
+      "id": "ground_rock",
+      "when": "ground_conditions == 'rock'",
+      "factor": 1.6,
+      "scope": [
+        "excavation"
+      ],
+      "explain": "Rock — breaking out required"
+    },
+    {
+      "id": "ground_sandy",
+      "when": "ground_conditions == 'sandy'",
+      "factor": 0.95,
+      "scope": [
+        "excavation"
+      ],
+      "explain": "Sandy ground — digs easily"
+    },
+    {
+      "id": "slope",
+      "when": "levels == 'slope'",
+      "factor": 1.3,
+      "scope": [
+        "excavation",
+        "labour"
+      ],
+      "explain": "Significant slope — working across falls"
+    },
+    {
+      "id": "terracing",
+      "when": "levels == 'terracing'",
+      "factor": 1.75,
+      "scope": [
+        "excavation",
+        "labour"
+      ],
+      "explain": "Terracing required"
+    },
+    {
+      "id": "winter",
+      "when": "winter_working",
+      "factor": 1.15,
+      "scope": [
+        "labour",
+        "excavation"
+      ],
+      "explain": "Winter working — short days and wet ground"
+    },
+    {
+      "id": "small_job_setup",
+      "when": "small_job",
+      "factor": 1.25,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Small job — set-up dominates"
+    },
+    {
+      "id": "large_job_scale",
+      "when": "large_job",
+      "factor": 0.9,
+      "scope": [
+        "labour"
+      ],
+      "explain": "Large area — economies of scale"
+    },
+    {
+      "id": "long_carry",
+      "when": "access_distance > 30",
       "factor": "clamp(1 + (access_distance - 30) / 100, 1, 1.4)",
-      "scope": ["handling"], "explain": "Long carry from parking to the work area" }
+      "scope": [
+        "handling"
+      ],
+      "explain": "Long carry from parking to the work area"
+    }
   ],
-
   "extras": [
-    { "id": "hire_digger", "label": "Mini digger hire",
-      "pricing": { "type": "day_rate", "sku": "hire.digger.1_5t", "days": "hire_calendar_days",
-        "deliverySku": "hire.delivery" },
-      "when": "plant_hire contains 'digger'", "group": "Plant hire",
-      "excludeFromMarginBase": true },
-    { "id": "hire_dumper", "label": "Dumper hire",
-      "pricing": { "type": "day_rate", "sku": "hire.dumper", "days": "hire_calendar_days" },
-      "when": "plant_hire contains 'dumper'", "group": "Plant hire",
-      "excludeFromMarginBase": true },
-    { "id": "hire_compactor", "label": "Plate compactor hire",
-      "pricing": { "type": "day_rate", "sku": "hire.compactor", "days": "hire_calendar_days" },
-      "when": "plant_hire contains 'compactor'", "group": "Plant hire",
-      "excludeFromMarginBase": true },
-    { "id": "hire_turf_cutter", "label": "Turf cutter hire",
-      "pricing": { "type": "day_rate", "sku": "hire.turf_cutter", "days": "hire_calendar_days" },
-      "when": "plant_hire contains 'turf_cutter'", "group": "Plant hire",
-      "excludeFromMarginBase": true },
-    { "id": "hire_breaker", "label": "Breaker hire",
-      "pricing": { "type": "day_rate", "sku": "hire.breaker", "days": "hire_calendar_days" },
-      "when": "plant_hire contains 'breaker'", "group": "Plant hire",
-      "excludeFromMarginBase": true },
-    { "id": "hire_generator", "label": "Generator hire",
-      "pricing": { "type": "day_rate", "sku": "hire.generator", "days": "hire_calendar_days" },
-      "when": "plant_hire contains 'generator' || !water_power_on_site", "group": "Plant hire",
-      "excludeFromMarginBase": true },
-
-    { "id": "skip", "label": "Skip hire",
-      "pricing": { "type": "banded", "quantity": "spoil_volume_bulked", "bands": [
-        { "upTo": 3.1, "sku": "disposal.skip.4yd" },
-        { "upTo": 4.6, "sku": "disposal.skip.6yd" },
-        { "upTo": 6.1, "sku": "disposal.skip.8yd" },
-        { "upTo": 9.2, "sku": "disposal.skip.12yd" },
-        { "upTo": 9999, "sku": "disposal.skip.12yd", "multiple": true } ] },
-      "when": "spoil_route == 'skip' && spoil_volume_bulked > 0", "group": "Excavation and disposal",
-      "note": "Banded on BULKED volume — a 4 yd skip holds ~3.1 m3" },
-
-    { "id": "grab_lorry", "label": "Grab lorry",
-      "pricing": { "type": "banded", "quantity": "spoil_tonnes", "bands": [
-        { "upTo": 16, "sku": "disposal.grab.load" },
-        { "upTo": 9999, "sku": "disposal.grab.load", "multiple": true } ] },
+    {
+      "id": "hire_digger",
+      "label": "Mini digger hire",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.digger.1_5t",
+        "days": "hire_calendar_days",
+        "deliverySku": "hire.delivery"
+      },
+      "when": "plant_hire contains 'digger'",
+      "group": "Plant hire",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "hire_dumper",
+      "label": "Dumper hire",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.dumper",
+        "days": "hire_calendar_days"
+      },
+      "when": "plant_hire contains 'dumper'",
+      "group": "Plant hire",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "hire_compactor",
+      "label": "Plate compactor hire",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.compactor",
+        "days": "hire_calendar_days"
+      },
+      "when": "plant_hire contains 'compactor'",
+      "group": "Plant hire",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "hire_turf_cutter",
+      "label": "Turf cutter hire",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.turf_cutter",
+        "days": "hire_calendar_days"
+      },
+      "when": "plant_hire contains 'turf_cutter'",
+      "group": "Plant hire",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "hire_breaker",
+      "label": "Breaker hire",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.breaker",
+        "days": "hire_calendar_days"
+      },
+      "when": "plant_hire contains 'breaker'",
+      "group": "Plant hire",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "hire_generator",
+      "label": "Generator hire",
+      "pricing": {
+        "type": "day_rate",
+        "sku": "hire.generator",
+        "days": "hire_calendar_days"
+      },
+      "when": "plant_hire contains 'generator' || !water_power_on_site",
+      "group": "Plant hire",
+      "excludeFromMarginBase": true,
+      "stage": "post_programme"
+    },
+    {
+      "id": "skip",
+      "label": "Skip hire",
+      "pricing": {
+        "type": "banded",
+        "quantity": "spoil_volume_bulked",
+        "bands": [
+          {
+            "upTo": 3.1,
+            "sku": "disposal.skip.4yd"
+          },
+          {
+            "upTo": 4.6,
+            "sku": "disposal.skip.6yd"
+          },
+          {
+            "upTo": 6.1,
+            "sku": "disposal.skip.8yd"
+          },
+          {
+            "upTo": 9.2,
+            "sku": "disposal.skip.12yd"
+          },
+          {
+            "upTo": 9999,
+            "sku": "disposal.skip.12yd",
+            "multiple": true
+          }
+        ]
+      },
+      "when": "spoil_route == 'skip' && spoil_volume_bulked > 0",
+      "group": "Excavation and disposal",
+      "note": "Banded on BULKED volume — a 4 yd skip holds ~3.1 m3"
+    },
+    {
+      "id": "grab_lorry",
+      "label": "Grab lorry",
+      "pricing": {
+        "type": "banded",
+        "quantity": "spoil_tonnes",
+        "bands": [
+          {
+            "upTo": 16,
+            "sku": "disposal.grab.load"
+          },
+          {
+            "upTo": 9999,
+            "sku": "disposal.grab.load",
+            "multiple": true
+          }
+        ]
+      },
       "when": "spoil_route == 'grab' || spoil_route == 'muckaway'",
-      "group": "Excavation and disposal" },
-
-    { "id": "contaminated_surcharge", "label": "Contaminated waste surcharge",
-      "pricing": { "type": "fixed", "sku": "disposal.contaminated.surcharge" },
-      "when": "spoil_class == 'contaminated'", "group": "Excavation and disposal" },
-
-    { "id": "cat_scan", "label": "Service location survey (CAT scan)",
-      "pricing": { "type": "fixed", "sku": "survey.cat_scan" },
-      "when": "services_unresolved", "group": "Site clearance" }
+      "group": "Excavation and disposal"
+    },
+    {
+      "id": "contaminated_surcharge",
+      "label": "Contaminated waste surcharge",
+      "pricing": {
+        "type": "fixed",
+        "sku": "disposal.contaminated.surcharge"
+      },
+      "when": "spoil_class == 'contaminated'",
+      "group": "Excavation and disposal"
+    },
+    {
+      "id": "cat_scan",
+      "label": "Service location survey (CAT scan)",
+      "pricing": {
+        "type": "fixed",
+        "sku": "survey.cat_scan"
+      },
+      "when": "services_unresolved",
+      "group": "Site clearance"
+    }
   ],
-
   "risk": {
-    "surveyConfidence": { "visited": 0, "photos": 0.12, "plan": 0.25 },
+    "surveyConfidence": {
+      "visited": 0,
+      "photos": 0.12,
+      "plan": 0.25
+    },
     "unknownConditions": [
-      { "when": "ground_conditions == 'rubble'", "add": 0.15,
-        "explain": "Made ground — no telling what's under it until you dig" },
-      { "when": "services_known == 'unknown'", "add": 0.15,
-        "explain": "Buried services not located" },
-      { "when": "!machine_access", "add": 0.10,
-        "explain": "No machine access — everything by hand" },
-      { "when": "levels == 'terracing'", "add": 0.10,
-        "explain": "Terracing — levels rarely work out as drawn" },
-      { "when": "retaining_over_600", "add": 0.10,
-        "explain": "Retaining over 600 mm — drainage and engineering requirements" }
+      {
+        "when": "ground_conditions == 'rubble'",
+        "add": 0.15,
+        "explain": "Made ground — no telling what's under it until you dig"
+      },
+      {
+        "when": "services_known == 'unknown'",
+        "add": 0.15,
+        "explain": "Buried services not located"
+      },
+      {
+        "when": "!machine_access",
+        "add": 0.1,
+        "explain": "No machine access — everything by hand"
+      },
+      {
+        "when": "levels == 'terracing'",
+        "add": 0.1,
+        "explain": "Terracing — levels rarely work out as drawn"
+      },
+      {
+        "when": "retaining_over_600",
+        "add": 0.1,
+        "explain": "Retaining over 600 mm — drainage and engineering requirements"
+      }
     ],
-    "cap": 0.40,
+    "cap": 0.4,
     "programmeOnly": [
-      { "when": "winter_working && !fixed_completion_date", "addDays": 0.08,
-        "explain": "Winter weather — allow float in the programme, not in the price" }
+      {
+        "when": "winter_working && !fixed_completion_date",
+        "addDays": 0.08,
+        "explain": "Winter weather — allow float in the programme, not in the price"
+      }
     ],
-    "priceVolatility": { "low": 0, "medium": 0.03, "high": 0.06 }
+    "priceVolatility": {
+      "low": 0,
+      "medium": 0.03,
+      "high": 0.06
+    }
   },
-
-  "defaults": { "contingencyStance": "balanced", "excavationDepth": 150 },
-
+  "defaults": {
+    "contingencyStance": "balanced",
+    "excavationDepth": 150
+  },
   "validation": [
-    { "level": "error", "when": "services_unresolved",
-      "message": "Buried services aren't located and you're digging. Get a CAT scan or a utility search before you price this." },
-    { "level": "error", "when": "total_area == 0 && fence_length == 0 && retaining_length == 0",
-      "message": "Nothing measured yet — add an area or a run length." },
-
-    { "level": "warning", "when": "driveway_permeability_flag",
-      "message": "Front driveway over 5 m² with non-permeable jointing. That needs permeable build-up or planning permission — record the decision before you quote." },
-    { "level": "warning", "when": "!machine_access && excavation_volume > 8",
-      "message": "Over 8 m³ to dig by hand. Check whether a machine can get in — it changes the price by multiples, not percentages." },
-    { "level": "warning", "when": "turf_area > 0 && !rotavate",
-      "message": "Turf with no ground preparation. It will fail, and you'll be back." },
-    { "level": "warning", "when": "retaining_over_600",
-      "message": "Retaining over 600 mm needs drainage behind it and, above about 1 m, an engineer's note. Don't absorb that risk silently." },
-    { "level": "warning", "when": "spoil_route == 'skip' && spoil_volume_bulked > 9.2",
-      "message": "More muck than a 12-yard skip holds. Price multiple skips or a grab lorry." },
-    { "level": "warning", "when": "hire_spans_weekend && hire_days < 5",
-      "message": "Hire spans a weekend. You're charged calendar days — check the extra days are in the price." },
-    { "level": "warning", "when": "modifier_cap_hit",
-      "message": "This job hit the difficulty cap. Walk it again before you commit to a number." },
-    { "level": "warning", "when": "effective_hourly_pence < settings.labour_cost_pence",
-      "message": "You're charging less per hour than the work costs you." }
+    {
+      "level": "error",
+      "when": "services_unresolved",
+      "message": "Buried services aren't located and you're digging. Get a CAT scan or a utility search before you price this."
+    },
+    {
+      "level": "error",
+      "when": "total_area == 0 && fence_length == 0 && retaining_length == 0",
+      "message": "Nothing measured yet — add an area or a run length."
+    },
+    {
+      "level": "warning",
+      "when": "driveway_permeability_flag",
+      "message": "Front driveway over 5 m² with non-permeable jointing. That needs permeable build-up or planning permission — record the decision before you quote."
+    },
+    {
+      "level": "warning",
+      "when": "!machine_access && excavation_volume > 8",
+      "message": "Over 8 m³ to dig by hand. Check whether a machine can get in — it changes the price by multiples, not percentages."
+    },
+    {
+      "level": "warning",
+      "when": "turf_area > 0 && !rotavate",
+      "message": "Turf with no ground preparation. It will fail, and you'll be back."
+    },
+    {
+      "level": "warning",
+      "when": "retaining_over_600",
+      "message": "Retaining over 600 mm needs drainage behind it and, above about 1 m, an engineer's note. Don't absorb that risk silently."
+    },
+    {
+      "level": "warning",
+      "when": "spoil_route == 'skip' && spoil_volume_bulked > 9.2",
+      "message": "More muck than a 12-yard skip holds. Price multiple skips or a grab lorry."
+    },
+    {
+      "level": "warning",
+      "when": "hire_spans_weekend && hire_days < 5",
+      "message": "Hire spans a weekend. You're charged calendar days — check the extra days are in the price."
+    },
+    {
+      "level": "warning",
+      "when": "modifier_cap_hit",
+      "message": "This job hit the difficulty cap. Walk it again before you commit to a number."
+    },
+    {
+      "level": "warning",
+      "when": "effective_hourly_pence < settings.labour_cost_pence",
+      "message": "You're charging less per hour than the work costs you."
+    }
   ],
-
   "presentation": {
-    "groups": ["Site clearance", "Excavation and disposal", "Sub-base", "Paving", "Edging",
-               "Turfing", "Fencing", "Decking", "Planting", "Retaining", "Materials", "Plant hire"],
+    "groups": [
+      "Site clearance",
+      "Excavation and disposal",
+      "Sub-base",
+      "Paving",
+      "Edging",
+      "Turfing",
+      "Fencing",
+      "Decking",
+      "Planting",
+      "Retaining",
+      "Materials",
+      "Plant hire"
+    ],
     "exclusions": [
       "Diversion, repair or protection of buried services",
       "Removal of contaminated ground or unforeseen buried obstructions",

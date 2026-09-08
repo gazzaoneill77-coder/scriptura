@@ -3,7 +3,12 @@ import json, re, sys, os
 ALLOWED_FNS = {"min","max","round","ceil","floor","clamp","sum","map","count","if","coalesce"}
 ENGINE_CTX = {"job_type","price_per_m2","modifier_cap_hit","achieved_margin","estimated_days",
               "has_staged_payments","total_price_pence","effective_hourly_pence","total_hours",
-              "isolation_valves_count"}
+              "isolation_valves_count","elapsed_days","programme_days"}
+
+# Values only known AFTER the programme is derived from phase-A hours. Anything priced
+# against them must declare stage:"post_programme" or the pack has a circular dependency:
+# the item's hours feed the total that defines its own quantity. See spec v5 -> v6.
+PROGRAMME_CTX = {"total_hours","elapsed_days","programme_days"}
 
 OPERATORS = {"contains"}   # infix operator used by packs; see spec note
 
@@ -80,7 +85,33 @@ def check(path):
     for r in d.get("risk",{}).get("unknownConditions",[]): scan(r["when"], "risk.unknownConditions")
     for v in d.get("validation",[]): scan(v["when"], f"validation[{v['level']}]")
 
-    # 3. presentation groups cover every task/material/extra group
+    # 3. programme cycle: anything priced against the programme must declare its stage
+    prog_ids = set(PROGRAMME_CTX)
+    changed = True
+    while changed:                      # derivations that transitively depend on programme
+        changed = False
+        for x in d.get("derivations",[]):
+            if x["id"] in prog_ids: continue
+            toks,_ = idents(x["expr"])
+            if {t.split(".")[0] for t in toks} & prog_ids:
+                prog_ids.add(x["id"]); changed = True
+
+    def depends_on_programme(expr):
+        if not isinstance(expr,str): return False
+        toks,_ = idents(expr)
+        return bool({t.split(".")[0] for t in toks} & prog_ids)
+
+    for coll in ("tasks","extras","materials"):
+        for x in d.get(coll,[]):
+            pricing = x.get("pricing",{}) or {}
+            hit = (depends_on_programme(str(x.get("quantity","")))
+                   or depends_on_programme(str(pricing.get("days","")))
+                   or "perDayPence" in pricing)
+            if hit and x.get("stage") != "post_programme":
+                errs.append(f"{coll} {x['id']}: priced against the programme but no "
+                            f"stage:\"post_programme\" — circular dependency")
+
+    # 4. presentation groups cover every task/material/extra group
     groups = set(d.get("presentation",{}).get("groups",[]))
     for coll in ("tasks","materials","extras"):
         for x in d.get(coll,[]):
