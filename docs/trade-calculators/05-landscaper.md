@@ -7,6 +7,10 @@ unit counts (posts, plants, features).
 **Job types:** patio · driveway · turfing · fencing · decking · garden clearance ·
 planting scheme · sleeper/retaining walls · artificial grass · full garden redesign.
 
+> **Implemented as** [`trade-packs/landscaper.pack.json`](trade-packs/landscaper.pack.json).
+> The rates below are the source of truth for that pack; change them here first, then the
+> pack, then re-run the validator.
+
 Landscaping's defining variables are not on the drawing. They are **access**, **ground
 conditions** and **muck-away**. A 40 m² patio with machine access and a 40 m² patio reached
 only by carrying everything through a terraced house are different jobs with the same area,

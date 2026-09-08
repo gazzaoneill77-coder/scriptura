@@ -29,6 +29,7 @@ wrappable into a native shell later without rewriting the engine.
 | [`07-ux-and-handoff.md`](07-ux-and-handoff.md) | Mobile-first input UX, quote review, PDF generation, WhatsApp/email share, paywall placement |
 | [`trade-packs/decorator.pack.json`](trade-packs/decorator.pack.json) | Worked example of a complete trade pack |
 | [`trade-packs/plumber.pack.json`](trade-packs/plumber.pack.json) | Second complete pack — the test that the pack architecture holds |
+| [`trade-packs/landscaper.pack.json`](trade-packs/landscaper.pack.json) | Third complete pack — forced the first structural change (programme vs price) |
 | [`trade-packs/validate-packs.py`](trade-packs/validate-packs.py) | Prototype publish-time validator: references, cycles, DSL whitelist, sourced rates |
 
 ---

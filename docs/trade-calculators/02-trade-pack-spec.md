@@ -377,3 +377,117 @@ python3 docs/trade-calculators/trade-packs/validate-packs.py \
 It is a prototype standing in for the real publish gate, not the finished engine. It checks
 structure, not arithmetic — golden fixtures do that, and they need the practitioner review
 in step 4 of the add-a-trade sequence before they mean anything.
+
+---
+
+## Spec v2 → v3: what the Landscaper forced
+
+Third trade, same discipline: [`trade-packs/landscaper.pack.json`](trade-packs/landscaper.pack.json)
+authored against the frozen v2 spec. All three packs validate clean.
+
+**Verdict: mostly held, with one finding that reaches the pipeline.** Three vocabulary
+additions, one genuine (if small) structural change at the output stage, and two
+confirmations that earlier findings generalise. Reported in that order because the
+structural one is the one that matters.
+
+### 1. `risk.programmeOnly` — contingency that adds time but not money (STRUCTURAL)
+
+This is the first finding in three trades that the vocabulary could not absorb.
+
+Every risk buffer up to now inflates **hours**, and hours drive both price *and* duration.
+That is correct for unknown conditions: if the ground might be worse than it looks, the job
+costs more and takes longer together.
+
+Weather does not work that way. A landscaping job in January will take longer — but the
+work is the same work, and charging a domestic client 8% more because it is winter is not
+defensible. The right answer is **float in the programme, not money in the price**:
+
+```jsonc
+"programmeOnly": [
+  { "when": "winter_working && !fixed_completion_date", "addDays": 0.08,
+    "explain": "Winter weather — allow float in the programme, not in the price" }
+]
+```
+
+And it inverts on the condition: **once a fixed completion date is agreed, weather stops
+being a scheduling matter and becomes commercial risk**, so the guard drops it out of
+`programmeOnly` and it belongs in the priced buffer instead. That conditional inversion is
+real domain logic, and no amount of vocabulary would have expressed it.
+
+Engine change: stage 11 must compute `estimated_days` from
+`hours × (1 + programmeBuffer)` while stage 9 prices `hours` alone. Small — one extra
+multiplication at the output stage — but it is the **first time price and duration diverge**,
+and every trade after this one inherits the capability. Weather is not unique to
+landscaping; roofing, groundworks and external decorating all need it.
+
+I am flagging this as structural rather than filing it with the vocabulary additions
+because the earlier claim was "the pipeline did not change". That claim no longer holds
+without qualification, and it is more useful to say so than to define the finding away.
+
+### 2. `materials[].wastePctRef` — derived waste percentages (NEW)
+
+Waste was a literal. Paving cut waste is not: stack bond wastes 5%, random 10%, a circle
+feature 12%, herringbone 15%. The pattern is an answer, so the waste has to be a derivation.
+
+```jsonc
+{ "id": "paving_units", "wastePct": 0.05, "wastePctRef": "cut_waste_pct" }
+```
+
+`wastePct` stays as the fallback when no ref is given, so every existing pack keeps working.
+
+### 3. `extras.pricing.banded` needs `multiple: true` (NEW)
+
+v2's banded pricing assumed the top band absorbs everything above it — fine for a skip up to
+12 yards. But muck does not stop at 12 yards; you order a second skip. A capacity band has
+to be able to repeat:
+
+```jsonc
+{ "upTo": 9.2, "sku": "disposal.skip.12yd" },
+{ "upTo": 9999, "sku": "disposal.skip.12yd", "multiple": true }
+```
+
+A validation warning backstops it, because silently under-ordering muck-away is one of the
+most expensive mistakes in landscaping.
+
+### 4. `pricing.day_rate` — calendar days and a separate delivery charge (NEW)
+
+Two corrections to the v1 `day_rate` type, both learned from plant hire:
+
+- **Hire is charged in calendar days, not working days.** A Friday start pays for the
+  weekend. The pack derives `hire_calendar_days` and the extra is asked for directly
+  ("Does the hire span a weekend?") rather than inferred, because the engine has no calendar.
+- **Delivery and collection is a one-off**, not a per-day cost. `deliverySku` is added and
+  charged once, and at £60–90 on a £90/day digger it is not a rounding error.
+
+### 5. Confirmed: the two-task idiom generalises (NO CHANGE)
+
+Hand-digging costs roughly **4.5×** machine digging. That is far too large to be a
+modifier — it is a different method, not a harder version of the same one. Modelled as two
+mutually exclusive tasks (`excavate_machine` / `excavate_hand`) gated on `machine_access`,
+exactly as the Plumber's seized stopcock became a 0-or-1 task.
+
+Second independent instance of the same idiom, so it goes in the authoring guide: **when a
+condition changes the method rather than the difficulty, write two tasks, not a modifier.**
+Modifiers are for degree; tasks are for kind.
+
+### 6. Confirmed: `excludeFromMarginBase` generalised untouched (NO CHANGE)
+
+Introduced in v2 for a £900 boiler. It now carries hired plant (a digger at cost plus a
+handling markup, never at the labour margin) and client-chosen plants — with **no
+modification to the flag or the engine**. A field invented for one trade absorbing two
+unrelated cases in the next is the strongest evidence so far that the per-line design was
+right and the original user-level setting was wrong.
+
+### Running total after three trades
+
+| Finding type | Count |
+| --- | --- |
+| Vocabulary additions (data the engine reads) | 7 |
+| Structural changes (pipeline behaviour) | 1 |
+| Documentation gaps | 1 |
+| Idioms recorded, no change needed | 2 |
+| Earlier findings that generalised untouched | 1 |
+
+Roughly two days of engine work across three trades, and the shape of the cost is
+reassuring: the vocabulary keeps absorbing new trades, and the one structural change
+bought a capability that later trades need anyway.
