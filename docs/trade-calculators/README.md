@@ -28,6 +28,8 @@ wrappable into a native shell later without rewriting the engine.
 | [`06-data-architecture.md`](06-data-architecture.md) | Supabase/Postgres schema, RLS, offline sync, native-wrap path |
 | [`07-ux-and-handoff.md`](07-ux-and-handoff.md) | Mobile-first input UX, quote review, PDF generation, WhatsApp/email share, paywall placement |
 | [`trade-packs/decorator.pack.json`](trade-packs/decorator.pack.json) | Worked example of a complete trade pack |
+| [`trade-packs/plumber.pack.json`](trade-packs/plumber.pack.json) | Second complete pack — the test that the pack architecture holds |
+| [`trade-packs/validate-packs.py`](trade-packs/validate-packs.py) | Prototype publish-time validator: references, cycles, DSL whitelist, sourced rates |
 
 ---
 
@@ -113,3 +115,12 @@ The single riskiest assumption is **Phase 2's first line**: if adding the Plumbe
 requires engine changes, the abstraction was wrong and it is cheaper to find that out in
 week 10 than in month 10. Build the Plumber pack against the *frozen* engine and treat
 every required engine change as a defect in the spec.
+
+**Status: tested, and it held.** The Plumber pack is authored and validates clean against
+the frozen v1 spec. The pipeline did not change — no stage added, removed or reordered, no
+trade-specific branch in the engine. It forced four small additions to the vocabulary the
+engine reads (job-type gating on trade qualifications, `settings.registrations` in the
+evaluation context, a `fixed` pricing type for certification fees, and a per-line
+`excludeFromMarginBase` so a £900 boiler isn't run through a 25% labour margin) plus one
+documentation gap. All are written up in
+[02 — Spec v1 → v2](02-trade-pack-spec.md#spec-v1--v2-what-authoring-the-plumber-pack-actually-forced).

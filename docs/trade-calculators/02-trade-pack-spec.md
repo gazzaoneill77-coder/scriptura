@@ -95,7 +95,8 @@ is also unserialisable, untestable in isolation, and impossible to statically an
 The DSL is a **small, total, whitelisted expression language** parsed to an AST and
 evaluated by the engine:
 
-- arithmetic `+ - * / %`, comparison, `&&`, `||`, `!`, ternary
+- arithmetic `+ - * / %`, comparison, `&&`, `||`, `!`, ternary, and `contains`
+  (membership test over a `multi_enum`: `surfaces contains 'walls'`)
 - functions: `min max round ceil floor clamp sum map count if coalesce` — no others
 - references: question ids, derivation ids, `settings.*`, `quantities.*`
 - **no** loops, assignment, property access on host objects, or function definitions
@@ -241,3 +242,138 @@ they start, and they are trade-specific knowledge worth as much as the rates.
 7. Promote to general availability; add the vertical's own landing page and copy.
 
 **Engine changes required: zero.** If that is not true, stop and fix the spec.
+
+---
+
+## Spec v1 → v2: what authoring the Plumber pack actually forced
+
+The roadmap called this the riskiest assumption in the plan: *if adding the Plumber pack
+requires engine changes, the abstraction was wrong.* The Plumber pack
+([`trade-packs/plumber.pack.json`](trade-packs/plumber.pack.json)) was authored against the
+frozen v1 spec. Both packs now validate clean — every reference resolves, no cycles, no
+function outside the whitelisted DSL, every rate sourced, every modifier explained.
+
+**Verdict: the abstraction held.** The pipeline in [01](01-pricing-engine.md) did not change.
+No stage was added, removed or reordered; no trade-specific branch entered the engine. What
+follows are four additions to the *vocabulary* the engine reads, one documentation gap, and
+two authoring recommendations. Together they are perhaps a day of engine work.
+
+### 1. `jobTypes[].requires` — gating on qualifications (NEW)
+
+Plumbing is the first trade where **the user's credentials decide which jobs exist.** Gas
+work is Gas Safe only; unvented cylinders need G3. v1 had no way to say a job type is
+unavailable to a given user.
+
+```jsonc
+{ "id": "boiler", "label": "Boiler swap or install",
+  "requires": ["registrations.gas_safe"],
+  "requiresMessage": "Boiler work is Gas Safe registered only. Add your Gas Safe number in Settings, or quote this as a subcontracted job." }
+```
+
+The job-type picker evaluates `requires` and disables the card with `requiresMessage`.
+A `validation` error backstops it, so the rule holds even if a pack is authored badly or
+the answer set is replayed from an API. This generalises immediately — the Electrician's
+pack will need NICEIC/Part P, the Gas Engineer's the same Gas Safe check.
+
+### 2. `settings.registrations.*` in the evaluation context (CLARIFICATION)
+
+v1 said the DSL may reference `settings.*`. But registrations live on
+`businesses.registrations`, not `pricing_settings`. The context builder must merge business
+identity into the settings namespace before evaluation. No engine logic changes — it is one
+more field in the object handed to a pure function — but it must be specified, because
+`validation` rules now depend on it and a missing key would silently evaluate falsy and
+**wrongly block a qualified user's gas quote**.
+
+### 3. `extras[].pricing.type: "fixed"` (NEW)
+
+The Decorator only needed `banded` (skips) and `day_rate` (tower hire). The Plumber is full
+of flat amounts that are neither: Building Regs notification, Benchmark commissioning, a
+Landlord Gas Safety Record, G3 and WRAS notifications, congestion charges. Added with an
+optional `multiplier` for per-visit costs:
+
+```jsonc
+{ "id": "congestion", "label": "Congestion / ULEZ charge",
+  "pricing": { "type": "fixed", "sku": "travel.congestion", "multiplier": "visits" } }
+```
+
+### 4. `excludeFromMarginBase` per line (NEW — the substantive one)
+
+This is the finding worth the exercise. [01](01-pricing-engine.md) stage 9 treats
+margin-in-price vs cost-plus-markup as **one user-level setting** covering all materials.
+That works for a decorator, whose materials are tins of paint.
+
+It breaks on a boiler. A £900 appliance run through a 25% margin adds £300 to a job where
+the trade norm is a 10–15% supply markup — the quote prices itself out of the market, and
+the user will not notice why. The reverse is just as bad: forcing *all* materials to
+cost-plus to accommodate the boiler under-recovers on the fittings.
+
+So the flag moves to the line:
+
+```jsonc
+{ "id": "boiler_unit", "label": "Boiler", "sku": "appliance.boiler.combi",
+  "excludeFromMarginBase": true,
+  "notes": "High-value appliance — cost-plus-markup, never inside the labour margin base" }
+```
+
+Engine change: stage 9 partitions cost lines into margin-base and markup-base rather than
+switching wholesale on a setting. The user setting remains as the default for lines that
+don't declare the flag. Applies to `extras` too — a subcontracted electrician is at cost
+plus a handling markup, not at the plumber's margin.
+
+**This is a spec defect the Decorator could never have exposed**, which is exactly why the
+roadmap sequenced a second trade before building breadth.
+
+### 5. `contains` is undocumented (DOCUMENTATION GAP)
+
+Both packs use `surfaces contains 'walls'` and `making_good contains 'plastering'`, but the
+v1 operator list — arithmetic, comparison, `&&`, `||`, `!`, ternary — never mentions it. It
+is a real infix operator over `multi_enum` values and must be specified, or the first
+independent engine implementation will reject valid packs. Added to the DSL definition:
+
+> operators: arithmetic `+ - * / %`, comparison, `&&`, `||`, `!`, ternary, and
+> `contains` (membership test: `<multi_enum> contains <literal>`)
+
+### 6. Recommendation: a `match()` function (SUGAR, not required)
+
+The fixture-repositioning weight is a three-deep nested conditional:
+
+```
+sum(fixtures, f.count * if(f.position == 'same', 0, if(f.position == 'moved_lt1', 1,
+  if(f.position == 'moved_gt1', 2, 3))))
+```
+
+Correct and expressible, so not a blocker — but packs are meant to become authorable by
+non-engineers, and enum-to-number lookups are the single most common shape in a pack.
+`match(f.position, [['same',0],['moved_lt1',1],['moved_gt1',2]], 3)` is pure sugar over
+nested `if`, adds no evaluation power, and keeps the DSL total.
+
+### 7. Idiom: flat-hour allowances are tasks, not modifiers
+
+"Seized stopcock: +1.5 hours" cannot be a modifier — modifiers multiply. Rather than adding
+an additive-modifier concept, model it as a task with a 0-or-1 quantity:
+
+```jsonc
+{ "id": "stopcock_remedial", "quantity": "stopcock_remedial_units",
+  "rate": { "typical": 1.5, "unit": "hr" } }
+```
+
+with `stopcock_remedial_units = if(stopcock == 'working', 0, 1)`. **No spec change** — it
+prices identically, appears as its own line on the estimate (which the client should see
+anyway), and inherits scoping and modifiers for free. Recorded here as the idiom so the
+next trade doesn't reach for an additive modifier.
+
+### Running the validator
+
+[`trade-packs/validate-packs.py`](trade-packs/validate-packs.py) implements the
+publish-time checks described above — reference resolution, cycle detection, DSL
+whitelisting, mandatory rate sources, mandatory modifier explanations, and presentation
+group coverage.
+
+```sh
+python3 docs/trade-calculators/trade-packs/validate-packs.py \
+        docs/trade-calculators/trade-packs/*.pack.json
+```
+
+It is a prototype standing in for the real publish gate, not the finished engine. It checks
+structure, not arithmetic — golden fixtures do that, and they need the practitioner review
+in step 4 of the add-a-trade sequence before they mean anything.

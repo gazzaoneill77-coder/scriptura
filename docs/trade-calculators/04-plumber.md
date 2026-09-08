@@ -7,6 +7,10 @@ hours-first (diagnostic and callout work) · fixed-price jobs (boiler swap, powe
 radiator work · kitchen plumbing · pipework / re-pipe · unvented cylinder · emergency ·
 landlord safety check.
 
+> **Implemented as** [`trade-packs/plumber.pack.json`](trade-packs/plumber.pack.json).
+> The rates below are the source of truth for that pack; change them here first, then the
+> pack, then re-run the validator.
+
 Plumbing differs from decorating in three ways that shape the whole flow:
 
 1. **Much of it is not measurable in advance.** The dominant variable is *what is behind the
